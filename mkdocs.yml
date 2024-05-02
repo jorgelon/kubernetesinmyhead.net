@@ -2,10 +2,10 @@ site_name: Mis notas sobre k8s
 theme:
   name: material
   language: es
-  # features:
-  #   - navigation.path
-  #   - navigation.tabs
-  #   - navigation.tabs.sticky
+  features:
+    - navigation.path
+    - navigation.tabs
+    - navigation.tabs.sticky
   #   - toc.follow
   #   - navigation.top
 extra:
