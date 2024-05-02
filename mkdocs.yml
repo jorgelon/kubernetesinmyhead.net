@@ -1,4 +1,5 @@
 site_name: Mis notas sobre k8s
+# site_url: https://kubernetesinmyhead.net
 theme:
   name: material
   language: es
