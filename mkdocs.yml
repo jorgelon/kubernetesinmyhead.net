@@ -4,9 +4,11 @@ theme:
   name: material
   language: es
   features:
-    - navigation.path
     - navigation.tabs
     - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
   #   - toc.follow
   #   - navigation.top
 extra:
