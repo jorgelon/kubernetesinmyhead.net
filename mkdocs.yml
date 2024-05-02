@@ -1,0 +1,14 @@
+site_name: Mis notas sobre k8s
+theme:
+  name: material
+  language: es
+  # features:
+  #   - navigation.path
+  #   - navigation.tabs
+  #   - navigation.tabs.sticky
+  #   - toc.follow
+  #   - navigation.top
+extra:
+  social:
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/jorge-p-275960300
