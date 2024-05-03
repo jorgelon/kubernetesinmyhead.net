@@ -38,23 +38,20 @@ spec:
   templates:
   - name: main
     dag:
-    tasks:
-    - name: step-A
-        template: step-template-a
-        arguments:
-        parameters:
-        - name: template-param-1
-            value: abcd
-```
+      tasks:
+      - name: step-A
+          template: step-template-a
+          arguments:
+            parameters:
+            - name: template-param-1
+                value: abcd
+  ```
 
 > en containerset, container y script inputs and outputs can only be loaded and saved from a container named main.
 
 # Links
 
-- Core concepts  
-https://argo-workflows.readthedocs.io/en/stable/workflow-concepts/
-
-- Arguments  
+- Parameters  
 https://argo-workflows.readthedocs.io/en/stable/walk-through/parameters/
 
 - Inputs  
