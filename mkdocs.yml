@@ -1,17 +1,23 @@
-site_name: Mis notas sobre k8s
+site_name: Kubernetes in my head
 # site_url: https://kubernetesinmyhead.net
 theme:
   name: material
   language: es
+  palette:
+    scheme: default
   features:
-    - navigation.tabs
-    - navigation.tabs.sticky
-    - navigation.sections
-    - navigation.expand
-    - navigation.path
-  #   - toc.follow
-  #   - navigation.top
+    - navigation.sections # top-level sections are rendered as groups in the sidebar
+    - navigation.path # breadcrumb navigation
+    - navigation.footer # include links to the previous and next page of the current page
+    - toc.follow
+    - navigation.top
 extra:
   social:
     - icon: fontawesome/brands/linkedin
       link: https://linkedin.com/in/jorge-p-275960300
+      name: LinkedIn
+markdown_extensions:
+  - toc:
+      permalink: true
+      title: On this page
+      permalink_title: Anchor link to this section for reference
