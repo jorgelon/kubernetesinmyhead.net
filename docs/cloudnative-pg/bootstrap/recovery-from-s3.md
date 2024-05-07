@@ -23,11 +23,11 @@ spec:
   [...]
   bootstrap:
     recovery:
-        source: miclusterdeorigen
-        database: bbdd
-        owner: owner
-        secret:
-            name: owner-creds
+        source: miclusterdeorigen # nombre del external cluster
+        database: bbdd # por defecto sera app. si no existe la bbdd la crea
+        owner: owner # por defecto sera app. si no existe el usuario lo crea y si no es owner, lo convierte en owner
+        secret: # si queremos especificar credenciales. 
+            name: owner-creds # debe contener username: elowner y password: elpassworddeseado
 ```
 
 ## Definir el externalCluster
