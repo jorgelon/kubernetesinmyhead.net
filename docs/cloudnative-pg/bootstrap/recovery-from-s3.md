@@ -87,5 +87,11 @@ spec:
 - Recovery  
 <https://cloudnative-pg.io/documentation/1.22/recovery/>
 
+- Recovery spec  
+<https://cloudnative-pg.io/documentation/1.22/cloudnative-pg.v1/#postgresql-cnpg-io-v1-BootstrapRecovery>
+
 - Configure the application database  
 <https://cloudnative-pg.io/documentation/1.22/bootstrap/#configure-the-application-database>
+
+- External Cluster spec  
+<https://cloudnative-pg.io/documentation/1.22/cloudnative-pg.v1/#postgresql-cnpg-io-v1-ExternalCluster>
