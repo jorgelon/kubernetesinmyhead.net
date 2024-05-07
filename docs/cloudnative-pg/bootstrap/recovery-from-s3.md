@@ -6,9 +6,17 @@ Para crear un cluster partiendo de un backup via barmanObjectStore en s3 hay que
 
 En el spec del cluster hay que indicar que el bootstrap sera recovery y que usara como origen un externalCluster
 
-> Es interesante definir el nombre de la bbdd y el owner que tendra, alineado con la bbdd que estamos importando. Esto creara un secret con las nuevas credenciales del usuario de la bbdd. Tambien podemos indicarselas mediante un secret
+### Notas adicionales
 
-> Adicionalmente Podemos elegir el PITR mediante recoveryTarget
+- Es interesante definir el nombre de la bbdd y el owner que tendra, alineado con la bbdd que estamos importando. Esto creara un secret con las nuevas credenciales del usuario de la bbdd. Tambien podemos indicarselas mediante un secret
+
+- El operador mantiene el nombre de las bbdd y usuarios de origen se mantienen pero no se trae los posibles secrets de origen
+
+- Para mantener el superusuario de origen se debe usar enableSuperuserAccess y superuserSecret
+
+- Adicionalmente Podemos elegir el PITR mediante recoveryTarget, sino por defecto se buscara el ultimo wal disponible
+
+- barmanObjectStore.wal.maxParallel permite definir el numero de archivos WAL en paralelo para ser restaurados. Por defecto es de uno en uno
 
 ```yaml
 spec:
