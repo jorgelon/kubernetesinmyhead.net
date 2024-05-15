@@ -22,3 +22,9 @@ FROM pg_catalog.pg_roles r
 WHERE r.rolname !~ '^pg_'
 ORDER BY 1;
 ```
+
+## Crear base de datos con owner
+
+```postgresql
+CREATE DATABASE database WITH OWNER = 'owner';
+```
