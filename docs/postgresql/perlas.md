@@ -23,9 +23,10 @@ WHERE r.rolname !~ '^pg_'
 ORDER BY 1;
 ```
 
-## Crear base de datos con owner
+## Crear role con contraseña y base de datos con owner
 
 ```postgresql
+CREATE ROLE owner WITH LOGIN PASSWORD 'whatever';
 CREATE DATABASE database WITH OWNER = 'owner';
 ```
 
