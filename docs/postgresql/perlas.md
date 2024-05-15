@@ -28,3 +28,9 @@ ORDER BY 1;
 ```postgresql
 CREATE DATABASE database WITH OWNER = 'owner';
 ```
+
+## Borrar rol/user
+
+```postgresql
+DROP USER role;
+```
