@@ -19,5 +19,5 @@ extra:
 markdown_extensions:
   - toc:
       permalink: true
-      title: On this page
+      title: Indice
       permalink_title: Anchor link to this section for reference

@@ -73,13 +73,13 @@ spec:
 ## Links
 
 - Sobre workflow templates  
-<https://argo-workflows.readthedocs.io/en/latest/workflow-templates/>
+<https://argo-workflows.readthedocs.io/en/stable/workflow-templates/>
 
 - Sobre cluster workflow templates  
-<https://argo-workflows.readthedocs.io/en/latest/cluster-workflow-templates/>
+<https://argo-workflows.readthedocs.io/en/stable/cluster-workflow-templates/>
 
 - Spec sobre templateref  
-<https://argo-workflows.readthedocs.io/en/latest/fields/#templateref>
+<https://argo-workflows.readthedocs.io/en/stable/fields/#templateref>
 
 - Spec sobre workflowtemplateref  
-<https://argo-workflows.readthedocs.io/en/latest/fields/#workflowtemplateref>
+<https://argo-workflows.readthedocs.io/en/stable/fields/#workflowtemplateref>
