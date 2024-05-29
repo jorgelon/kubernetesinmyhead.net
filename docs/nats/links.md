@@ -5,6 +5,12 @@
 - Official Nats website  
 <https://nats.io/>
 
+- Official Nats documentation  
+<https://docs.nats.io/>
+
+- Github nats org  
+<https://github.com/nats-io>
+
 - Awesome Nats  
 <https://github.com/synadia-io/awesome-nats>
 
