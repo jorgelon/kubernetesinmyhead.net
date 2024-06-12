@@ -29,7 +29,7 @@ Estas condiciones pueden ser:
 
 Se puede definir a nivel de workflow o a nivel de step dentro del campo "hooks"
 
-> El nombre de un LifecycleHook no es importante, aunque no se deberia llamar exit o se convierte en un exit handler.
+> El nombre de un LifecycleHook no es importante, aunque si se le llama "exit" se convierte en un exit handler.
 
 ### Ejemplo a nivel de workflow
 
