@@ -44,3 +44,6 @@ If you want to create a workflow using an argo events sensor, you can pass the n
 
 - Argo workflows trigger spec in Argo events
 <https://github.com/argoproj/argo-events/blob/master/api/sensor.md#argoproj.io/v1alpha1.ArgoWorkflowTrigger>
+
+- Service accounts in Argo events:  
+[Link](../argo-events/service-accounts.md)
