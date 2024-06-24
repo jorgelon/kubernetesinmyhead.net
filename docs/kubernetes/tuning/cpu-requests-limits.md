@@ -47,7 +47,9 @@ En 2 cpu, consumiria la cuota en 0.1ms sin poder hacer uso del 0.9 restante. A m
 
 - Siempre hay que definir un valor de cpu request para cada container, teniendo en cuenta lo que implica. Con ello se evita la qos class besteffort.
 
-- Algunas voces recomiendan no utilizar cpu limits. Aqui se da prioridad al rendimiento a establecer valores de cpu requests apropiados para proteger a los contenedores.
+- Algunas voces recomiendan no utilizar cpu limits. Aqui se da prioridad al rendimiento a establecer valores de cpu requests apropiados para proteger a los contenedores. Incluso hay quien habla de deshabilitarlo en kubelet mediante cpuCFSQuota=0.
+
+- En segun que entornos se puede reducir el cpu_period_us para que los ciclos sean mas cortos
 
 - Establecer cpu limits da mas prioridad a la proteccion de los nodos y otros contenedores frente a cargas de trabajo excesivas, asi como a tener un entorno controlado en ese sentido.
 
@@ -96,14 +98,13 @@ Es una herramienta para controlar el uso de recursos a nivel de namespace.
 - Why You Should Keep Using CPU Limits on Kubernetes  
 <https://dnastacio.medium.com/why-you-should-keep-using-cpu-limits-on-kubernetes-60c4e50dfc61>
 
-### Best Practices
+### Tools
 
-- **Monitoring and Metrics**: Use monitoring tools to understand your application's CPU usage patterns. Metrics can guide you in setting appropriate limits.
+- Kube capacity  
+<https://github.com/robscott/kube-capacity>
 
-- **Start Conservative, Adjust as Needed**: It's often better to start with conservative limits and adjust based on observed performance and usage patterns.
+- Robusta KRR  
+<https://github.com/robusta-dev/krr>
 
-- **Use Requests and Limits Together**: Set both `requests` (the amount of CPU that Kubernetes will guarantee for the container) and `limits` (the maximum amount of CPU that a container can use) to manage resource allocation effectively.
-
-- **Consider Workload Type**: Stateful applications or those with real-time requirements might need more careful consideration when setting limits to avoid performance impacts.
-
-In conclusion, whether to limit CPU resources in Kubernetes containers depends on your specific needs for performance predictability, resource fairness, cost control, and the nature of your workloads. It's a balance between ensuring efficient resource use and avoiding potential performance bottlenecks.
+- Goldilocks  
+<https://github.com/FairwindsOps/goldilocks>
