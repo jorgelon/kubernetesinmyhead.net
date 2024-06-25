@@ -60,7 +60,7 @@ Orden
 - Si hace falta nodos nuevos los crea y espera a que esten listos
 - Borra el nodo y espera a que el termination controller lo apague. Cuando lo haga , vuelve a empezar
 
-# El termination controller
+## El termination controller
 
 El termination controller actua cuando el nodo es borrado y hace uso del "Kubernetes Graceful Node Shutdown"
 
@@ -68,7 +68,7 @@ El termination controller actua cuando el nodo es borrado y hace uso del "Kubern
 
 En el proceso, agrega un taint, desaloja los pods mediante la "Kubernetes Eviction API", borra el nodeclaim y borra el finalizer del nodo para permitir al api server borrar el nodo.
 
-# Disruption Budgets
+## Disruption Budgets
 
 Nos referimos a disruption budgets de nodepools y se definen en "spec.disruption.budgets".  
 Sirve para controlar la velocidad de interrupcion de nodos. Se puede hacer indicando un porcentaje maximo de nodos interrumpibles a la vez o un numero de nodos exactos.
@@ -77,7 +77,7 @@ Tambien es posible poner una programacion al definir un budget.
 
 > Se pueden indicar varios budgets, los cuales deberan cumplirse siempre. Una opcion es indicar 0 nodos en determinados horarios donde no queremos que haya interrupciones.
 
-# Interruption
+## Interruption
 
 Sucede cuando Karpenter detecta eventos como:  
 
@@ -88,7 +88,7 @@ Sucede cuando Karpenter detecta eventos como:
 
 Para habilitarlo hay que habilitar la opcion "interruption-queue-name" que requiere crear una cola en Amazon SQS y 4 reglas en Amazon EventBridge
 
-# Links
+## Links
 
 - Disruption  
 <https://karpenter.sh/docs/concepts/disruption/>
