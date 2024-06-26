@@ -12,6 +12,9 @@
 - Escalamiento de nodos de Amazon EKS con Karpenter  
 <https://aws.amazon.com/es/blogs/aws-spanish/escalamiento-de-nodos-de-amazon-eks-con-karpenter/>
 
+- Reinvent 2023
+https://youtu.be/lkg_9ETHeks?feature=shared
+
 - Amazon EC2 Instance Selector
 <https://github.com/aws/amazon-ec2-instance-selector>
 
