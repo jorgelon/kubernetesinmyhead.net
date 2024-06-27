@@ -8,16 +8,16 @@ External secrets operator es capaz de gestionar los 3 tipos de objectos: secrets
   data:
     - secretKey: database-username
         remoteRef:
-        key: database-username # secret sin prefijo (valor por defecto) 
+            key: database-username # secret sin prefijo (valor por defecto) 
     - secretKey: database-password
         remoteRef:
-        key: secret/database-password # secret con prefijo
+            key: secret/database-password # secret con prefijo
     - secretKey: db-client-cert
         remoteRef:
-        key: cert/db-client-cert # certificate con prefijo
+            key: cert/db-client-cert # certificate con prefijo
     - secretKey: encryption-pubkey
         remoteRef:
-        key: key/encryption-pubkey # key con prefijo
+            key: key/encryption-pubkey # key con prefijo
 ```
 
 ## Autentication soportada

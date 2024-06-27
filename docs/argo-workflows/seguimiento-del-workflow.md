@@ -60,6 +60,25 @@ spec:
             template: echo
 ```
 
+## Ejemplo con parameters
+
+```yaml
+spec:
+  entrypoint: main
+  templates:
+    - name: main
+      steps:
+        - - name: step-1
+            template: output
+            hooks:
+              exit:
+                template: exit
+                arguments:
+                  parameters:
+                    - name: message
+                      value: "{{steps.step-1.outputs.parameters.result}}"
+```
+
 > La expresion no soporta `-` en el nombre de la variable, y debe usarse con `[]`
 
 ## Eventos de kubernetes

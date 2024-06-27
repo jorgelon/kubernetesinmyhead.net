@@ -16,12 +16,6 @@ spec:
     size: 1Gi
 ```
 
-## Obtener listado de backups fallidos
-
-```shell
-kubectl get backups -o jsonpath='{range .items[?(@.status.phase==failed")]}{.metadata.name}{"\n"}{end}'
-```
-
 ## Obtener listado de backups de tipo volumeSnaphot
 
 ```shell

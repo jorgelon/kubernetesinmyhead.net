@@ -35,6 +35,16 @@ Sin embargo un reinicio de un rollout borra los pods del mismo replicaset y sera
 Esto implica que por ejemplo si el rollout solo tiene una replica, habra perdida de servicio
 Tambien es potencialmente un proceso mas lento ya que no se tiene en cuenta maxSurge, aunque si maxUnavailable. Si su valor es 0, el restart sera de uno en uno.
 
+## Restart con Stakater Reloader?
+
+Con reloader sin embargo el comportamiento es diferente.
+En Argo Rollouts es posible crear un rollout que incluya la logica del rollout ademas del deployment en si.
+Tambien es posible separarlos y crear un rollout por un lado  con su logica y que referencie a un deploy ya existente.
+
+En el caso de que el reload de Reloader se aplique a un rollout de Argo Rollouts, hay que habilitar en su configuracion que los soporte, fuerza una nueva version del rollout
+
+En el caso de aplicarlo al deployment referenciado por el rollout
+
 ## Links
 
 - Deployments  
@@ -51,3 +61,6 @@ Tambien es potencialmente un proceso mas lento ya que no se tiene en cuenta maxS
 
 - Restart a rollout  
 <https://argo-rollouts.readthedocs.io/en/stable/features/restart/>
+
+- Stakater Reloader  
+<https://github.com/stakater/Reloader>

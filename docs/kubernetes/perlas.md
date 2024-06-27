@@ -17,5 +17,4 @@ args:
 env:
 - name: VAR_NAME
   value: myvalue
-
 ```

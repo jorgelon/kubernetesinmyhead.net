@@ -15,7 +15,11 @@
 
 between all your applications and the new kubernetes release
 
-### Tools to check
+### Deprecated apis
+
+<https://kubernetes.io/docs/reference/using-api/deprecation-guide/>
+
+Tools to check
 
 - Silver Surfer
 <https://github.com/devtron-labs/silver-surfer>>
