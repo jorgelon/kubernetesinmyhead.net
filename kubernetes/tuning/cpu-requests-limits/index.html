@@ -1,0 +1,1336 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kubernetesinmyhead.net/kubernetes/tuning/cpu-requests-limits/">
+      
+      
+        <link rel="prev" href="../../upgrade/">
+      
+      
+        <link rel="next" href="../prioridades/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.27">
+    
+    
+      
+        <title>CPU requests y limits - Kubernetes in my head</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.6543a935.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cpu-requests-y-limits" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../.." title="Kubernetes in my head" class="md-header__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kubernetes in my head
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              CPU requests y limits
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Kubernetes in my head" class="md-nav__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    Kubernetes in my head
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../argo-events/service-accounts/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Argo events
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../argo-rollouts/restart-rollout-deployment/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Argo rollouts
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../argo-workflows/compartir-volumenes-y-datos/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Argo workflows
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../argocd/perlas/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Argocd
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../aws/almacenamiento-en-eks/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Aws
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../cloudnative-pg/formas-de-crear-un-cluster/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Cloudnative pg
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../external-secrets/eso-y-azure-key-vault/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    External secrets
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../grafana/perlas/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Grafana
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../karpenter/disruption/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Karpenter
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Kubernetes
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            Kubernetes
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../perlas/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Perlas
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../upgrade/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Upgrade
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_3" id="__nav_11_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Tuning
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_3">
+            <span class="md-nav__icon md-icon"></span>
+            Tuning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    CPU requests y limits
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    CPU requests y limits
+  </span>
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Indice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Indice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cpu-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      CPU request
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cpu-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      CPU limit
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#el-valor-en-practica" class="md-nav__link">
+    <span class="md-ellipsis">
+      El valor en practica
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#algunas-conclusiones-y-directrices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Algunas conclusiones y directrices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Algunas conclusiones y directrices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interaccciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interaccciones
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Links
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Links">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tools
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../prioridades/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Prioridades entre pods
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../metallb/perlas/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Metallb
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../nats/links/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Nats
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+    <a href="../../../postgresql/perlas/" class="md-nav__link">
+      
+  
+  <span class="md-ellipsis">
+    Postgresql
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Indice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Indice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#cpu-request" class="md-nav__link">
+    <span class="md-ellipsis">
+      CPU request
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cpu-limit" class="md-nav__link">
+    <span class="md-ellipsis">
+      CPU limit
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#el-valor-en-practica" class="md-nav__link">
+    <span class="md-ellipsis">
+      El valor en practica
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#algunas-conclusiones-y-directrices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Algunas conclusiones y directrices
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Algunas conclusiones y directrices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#interaccciones" class="md-nav__link">
+    <span class="md-ellipsis">
+      Interaccciones
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Links
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Links">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tools
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+<h1 id="cpu-requests-y-limits">CPU requests y limits<a class="headerlink" href="#cpu-requests-y-limits" title="Anchor link to this section for reference">&para;</a></h1>
+<h2 id="cpu-request">CPU request<a class="headerlink" href="#cpu-request" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Asignar un valor de cpu request a un contenedor tiene estas implicaciones principales:</p>
+<ul>
+<li>
+<p>Kube scheduler asignara a ese pod un nodo del cluster que tenga al menos esa cantidad de recursos disponibles. Si ningun nodo la tiene, el pod se queda sin desplegarse, en espera a que la haya.</p>
+</li>
+<li>
+<p>Una vez en el nodo, el contenedor tendra garantizado ese valor de cpu en el nodo, que no podra ser asignado a otros.</p>
+</li>
+<li>
+<p>Ademas, el valor de cpu request se tiene en cuenta a la hora de que los contenedores se disputen el computo sobrante de un nodo. De esta forma, un contenedor con 500m de cpu requests tendra el doble de prioridad que uno con 250m intentando obtener el maximo de cpu que pueda. Es decir, cpu request es ademas un peso. Este maximo de cpu que puede lograr vendra dado por la capacidad del nodo o, si el container tiene cpu limit, por dicho limite.</p>
+</li>
+<li>
+<p>El valor de cpu request se tiene en cuenta para el horizontal pod autoescaler</p>
+</li>
+</ul>
+<h2 id="cpu-limit">CPU limit<a class="headerlink" href="#cpu-limit" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Definir en un contenedor un cpu limit supone la maxima cantidad de cpu time que un contenedor puede utilizar. CPU se considera en kubernetes un recurso comprimible (compressible) lo que significa que, si un contenedor con limite llega a esta cantidad, aparece el denominado cpu throttling.
+No se libera cpu matando el contenedor, sino que la tarea tendra que esperar a que haya cpu mas tarde.</p>
+<p>Con ello se ve perjudicada la latencia y rendimiento del mismo, y pueden aparecer situaciones indeseadas e incontroladas, como el fallo en las probes. Ademas supone que si hay mas recursos dentro del nodo, el contenedor con cpu limit no puede acceder a ellos (infrautilizacion).</p>
+<p>Pero definir limits permite asegurar que un contenedor no pueda usar demasiados recursos y afectar al resto.</p>
+<p>No definir cpu limits permite un mejor aprovechamiento de los recursos del nodo</p>
+<blockquote>
+<p>El valor de un cpu request o limit se puede establecer a nivel de contenedor ya sea por numero de milicores o por una fraccion. Asi, 500m es lo mismo que 0,5 (media cpu).</p>
+</blockquote>
+<h2 id="el-valor-en-practica">El valor en practica<a class="headerlink" href="#el-valor-en-practica" title="Anchor link to this section for reference">&para;</a></h2>
+<p>El valor de cpu request y limit tiene que ver con cuanto tiempo de cpu dispone un pod cada 100 milisegundos, que es el valor por defecto de <strong>cpu_period_us</strong> del kernel de linux (100000us o 100ms). El valor del limite sera el valor de <strong>cpu.cfs_quota_us</strong> para el cgroup del container.</p>
+<p>Por ejemplo, un contenedor con 100m (o 0,1 de request) tendra garantizados 10 milisegundos (0.1 x 100).
+Supongamos tambien que para ejecutar una tarea necesitara 50 ms.</p>
+<p>Sin cpu limit podra acceder a esos 10ms y, si hay disponibles recursos en el nodo, a los otros 40 que necesita dentro del mismo ciclo.</p>
+<p>Supongamos que ahora tiene un limite en 0.2. En este caso necesitara 3 ciclos de cpu time (20+20+10) para poder realizarla, independientemente del estado del nodo.</p>
+<p>Y eso es en un ejemplo donde hay un cpu y es solo un hilo para esa tarea. En multihilo y varias cpu, ese limite se reparte entre los cores.
+En 2 cpu, consumiria la cuota en 0.1ms sin poder hacer uso del 0.9 restante. A mas cores, mas rapido consume la cuota (limit).</p>
+<blockquote>
+<p>Cuando defines un cpu limit pero no un request, kubernetes entiende que el valor para request es tambien el limit.</p>
+</blockquote>
+<h2 id="algunas-conclusiones-y-directrices">Algunas conclusiones y directrices<a class="headerlink" href="#algunas-conclusiones-y-directrices" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li>
+<p>Es necesario obtener informacion para una correcta observacion y analisis, por lo que podemos servirnos de un sistema de monitorizacion y utilidades como Goldilocks (vpa) o Robusta KRR.</p>
+</li>
+<li>
+<p>Siempre hay que definir un valor de cpu request para cada container, teniendo en cuenta lo que implica. Con ello se evita la qos class besteffort.</p>
+</li>
+<li>
+<p>Algunas voces recomiendan no utilizar cpu limits. Aqui se da prioridad al rendimiento a establecer valores de cpu requests apropiados para proteger a los contenedores. Incluso hay quien habla de deshabilitarlo en kubelet mediante cpuCFSQuota=0.</p>
+</li>
+<li>
+<p>En segun que entornos se puede reducir el cpu_period_us para que los ciclos sean mas cortos</p>
+</li>
+<li>
+<p>Establecer cpu limits da mas prioridad a la proteccion de los nodos y otros contenedores frente a cargas de trabajo excesivas, asi como a tener un entorno controlado en ese sentido.</p>
+</li>
+<li>
+<p>Estudiar la posibilidad de usar autoescalados como horizontal pod autoescaler o Keda</p>
+</li>
+</ul>
+<p>Dependiendo del entorno o caso, puede tener mas sentido uno definir o no cpu limits.</p>
+<h3 id="interaccciones">Interaccciones<a class="headerlink" href="#interaccciones" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>
+<p>Qos Class y node pressure eviction<br />
+Los cpu requests y limits se tienen en cuenta para definir la QoS class, pero cnde pressure eviction no tiene en cuenta el uso de cpu<br />
+<a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/">https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/</a>
+<a href="https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/">https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/</a></p>
+</li>
+<li>
+<p>Resource quota<br />
+Es una herramienta para controlar el uso de recursos a nivel de namespace.<br />
+<a href="https://kubernetes.io/docs/concepts/policy/resource-quotas/">https://kubernetes.io/docs/concepts/policy/resource-quotas/</a>
+<a href="https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/quota-memory-cpu-namespace/">https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/quota-memory-cpu-namespace/</a></p>
+</li>
+<li>
+<p>Kubernetes CPU Management policies<br />
+<a href="https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/">https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/</a></p>
+</li>
+</ul>
+<h2 id="links">Links<a class="headerlink" href="#links" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li>
+<p>Resource Management for Pods and Containers<br />
+<a href="https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/">https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/</a></p>
+</li>
+<li>
+<p>Assign CPU Resources to Containers and Pods<br />
+<a href="https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/">https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/</a></p>
+</li>
+<li>
+<p>Pod Overhead<br />
+<a href="https://kubernetes.io/docs/concepts/scheduling-eviction/pod-overhead/">https://kubernetes.io/docs/concepts/scheduling-eviction/pod-overhead/</a></p>
+</li>
+<li>
+<p>For the Love of God, Stop Using CPU Limits on Kubernetes<br />
+<a href="https://home.robusta.dev/blog/stop-using-cpu-limits">https://home.robusta.dev/blog/stop-using-cpu-limits</a></p>
+</li>
+<li>
+<p>Kubernetes resources under the hood – Part 1<br />
+<a href="https://directeam.io/blog/kubernetes-resources-under-the-hood-part-1/">https://directeam.io/blog/kubernetes-resources-under-the-hood-part-1/</a></p>
+</li>
+<li>
+<p>Kubernetes resources under the hood – Part 2<br />
+<a href="https://directeam.io/blog/kubernetes-resources-under-the-hood-part-2/">https://directeam.io/blog/kubernetes-resources-under-the-hood-part-2/</a></p>
+</li>
+<li>
+<p>Kubernetes resources under the hood – Part 3<br />
+<a href="https://directeam.io/blog/kubernetes-resources-under-the-hood-part-3/">https://directeam.io/blog/kubernetes-resources-under-the-hood-part-3/</a></p>
+</li>
+<li>
+<p>Why You Should Keep Using CPU Limits on Kubernetes<br />
+<a href="https://dnastacio.medium.com/why-you-should-keep-using-cpu-limits-on-kubernetes-60c4e50dfc61">https://dnastacio.medium.com/why-you-should-keep-using-cpu-limits-on-kubernetes-60c4e50dfc61</a></p>
+</li>
+</ul>
+<h3 id="tools">Tools<a class="headerlink" href="#tools" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>
+<p>Kube capacity<br />
+<a href="https://github.com/robscott/kube-capacity">https://github.com/robscott/kube-capacity</a></p>
+</li>
+<li>
+<p>Robusta KRR<br />
+<a href="https://github.com/robusta-dev/krr">https://github.com/robusta-dev/krr</a></p>
+</li>
+<li>
+<p>Goldilocks<br />
+<a href="https://github.com/FairwindsOps/goldilocks">https://github.com/FairwindsOps/goldilocks</a></p>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Pie" >
+        
+          
+          <a href="../../upgrade/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Upgrade">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Anterior
+              </span>
+              <div class="md-ellipsis">
+                Upgrade
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../prioridades/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Prioridades entre pods">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Siguiente
+              </span>
+              <div class="md-ellipsis">
+                Prioridades entre pods
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://linkedin.com/in/jorge-p-275960300" target="_blank" rel="noopener" title="LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.path", "navigation.footer", "navigation.prune", "toc.follow", "navigation.top"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.ad660dcc.min.js"></script>
+      
+    
+  </body>
+</html>
