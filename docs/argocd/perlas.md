@@ -16,10 +16,12 @@ Agregamos el nuevo
 
 ```shell
 argocd cluster add -y --core \
-kubernetes-admin@hyperv-testing  \
+MYCONTEXT  \
 --kubeconfig PATH_AL_KUBECONFIG_DEL_NUEVO_CLUSTER \
 --name NOMBRE_DEL_CLUSTER \
 --project MI_PROYECTO \
 --cluster-endpoint kubeconfig \
 --upsert
 ```
+
+<https://argo-cd.readthedocs.io/en/stable/user-guide/commands/argocd_admin_repo_generate-spec/>
