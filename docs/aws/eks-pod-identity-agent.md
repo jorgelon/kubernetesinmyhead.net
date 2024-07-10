@@ -2,15 +2,25 @@
 
 Eks pod identity is a feature in Amazon EKS that simplifies the process to give permissions to a kubernetes service accounts inside an eks cluster.
 
-## Install the agent addon
+## Prepare the system
+
+<https://docs.aws.amazon.com/eks/latest/userguide/pod-id-agent-setup.html>
+
+### Policy to the nodes
+
+Add the AmazonEKSWorkerNodePolicy to the node role
+
+### Install the agent addon
 
 Install the Amazon EKS Pod Identity Agent to EKS
 
-## Policy
+### Prepare IAM
 
-Create a policy with the desired permissions
+## Create the Policy
 
-## Role
+Create a policy with the desired permissions to the kubernetes application
+
+## Create the role Role
 
 Create a role with that policy and this trust relationship
 
@@ -33,7 +43,9 @@ Create a role with that policy and this trust relationship
 }
 ```
 
-## Add the association in EKS
+### Add the association in EKS
+
+<https://docs.aws.amazon.com/eks/latest/userguide/pod-id-association.html>
 
 In our eks cluster - Access tab, create a new Pod Identity association
 
