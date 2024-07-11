@@ -77,3 +77,5 @@ In the argocd-cm configmap add this line
 ```txt
 admin.enabled: "false"
 ```
+
+And test you cannot login with admin account
