@@ -55,22 +55,9 @@ En 2 cpu, consumiria la cuota en 0.1ms sin poder hacer uso del 0.9 restante. A m
 
 - Estudiar la posibilidad de usar autoescalados como horizontal pod autoescaler o Keda
 
+- Estudiar el uso de vertical pod autoescaling en aplicaciones sin replicas
+
 Dependiendo del entorno o caso, puede tener mas sentido uno definir o no cpu limits.
-
-### Interaccciones
-
-- Qos Class y node pressure eviction  
-Los cpu requests y limits se tienen en cuenta para definir la QoS class, pero cnde pressure eviction no tiene en cuenta el uso de cpu  
-<https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/>
-<https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/>
-
-- Resource quota  
-Es una herramienta para controlar el uso de recursos a nivel de namespace.  
-<https://kubernetes.io/docs/concepts/policy/resource-quotas/>
-<https://kubernetes.io/docs/tasks/administer-cluster/manage-resources/quota-memory-cpu-namespace/>
-
-- Kubernetes CPU Management policies  
-<https://kubernetes.io/docs/tasks/administer-cluster/cpu-management-policies/>
 
 ## Links
 
@@ -86,6 +73,12 @@ Es una herramienta para controlar el uso de recursos a nivel de namespace.
 - For the Love of God, Stop Using CPU Limits on Kubernetes  
 <https://home.robusta.dev/blog/stop-using-cpu-limits>
 
+- For the love of god, learn when to use CPU limits on Kubernetes  
+<https://medium.com/@eliran89c/for-the-love-of-god-learn-when-to-use-cpu-limits-on-kubernetes-2225341e9dbd>
+
+- Why You Should Keep Using CPU Limits on Kubernetes  
+<https://dnastacio.medium.com/why-you-should-keep-using-cpu-limits-on-kubernetes-60c4e50dfc61>
+
 - Kubernetes resources under the hood – Part 1  
 <https://directeam.io/blog/kubernetes-resources-under-the-hood-part-1/>
 
@@ -94,9 +87,6 @@ Es una herramienta para controlar el uso de recursos a nivel de namespace.
 
 - Kubernetes resources under the hood – Part 3  
 <https://directeam.io/blog/kubernetes-resources-under-the-hood-part-3/>
-
-- Why You Should Keep Using CPU Limits on Kubernetes  
-<https://dnastacio.medium.com/why-you-should-keep-using-cpu-limits-on-kubernetes-60c4e50dfc61>
 
 ### Tools
 
