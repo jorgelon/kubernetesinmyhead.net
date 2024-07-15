@@ -1,10 +1,10 @@
 # Pod disruption budget
 
-Pod disruption budget, estable desde kubernetes 1.21, existe para ofrecer un mayor control sobre operaciones que suponen desalojos (disruptions) voluntarios sobre deployments o statefulsets principalmente.
+Pod disruption budget, estable desde kubernetes 1.21, existe para ofrecer un mayor control sobre operaciones que suponen desalojos (disruptions) voluntarios en deployments o statefulsets principalmente.
 
-> Podemos definir disruption como "interrupcion" y eviction como "desalojo"
+> Podemos traducir disruption como "interrupcion" y eviction como "desalojo"
 
-El ejemplo mas tipico es al hacer un drain de un nodo, ya sea de forma manual o mediante herramientas como Cluster Autoescaler o Karpenter. PDB permite establecer un maximo de replicas que pueden no estar disponibles durante el proceso o bien un minimo de replicas que deben estar disponibles durante la operacion. De esta forma se "pausa" el drain hasta que no se hayan levantado las suficiente replicas en otros nodos.
+El ejemplo mas tipico es al hacer un drain de un nodo, ya sea de forma manual o mediante herramientas como Cluster Autoescaler o Karpenter. PDB permite establecer un **minimo de replicas que deben estar disponibles** o bien un **maximo de replicas que pueden no estar disponibles** durante el proceso. De esta forma se detiene el drain hasta que no se hayan levantado las suficiente replicas en otros nodos.
 
 > Esto es debido a que "drain" para funcionar utiliza la Eviction API, la cual respeta estos PDB. Borrar un pod no lo hace.
 
@@ -12,10 +12,10 @@ El ejemplo mas tipico es al hacer un drain de un nodo, ya sea de forma manual o 
 
 La creacion de un pdb tiene las siguientes configuraciones:  
 
-- Selector  
+- **Selector**  
 Primeramente debemos elegir a que pods aplica el pdb mediante un clasico label selector (matchLabels o matchExpressions)
 
-- Definir el comportamiento  
+- **Definir el comportamiento**  
 Aqui podemos elegir si queremos un minimo de replicas levantadas (minAvailable) o un maximo de replicas no disponibles (maxUnavailable). Son configuraciones excluyentes.
 
 Podemos especificar este valor mediante un numero
@@ -46,15 +46,15 @@ spec:
       app: myapp
 ```
 
-- unhealthyPodEvictionPolicy
+- **unhealthyPodEvictionPolicy**  
 Por defecto, pdb cuenta un pod como "healthy" cuando su status es type="Ready" y status="True".
 
 Con unhealthyPodEvictionPolicy, feature en beta desde kubernetes 1.27, se puede cambiar el criterio sobre como actuar sobre "unhealthy" pods.
 
-Con el valor **IfHealthyBudget**, que es por defecto, permite que pods que esten levantados pero no healthy puedan ser desalojados solo cuando se este respetando los criterios del PDB.
+Con el valor **IfHealthyBudget**, que es el aplicado por defecto, permite que pods que esten levantados pero no healthy puedan ser desalojados solo cuando se este respetando los criterios del PDB.
 Este valor puede afectar negativamente a acciones voluntarias cuando tenemos aplicaciones con un mal funcionamiento (estado CrashLoopBackOff) o que reportan de forma incorrecta su estado Ready y cuentan con una proteccion via pdb.
 
-El valor **AlwaysAllow** permite permite que pods que esten levantados pero no healthy puedan ser desalojados independientemente si se cumplen o no los criterios del PDB. Esta opcion es mas agresiva y se comporta mejor en los supuestos antes descritos.
+El valor **AlwaysAllow**  permite que pods que esten levantados pero no healthy puedan ser desalojados independientemente si se cumplen o no los criterios del PDB. Esta opcion es mas agresiva y se comporta mejor en los supuestos antes descritos.
 
 ## Estado de un pdb
 
@@ -72,12 +72,13 @@ El estado (.status) de un recurso pdb tiene varios campos
 
 ## Algunas recomendaciones
 
-- Tener un numero alto de replicas para una aplicacion stateless puede sugerir el uso de minAvailable con un porcentaje
+- Tener un numero alto de replicas en una aplicacion stateless puede sugerir el uso de minAvailable (o maxUnavailable) con un porcentaje
 - En aplicaciones stateless con pocas replicas se puede recurrir al uso de enteros
-- En aplicaciones stateful hay que alinear la configuracion con la naturaleza de la misma. Por ejemplo en 5 replicas poner minAvailable a 3 o maxUnavailable a 2.
-- Aplicaciones con una sola replica puede ser recomendable o no usar pdb y asumir la perdida de servicio en las interrupciones voluntarias, o bien poner un pdb con maxUnavailable=0 para, de entrada, bloquear la interrupcion y hacer una intervencion manual, como borrar el pdb.
-- Valores muy restrictivos perjudican las interrupciones voluntarias y valores muy agresivos pueden no proteger lo suficiente la aplicacion.
+- En aplicaciones stateful hay que alinear la configuracion con la naturaleza de la misma. Por ejemplo en 5 replicas poner minAvailable a 3 o maxUnavailable a 2 para respetar un quorum.
+- Aplicaciones con una sola replica puede ser recomendable o no usar pdb y asumir la perdida de servicio en las interrupciones voluntarias, o bien poner un pdb con maxUnavailable=0 para, de entrada, bloquear la interrupcion a la espera de una intervencion manual, como borrar el pdb.
 - Utilizar unhealthyPodEvictionPolicy AlwaysAllow en aplicaciones con frecuentes CrashLoopBackOff y que queramos proteger mediante pdb
+
+> Valores muy restrictivos perjudican las interrupciones voluntarias y valores muy agresivos pueden no proteger lo suficiente la aplicacion.
 
 ## Links
 
