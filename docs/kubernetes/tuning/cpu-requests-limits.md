@@ -14,14 +14,13 @@ Asignar un valor de cpu request a un contenedor tiene estas implicaciones princi
 
 ## CPU limit
 
-Definir en un contenedor un cpu limit supone la maxima cantidad de cpu time que un contenedor puede utilizar. CPU se considera en kubernetes un recurso comprimible (compressible) lo que significa que, si un contenedor con limite llega a esta cantidad, aparece el denominado cpu throttling.
-No se libera cpu matando el contenedor, sino que la tarea tendra que esperar a que haya cpu mas tarde.
+Definir en un contenedor un cpu limit supone la maxima cantidad de cpu time que un contenedor puede utilizar. CPU se considera en kubernetes un recurso comprimible (compressible) lo que significa que, si un contenedor con limite llega a esta cantidad, aparece el denominado **cpu throttling**.
+No se libera cpu matando el contenedor, sino que la tarea tendra que **esperar a que haya cpu mas tarde**.
 
-Con ello se ve perjudicada la latencia y rendimiento del mismo, y pueden aparecer situaciones indeseadas e incontroladas, como el fallo en las probes. Ademas supone que si hay mas recursos dentro del nodo, el contenedor con cpu limit no puede acceder a ellos (infrautilizacion).
+Con ello se ve **perjudicada la latencia y rendimiento** del mismo, y pueden aparecer **situaciones indeseadas e incontroladas**, como el fallo en las probes. Ademas supone que si hay mas recursos dentro del nodo, el contenedor con cpu limit no puede acceder a ellos (infrautilizacion).
 
-Pero definir limits permite asegurar que un contenedor no pueda usar demasiados recursos y afectar al resto.
-
-No definir cpu limits permite un mejor aprovechamiento de los recursos del nodo
+Pero definir limits permite asegurar que un contenedor **no pueda usar demasiados recursos** y afectar al resto.
+No definir cpu limits permite un **mejor aprovechamiento de los recursos** del nodo.
 
 > El valor de un cpu request o limit se puede establecer a nivel de contenedor ya sea por numero de milicores o por una fraccion. Asi, 500m es lo mismo que 0,5 (media cpu).
 
@@ -29,25 +28,24 @@ No definir cpu limits permite un mejor aprovechamiento de los recursos del nodo
 
 El valor de cpu request y limit tiene que ver con cuanto tiempo de cpu dispone un pod cada 100 milisegundos, que es el valor por defecto de **cpu_period_us** del kernel de linux (100000us o 100ms). El valor del limite sera el valor de **cpu.cfs_quota_us** para el cgroup del container.
 
-Por ejemplo, un contenedor con 100m (o 0,1 de request) tendra garantizados 10 milisegundos (0.1 x 100).
-Supongamos tambien que para ejecutar una tarea necesitara 50 ms.
-
-Sin cpu limit podra acceder a esos 10ms y, si hay disponibles recursos en el nodo, a los otros 40 que necesita dentro del mismo ciclo.
+**Ejemplo**
+Por ejemplo, un contenedor con 100m (o 0,1 de request) tendra garantizados 10 milisegundos (0.1 x 100).  
+Supongamos tambien que para ejecutar una tarea necesitara 50 ms. Sin cpu limit podra acceder a esos 10ms y, si hay disponibles recursos en el nodo, a los otros 40 que necesita dentro del mismo ciclo.
 
 Supongamos que ahora tiene un limite en 0.2. En este caso necesitara 3 ciclos de cpu time (20+20+10) para poder realizarla, independientemente del estado del nodo.
 
 Y eso es en un ejemplo donde hay un cpu y es solo un hilo para esa tarea. En multihilo y varias cpu, ese limite se reparte entre los cores.
 En 2 cpu, consumiria la cuota en 0.1ms sin poder hacer uso del 0.9 restante. A mas cores, mas rapido consume la cuota (limit).
 
-> Cuando defines un cpu limit pero no un request, kubernetes entiende que el valor para request es tambien el limit.
+> Cuando defines un cpu limit pero no un request, kubernetes entiende que el valor para request es tambien el del limit.
 
 ## Algunas conclusiones y directrices
 
-- Es necesario obtener informacion para una correcta observacion y analisis, por lo que podemos servirnos de un sistema de monitorizacion y utilidades como Goldilocks (vpa) o Robusta KRR.
+- Es necesario obtener informacion para una correcta observacion y analisis, por lo que debemos servirnos de un sistema de monitorizacion y utilidades como Goldilocks (vpa) o Robusta KRR.
 
-- Siempre hay que definir un valor de cpu request para cada container, teniendo en cuenta lo que implica. Con ello se evita la qos class besteffort.
+- Siempre hay que definir un valor de cpu request para cada container, teniendo en cuenta lo que implica. Con ello ademas se evita la qos class besteffort.
 
-- Algunas voces recomiendan no utilizar cpu limits. Aqui se da prioridad al rendimiento a establecer valores de cpu requests apropiados para proteger a los contenedores. Incluso hay quien habla de deshabilitarlo en kubelet mediante cpuCFSQuota=0.
+- Algunas voces recomiendan no utilizar cpu limits. Aqui se da prioridad al rendimiento y como medida el establecer valores de cpu requests apropiados para proteger a los contenedores. Incluso hay quien habla de deshabilitarlo en kubelet mediante cpuCFSQuota=0.
 
 - En segun que entornos se puede reducir el cpu_period_us para que los ciclos sean mas cortos
 
