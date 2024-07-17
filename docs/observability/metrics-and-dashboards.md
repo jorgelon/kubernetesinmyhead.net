@@ -75,6 +75,11 @@ operator:
 - Dashboards and more in the mixin project  
 <https://gitlab.com/uneeq-oss/cert-manager-mixin>
 
+## Quarkus metrics
+
+- Metrics docs  
+<https://es.quarkus.io/guides/telemetry-micrometer>
+
 ## Kured
 
 - Metrics docs  
@@ -87,3 +92,19 @@ operator:
 
 - Official Dashboard  
 <https://github.com/cloudnative-pg/grafana-dashboards/blob/main/charts/cluster/grafana-dashboard.json>
+
+## Grafana Loki
+
+Enable the service monitor in the helm chart and disable dashboards and self monitoring
+
+```yaml
+monitoring:
+  serviceMonitor:
+    enabled: true
+    labels:
+      theprometheus: label
+  dashboards:
+    enabled: false
+  selfMonitoring:
+    enabled: false
+```
