@@ -85,6 +85,11 @@ operator:
 - Metrics docs  
 <https://kured.dev/docs/configuration/>
 
+## Driver CSI de VMware
+
+- Grafana Dashboard  
+<https://github.com/kubernetes-sigs/vsphere-csi-driver/tree/master/grafana-dashboard>
+
 ## Cloud native pg
 
 - Metrics docs  
