@@ -2,7 +2,7 @@
 
 Argocd permite poner el valor de un key de un configmap o secret en otro secret creado por nosotros.
 
-> El uso de external secrets con merge aplicado al argocd-secret puede dar problemas, asi que no esta de mas sacar esa configuracion a otro secret, lo que es menos intrusivo
+> El uso de external secrets operator con merge aplicado al argocd-secret puede dar problemas, asi que no esta de mas sacar esa configuracion a otro secret, lo que es menos intrusivo
 
 ## Creacion del secret
 
