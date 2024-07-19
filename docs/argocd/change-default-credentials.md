@@ -3,7 +3,7 @@
 Recommended by ArgoCD
 "As soon as additional users are created it is recommended to disable admin user"
 
-## Change default admin password
+## Login with the default admin credentials
 
 Get the value of the default admin password
 
@@ -14,10 +14,26 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 Login to argocd with admin and that password using, for example, port-forward
 
 ```shell
-kubectl -n argocd port-forward svc/argocd-server 8080:443
+kubectl -n argocd port-forward svc/argocd-server 9191:443
 ```
 
-And change the password to the desired one in the "user info" section. Logout and try to access with the new one.
+then go to <http://localhost:9191>
+
+or via grpcweb
+
+```shell
+argocd login --grpc-web "fqdn of the server"
+```
+
+## Change the default admin password (optional)
+
+Change the password to the desired one in the "user info" section. Logout and try to access with the new one.
+
+or use
+
+```shell
+argocd account update-password
+```
 
 Delete the original password
 
@@ -37,12 +53,6 @@ accounts.newuser.enabled: "true"
 ```
 
 ### Assign password
-
-Login via url, for example
-
-```shell
-argocd login --grpc-web myargocd.instance.com
-```
 
 Update the password
 
