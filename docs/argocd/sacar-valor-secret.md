@@ -1,4 +1,4 @@
-# Sacar un valor a un secret nuestro
+# Mover datos sensibles a un secret nuestro
 
 Argocd permite poner el valor de un key de un configmap o secret en otro secret creado por nosotros.
 
@@ -6,8 +6,8 @@ Argocd permite poner el valor de un key de un configmap o secret en otro secret 
 
 ## Creacion del secret
 
-Para ello necesitamos crear un secret con los valores KEY-NUESTRO-SECRET: VALOR-KEY-NUESTRO-SECRET
-Es importante que el secret este en el namespace argocd y tenga el label app.kubernetes.io/part-of: argocd
+Para ello necesitamos crear un secret con los valores KEY-NUESTRO-SECRET: VALOR-KEY-NUESTRO-SECRET  
+> Es importante que el secret este en el namespace argocd y tenga el label app.kubernetes.io/part-of: argocd
 
 Por ejemplo, si queremos hacerlo con el secret de un webhook de github
 
@@ -45,6 +45,14 @@ stringData:
 webhook.github.secret: $webhook:webhook.github.secret
 ```
 
+## Reiniciar argocd-server
+
+Estos cambios fuerzan un reinicio de la configuracion del argocd-server, pero hay un bug que hace que no sea suficiente, asi que toca reiniciarlo a mano
+
+```shell
+kubectl rollout restart deployment argocd-server -n argocd
+```
+
 ## Nota: Argocd ya lo usa
 
 Si echamos un vistazo a las configuraciones para oidc en argocd se usan configuraciones como esta en el argocd-cm
@@ -54,7 +62,7 @@ Si echamos un vistazo a las configuraciones para oidc en argocd se usan configur
 - clientSecret: $oidc.okta.clientSecret
 - clientSecret: $oidc.azure.clientSecret
 
-Aqui el nombre del secret no esta puesto tras "$" entiendo que por defecto busca en el argocd-secret
+Aqui el nombre del secret no esta puesto tras "$", entiendo que por defecto busca en el argocd-secret
 
 ## Links
 
@@ -63,3 +71,6 @@ Aqui el nombre del secret no esta puesto tras "$" entiendo que por defecto busca
 
 - Git Webhook Configuration alternative
 <https://argo-cd.readthedocs.io/en/stable/operator-manual/webhook/#alternative>
+
+- ArgoCD server doesn't pick up the new OIDC secret #18576  
+<https://github.com/argoproj/argo-cd/issues/18576>
