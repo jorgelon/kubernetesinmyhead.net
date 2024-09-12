@@ -56,7 +56,7 @@ spec:
             parameters:
             - name: template-param-1
                 value: abcd
-  ```
+```
 
 ## Parameters como Inputs (local parameters)
 
