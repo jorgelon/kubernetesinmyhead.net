@@ -8,7 +8,29 @@ Using the kubectl plugin
 kubectl argo rollouts restart -n NAMESPACE_NAME ROLLOUT_NAME
 ```
 
-This deletes the pods of the current rollout. The deployment controller will replace them without creating a new replicaset
+> Argocd has an embedded action that permits to restart a rollout
+
+### Notes about the restart
+
+- Eviction  
+This deletes the pods of the current rollout using the eviction api.  
+The deployment controller will replace them without creating a new replicaset.  
+Because argo rollouts uses the eviction api, this respects the existing PodDisruptionBudgets.  
+Also, a rollout with a single replica causes downtime.
+
+- Speed  
+The speed can be specified with spec.maxUnavailable setting in the rollout spec.
+
+- Schedule  
+It is possible to schedule a restart with the **.spec.restartAt** field
+
+### Order
+
+The restart order is:
+
+- First the stable replica set
+- Second, the current replica set
+- Finally all other ReplicaSets beginning with the oldest
 
 ### With stakater reloader
 
@@ -40,3 +62,6 @@ But this generates a new replicaset and a new revision in the rollout
 
 - [BUG] Restarting a rollout with workloadRef crashes the operator pod #751  
 <https://github.com/stakater/Reloader/issues/751>
+
+- Argocd rollout restart action  
+<https://github.com/argoproj/argo-cd/tree/master/resource_customizations/argoproj.io/Rollout/actions/restart>
