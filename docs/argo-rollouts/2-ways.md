@@ -34,7 +34,7 @@ spec:
 
 ## Separate rollout and deployment
 
-The second one is with 2 workload resources. First you create the deployment as your wish. Then you create a rollout resource without spec.template but using workloadRef referencing the existing deployment.
+The second one is with 2 workload resources. First you create the deployment as your wish. Then you create a rollout resource without spec.template but using spec.workloadRef referencing the existing deployment.
 
 ```yaml
 apiVersion: apps/v1
