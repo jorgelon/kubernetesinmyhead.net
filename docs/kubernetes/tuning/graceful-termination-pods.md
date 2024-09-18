@@ -21,7 +21,7 @@ This setting is the time kubernetes waits for that graceful shutdown. The defaul
 
 > If you give to it the value zero, kubernetes uses inmediatly the SIGKILL signal. There is no wait.
 
-## Race condition with the endpoint
+## Race condition with the endpoint deletion
 
 There are 2 actions that are done in parallel, and this is a potential problem.
 
@@ -30,7 +30,7 @@ There are 2 actions that are done in parallel, and this is a potential problem.
 
 With this you can have a race condition where the pod does not exists but the endpoint resource exists. And the system tries to send traffic to a pod that does not exists.
 
-This can suggest **the preStop hook is a safer way** it that cases because it is executed before the SIGTERM and endpoint removal.
+This can suggest **the preStop hook is a safer way** it that cases because it is executed before the SIGTERM and endpoint removal. There are another solutions like wait some seconds in the application's code where the SIGTERM is received in order to give time to the endpoint deletion.
 
 ## Schema
 
