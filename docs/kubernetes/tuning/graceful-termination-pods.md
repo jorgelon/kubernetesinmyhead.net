@@ -34,9 +34,11 @@ This can suggest **the preStop hook is a safer way** it that cases because it is
 
 ## Schema
 
+```txt
 preStop Hook > SIGTERM > terminationGracePeriodSeconds > SIGKILL
                        > SIGKILL (if SIGTERM is not managed by the application)
              > endpoint removal
+```
 
 ## Links
 
