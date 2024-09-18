@@ -45,11 +45,11 @@ preStop Hook > SIGTERM > terminationGracePeriodSeconds > SIGKILL
 - Pod Lifecycle spec  
 <https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#lifecycle>
 
+- Container Lifecycle Hooks  
+<https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/>
+
 - Stop Losing Requests! Learn Graceful Shutdown Techniques  
 <https://www.youtube.com/watch?v=eQPYsGrZW_E>
 
 - Kubernetes best practices: terminating with grace  
 <https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-terminating-with-grace>
-
-- Container Lifecycle Hooks  
-<https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/>
