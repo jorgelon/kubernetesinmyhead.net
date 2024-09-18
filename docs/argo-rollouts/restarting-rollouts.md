@@ -8,7 +8,7 @@ Using the kubectl plugin
 kubectl argo rollouts restart -n NAMESPACE_NAME ROLLOUT_NAME
 ```
 
-This deletes the pods of the current rollout. The deployment controller will replace them withot creating a new replicaset
+This deletes the pods of the current rollout. The deployment controller will replace them without creating a new replicaset
 
 ### With stakater reloader
 
@@ -32,7 +32,7 @@ But this generates a new replicaset and a new revision in the rollout
 
 ## Links
 
-- Restart a rollout  
+- Restarting Rollout Pods
 <https://argo-rollouts.readthedocs.io/en/stable/features/restart/>
 
 - Stakater Reloader  
