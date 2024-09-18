@@ -54,3 +54,6 @@ preStop Hook > SIGTERM > terminationGracePeriodSeconds > SIGKILL
 
 - Kubernetes best practices: terminating with grace  
 <https://cloud.google.com/blog/products/containers-kubernetes/kubernetes-best-practices-terminating-with-grace>
+
+- Graceful shutdown in Kubernetes  
+<https://learnk8s.io/graceful-shutdown>
