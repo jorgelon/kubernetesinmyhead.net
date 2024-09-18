@@ -1,13 +1,14 @@
 # Graceful terminations in pods
 
 Pods are ephemeral and there a lot of reasons why they can be deleted so it is critical to make our application to shutdown gracefully.
+In order to delete the pod, kubernetes **sends the SIGTERM** (terminate) signal to the application and it waits for a response that tells it is safe to delete it. If there is no response, the application is deleted inmediately with a SIGKILL.
+So **the application needs to manage that SIGTERM signal**.
 
-In order to delete the pod, kubernetes sends the SIGTERM (terminate) signal to the application and it waits for a response that tells it is safe to delete it. If there is no response, the application is deleted inmediately with a SIGKILL.
-So the application needs to manage that SIGTERM signal.
+> The process starts because the kubernetes api server changes the state of the pod to "Terminating"
 
 ## preStop hook
 
-The preStop hook is a command or http request you can use to execute it before the SIGTERM signal so you can add that graceful shutdown both ways.
+The preStop hook is a **command or http request** you can use to execute it **before the SIGTERM signal** so you can add that graceful shutdown both ways.
 
 - Inside the application's code, handling the sigterm
 - With a pre stop hook without modifying the application itself
