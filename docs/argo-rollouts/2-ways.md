@@ -4,7 +4,9 @@ There are 2 ways to create a rollout in argo rollouts
 
 ## Single resource
 
-The first way needs to create a single rollout resource (excluding the service, ingress,..) that includes the logic of the rollout and the logic of the deployment via spec.template
+The first way needs to create a single rollout resource (excluding the service, ingress,..) that includes the logic of the rollout and the logic of the deployment via spec.template.
+
+This way does not create a deployment resource.
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
