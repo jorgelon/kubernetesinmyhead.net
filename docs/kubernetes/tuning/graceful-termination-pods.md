@@ -14,18 +14,18 @@ The endpoints are not deleted immediately from the EndpointSlices. The EndpointS
 
 ```txt
 conditions:
-    **ready: true**
+    ready: true
     serving: true
-    **terminating: false**
+    terminating: false
 ```
 
 to
 
 ```txt
 conditions:
-    **ready: false**
+    ready: false
     serving: true
-    **terminating: true**
+    terminating: true
 ```
 
 The pod stops receiving new connections. At the end, the pod related entries are removed in kube-proxy, coredns,...
