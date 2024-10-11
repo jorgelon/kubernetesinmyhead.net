@@ -1,12 +1,10 @@
 # Kubernetes compatibilities and requirements
 
-## Keyworkds
+## Keywords
 
-Compatibility
-Matrix
-Requirements
-Supported
-Release
+- Compatibility Matrix
+- System Requirements
+- Supported Releases
 
 ## Cilium
 
