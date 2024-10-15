@@ -29,3 +29,9 @@ Kube green permit sto "sleep" your pods
 Snorlax is a tool that also permits to sleep your workloads
 
 <https://github.com/moonbeam-nyc/snorlax>
+
+## Sleepcycles
+
+Another tool. They say the argocd self healing must be disabled
+
+<https://github.com/rekuberate-io/sleepcycles>
