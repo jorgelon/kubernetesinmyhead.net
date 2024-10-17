@@ -15,3 +15,7 @@ kubectl get node -o yaml | grep -A 1 finalizer
 ```shell
 kubectl get events --all-namespaces --field-selector involvedObject.kind=Node
 ```
+
+## Cannot disrupt Node: state node doesn't contain both a node and a nodeclaim
+
+This can tell you this node is not managed by karpenter
