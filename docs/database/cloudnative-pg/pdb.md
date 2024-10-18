@@ -51,3 +51,5 @@ You can get events like this
 DisruptionBlocked
 Cannot disrupt Node: pdb "mynamespace/mycluster-primary" prevents pod evictions
 ```
+
+In order to permit a node to be disrupted by karpenter you must move the primary instaces to another nodes
