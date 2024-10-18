@@ -52,4 +52,31 @@ DisruptionBlocked
 Cannot disrupt Node: pdb "mynamespace/mycluster-primary" prevents pod evictions
 ```
 
-In order to permit a node to be disrupted by karpenter you must move the primary instaces to another nodes
+In order to permit a node to be disrupted by karpenter you must move the primary instaces to another nodes.
+
+In production environents:
+
+- Use pod antiaffinity to have the cnpg instances in different nodes
+- Rotate all the primary instances to a single node to permit a more optimized karpenter consolidation
+- After the consolidation, rotate some of that primary instances to another nodes.
+
+See what nodes cannot be disrupted
+
+```shell
+kubectl get events --all-namespaces --field-selector involvedObject.kind=Node | grep pdb
+```
+
+See the cluster information (needs the kubectl cnpg plugin installed)
+
+```shell
+kubectl get clusters --all-namespaces -o jsonpath='{range .items[*]}{.metadata.namespace}{"\t"}{.metadata.name}{"\t"}{.status.currentPrimary}{"\n"}{end}' | while read namespace cluster primary; do
+    node=$(kubectl get pod $primary -n $namespace -o jsonpath='{.spec.nodeName}')
+    echo "############### CLUSTER $cluster ###############"
+    kubectl cnpg status $cluster -n $namespace | grep -A 6 "Instances status"
+    nodepool=$(kubectl get node $node -o jsonpath='{.metadata.labels.karpenter\.sh/nodepool}')
+    echo ">>>> The cluster is in the nodepool $nodepool. Showing nodes:"
+    kubectl get nodes -l karpenter\.sh/nodepool=$nodepool
+    echo ">>>> Promotion command: <kubectl cnpg -n $namespace promote $cluster REPLICAID>"
+    echo "##############################"
+done
+```
