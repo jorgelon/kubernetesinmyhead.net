@@ -1,10 +1,9 @@
 # Rolling update a cluster
 
-There are several reasons we can do some changes in a cloudnative pg cluster that requires a rolling update in the cluster, this is, recreate the postgresql pods with the new settings.
+There are several reasons we can do some changes in a cloudnative pg cluster that requires a rolling update in the cluster, this is, recreate the postgresql pods with the new settings:
 
 - Updates in the operator
 - Changes in the spec.image field or in the image catalog
-- Changes in the postgresql configuration
 - Changes in spec.resources
 - Changes in the postgresql configuration
 - Changes in the size of the persistent volume
