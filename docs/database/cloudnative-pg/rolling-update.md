@@ -1,5 +1,7 @@
 # Rolling update a cluster
 
+## Reasons
+
 There are several reasons we can do some changes in a cloudnative pg cluster that requires a rolling update in the cluster, this is, recreate the postgresql pods with the new settings:
 
 - Updates in the operator (*)
