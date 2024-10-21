@@ -18,10 +18,10 @@ When a rolling update is triggered, first **the operator upgrades the replicas, 
 
 spec.primaryUpdateStrategy defines if we want to control the update the of primary instance.
 
-- unsupervised (default)
+- unsupervised (default)  
 The update is automatic based in the spec.primaryUpdateMethod field (see below)
 
-- supervised
+- supervised  
 This is the manual update to the primary and suspends the update of the primary. In order to continue we can manually do the switchover or the restart of the primary.
 
 ## primaryUpdateMethod
