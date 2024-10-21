@@ -42,4 +42,4 @@ A lower **spec.switchoverDelay** gives priority to reduce the time (RTO) and a h
 
 Then, the most aligned replica is promoted as the new primary.
 
-> Again this value is a decision to take depending of several reasons like the environent or workload
+> Again this value is a decision to take depending of several reasons like the environment or workload. In all cases a rolling update causes a service loss.
