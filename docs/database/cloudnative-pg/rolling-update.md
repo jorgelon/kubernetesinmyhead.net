@@ -12,7 +12,7 @@ There are several reasons we can do some changes in a cloudnative pg cluster tha
 
 > (*) There is a way to not trigger a rolling update when the operator is updated called "In-place updates of the instance manager". But it is not a clean way to do it.
 
-When a rolling update is triggered, the operator upgrades the replicas, but how the primary instance will be updates can be configured
+When a rolling update is triggered, first **the operator upgrades the replicas, but we can configure how the primary instance will be updated.**
 
 ## primaryUpdateStrategy
 
