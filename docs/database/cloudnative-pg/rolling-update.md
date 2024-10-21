@@ -31,6 +31,15 @@ spec.primaryUpdateMethod defines how we want to update the primary instance and 
 This restarts the primary replica
 
 - switchover
-A switchover is triggered to the most aligned replica. Then, the former primary is updated.
 
-> There is not a best practice here and a lot of circumstances can make one or other option the best.
+A switchover operation is triggered. In the switchover operation the former primary will be shut down.
+The **spec.switchoverDelay** can be expressed in seconds as the time to give to the primary to shutdown gracefully and archive the wal files. The default value is 3600 (1h).
+
+- RTO (recovery time objective) is the time between the failure and when the service is up again.
+- RPO (recovery point objective) is more related with the amount of data loss
+
+A lower **spec.switchoverDelay** gives priority to reduce the time (RTO) and a higher value reduces the risk of data loss (RPO).
+
+Then, the most aligned replica is promoted as the new primary.
+
+> Again this value is a decision to take depending of several reasons like the environent or workload
