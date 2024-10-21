@@ -2,13 +2,13 @@
 
 There are several reasons we can do some changes in a cloudnative pg cluster that requires a rolling update in the cluster, this is, recreate the postgresql pods with the new settings:
 
-- Updates in the operator
+- Updates in the operator (*)
 - Changes in the spec.image field or in the image catalog
 - Changes in spec.resources
 - Changes in the postgresql configuration
 - Changes in the size of the persistent volume
 
-> There is a way to not trigger a rolling update when the operator is updated called "In-place updates of the instance manager". But it is not a clean way to do it.
+> (*) There is a way to not trigger a rolling update when the operator is updated called "In-place updates of the instance manager". But it is not a clean way to do it.
 
 When a rolling update is triggered, the operator upgrades the replicas, but how the primary instance will be updates can be configured
 
