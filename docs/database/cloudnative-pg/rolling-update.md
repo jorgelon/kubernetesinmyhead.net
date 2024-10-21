@@ -21,7 +21,7 @@ spec.primaryUpdateStrategy defines if we want to control the update the of prima
 The update is automatic based in the spec.primaryUpdateMethod field (see below)
 
 - supervised
-This is the manual update to the primary.
+This is the manual update to the primary and suspends the update of the primary. In order to continue we can manually do the switchover or the restart of the primary.
 
 ## primaryUpdateMethod
 

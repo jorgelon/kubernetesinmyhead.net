@@ -4,12 +4,13 @@
 
 - Use gitops tools (argocd, flux,...) to control the deployment
 - Use gitops tools like external-secrets operator to control the credentials
+
+## Configuration
+
 - Always setup a backup section in our clusters and review the status of the backups
 - Try not to enable spec.enableSuperuserAccess
+- Setup a primaryUpdateStrategy and primaryUpdateMethod (if unsupervised)
 - Setup a monitoring and alerting system
-
-## Optimization
-
 - Define the resources (requests and limits in the cluster)
 - Give the postgresql pods a higher priority class
 - Leave spec.enablePDB enabled (default)
