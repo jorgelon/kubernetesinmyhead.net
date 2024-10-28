@@ -52,7 +52,7 @@ Documentation:
 
 ### Secret push protection
 
-This feature prevents can reject pushes when a secret in detected
+This feature available since Gitlab CE 17.3 can reject pushes when a secret in detected
 
 <https://docs.gitlab.com/ee/user/application_security/secret_detection/secret_push_protection/index.html>
 
