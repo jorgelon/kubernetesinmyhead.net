@@ -100,7 +100,7 @@ These tools are related with implementing scans in pre-commit hooks, pre-receive
 ## Links
 
 - Customizing Git - Git Hooks  
-<https://git-scm.com/book/ms/v2/Customizing-Git-Git-Hooks>
+<https://git-scm.com/book/ms/v2/Customizing-Git-Git-Hooks>  
 
 - Gitlab Secret detection  
 <https://docs.gitlab.com/ee/user/application_security/secret_detection/>
