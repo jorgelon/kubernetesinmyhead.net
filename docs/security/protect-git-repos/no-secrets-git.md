@@ -73,29 +73,14 @@ This a gitlab tool to scan your code using Gitlab CI/CD. It supports some progra
 
 These tools are related with implementing scans in pre-commit hooks, pre-receive hooks and pipelines.
 
-- Gitleaks
-
-<https://github.com/gitleaks/gitleaks>
-
-- Trufflehog
-
-<https://github.com/trufflesecurity/trufflehog>
-
-- Git guardian
-
-<https://www.gitguardian.com/>
-
-- Detect secrets
-
-<https://github.com/Yelp/detect-secrets>
-
-- Git-secrets
-
-<https://github.com/awslabs/git-secrets>
-
-- Talisman
-
-<https://github.com/thoughtworks/talisman>
+|                | Contributors | Stars  | Notes                 | URL                                             |
+|----------------|--------------|--------|-----------------------|-------------------------------------------------|
+| Gitleaks       | 178          | 17.800 | Active                | <https://github.com/gitleaks/gitleaks>          |
+| Trufflehog     | 132          | 16.000 | Active                | <https://github.com/trufflesecurity/trufflehog> |
+| Detect-secrets | 71           | 3.800  | Active                | <https://github.com/Yelp/detect-secrets>        |
+| Talisman       | 63           | 1.900  | Active?               | <https://github.com/thoughtworks/talisman>      |
+| Git secrets    | 30           | 12.400 | Awslabs. Unmaintained | <https://github.com/awslabs/git-secrets>        |
+| Git guardian   |              |        | Platform              | <https://www.gitguardian.com/>                  |
 
 ## Links
 
@@ -104,3 +89,4 @@ These tools are related with implementing scans in pre-commit hooks, pre-receive
 
 - Gitlab Secret detection  
 <https://docs.gitlab.com/ee/user/application_security/secret_detection/>
+P
