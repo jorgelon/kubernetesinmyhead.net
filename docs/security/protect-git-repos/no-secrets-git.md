@@ -67,7 +67,7 @@ Another gitlab related options are:
 
 This a gitlab tool to scan your code using Gitlab CI/CD. It supports some programming languages, kubernetes manifests and helm-charts
 
-<https://docs.gitlab.com/ee/user/application_security/sast/>>
+<https://docs.gitlab.com/ee/user/application_security/sast/>
 
 ## Tools
 
