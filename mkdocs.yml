@@ -6,11 +6,12 @@ theme:
   palette:
     scheme: default
   features:
-  - navigation.path # breadcrumb navigation
+  - content.code.copy # permit copy code
   - navigation.footer # include links to the previous and next page of the current page
+  - navigation.path # breadcrumb navigation
   - navigation.prune
-  - toc.follow
   - navigation.top
+  - toc.follow
 extra:
   social:
   - icon: fontawesome/brands/linkedin
