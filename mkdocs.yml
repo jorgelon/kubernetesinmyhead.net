@@ -2,7 +2,7 @@ site_name: Kubernetes in my head
 site_url: https://kubernetesinmyhead.net
 theme:
   name: material
-  language: es
+  language: en
   palette:
     scheme: default
   features:
