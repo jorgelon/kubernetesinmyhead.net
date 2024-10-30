@@ -6,13 +6,15 @@ If we want to scan git repositories with trufflehog we have some options:
 
 ## At filesystem level
 
+The following command scans for credentials in a path, and we can use a cloned repo, but probably it is not the best option to scan a git repository because it does not scans the full git history.
+
 ```shell
-trufflehog filesystem
+trufflehog filesystem OPTIONS PATH
 ```
 
 ## At git level
 
-The following command scans for credentials in a git repository
+The following command scans for credentials in a git repository, including all branches and commit history.
 
 ```shell
 trufflehog git OPTIONS URL
@@ -25,7 +27,7 @@ trufflehog git OPTIONS URL
 
 ## At provider level
 
-We can scans for credentials in a in github or gitlab.
+We can scan for credentials in a in github or gitlab repository. It is similar to the git command, but includes additional options in every provider.
 
 ```shell
 trufflehog github
