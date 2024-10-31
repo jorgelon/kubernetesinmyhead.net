@@ -28,9 +28,13 @@ No definir cpu limits permite un **mejor aprovechamiento de los recursos** del n
 
 El valor de cpu request y limit tiene que ver con cuanto tiempo de cpu dispone un pod cada 100 milisegundos, que es el valor por defecto de **cpu_period_us** del kernel de linux (100000us o 100ms). El valor del limite sera el valor de **cpu.cfs_quota_us** para el cgroup del container.
 
+> El valor de cpu request de un contenedor es la cantidad de tiempo de cpu garantizada, que usara si la necesita.
+
 **Ejemplo**
 Por ejemplo, un contenedor con 100m (o 0,1 de request) tendra garantizados 10 milisegundos (0.1 x 100).  
-Supongamos tambien que para ejecutar una tarea necesitara 50 ms. Sin cpu limit podra acceder a esos 10ms y, si hay disponibles recursos en el nodo, a los otros 40 que necesita dentro del mismo ciclo.
+Si el contenedor para ejecutar una tarea solo necesita 6 ms, los restantes 4 ms estaran disponibles para el resto de contenedores del nodo.
+
+Supongamos ahora que para ejecutar una tarea necesitara 50 ms. Sin cpu limit podra acceder a esos 10ms garantizados y, si hay disponibles recursos en el nodo, a los otros 40 que necesita dentro del mismo ciclo.
 
 Supongamos que ahora tiene un limite en 0.2. En este caso necesitara 3 ciclos de cpu time (20+20+10) para poder realizarla, independientemente del estado del nodo.
 
@@ -55,7 +59,7 @@ En 2 cpu, consumiria la cuota en 0.1ms sin poder hacer uso del 0.9 restante. A m
 
 - Estudiar el uso de vertical pod autoescaling en aplicaciones sin replicas
 
-Dependiendo del entorno o caso, puede tener mas sentido uno definir o no cpu limits.
+Dependiendo del entorno o caso, puede tener mas sentido o no definir cpu limits.
 
 ## Links
 
