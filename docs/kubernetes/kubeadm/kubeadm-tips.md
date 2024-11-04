@@ -15,3 +15,9 @@ And execute it with
 ```shell
 systemd-tmpfiles --clean /etc/tmpfiles.d/kubeadm-tmp.conf
 ```
+
+Or restart the service
+
+```shell
+systemctl restart systemd-tmpfiles-clean.service
+```
