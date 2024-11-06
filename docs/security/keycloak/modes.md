@@ -30,6 +30,20 @@ In the production mode we assume by default
 - Hostname configuration is expected
 - HTTPS/TLS configuration is expected
 
+For this the minimum setup, excluding database, is
+
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+spec:
+  http:
+    tlsSecret: MYSECRET_CONTAINING_CERTIFICATE
+  hostname:
+    hostname: MY.DOMAIN.COM
+
+Key material not provided to setup HTTPS. Please configure your keys/certificates or start the server in development mode.
+
 ### Production mode disabling tls and change cache to local
 
 ```yaml
