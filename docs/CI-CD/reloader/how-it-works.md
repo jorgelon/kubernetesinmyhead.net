@@ -88,7 +88,9 @@ secret.reloader.stakater.com/reload: "NAME_OF_THE_SECRET,NAME_OF_THE_SECRET2"
 
 ## How it works
 
-Reloader tracks the kubernetes resources configured as explained before. When a secret or configmap is updated, reloader triggers a restart of the resource
+Reloader tracks the kubernetes resources configured as explained before. When a secret or configmap is updated, reloader triggers a restart of the resource.
+
+For this, it watches the data section of the secret
 
 There are 2 reload strategies here. The default one (env-vars) creates an environment variable in the restarted pods. The "annotations" mode add an annotation "reloader.stakater.com/last-reloaded-from" in the pods (via template spec)
 
