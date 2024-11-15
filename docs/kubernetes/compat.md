@@ -28,3 +28,7 @@ Relation with kubernetes releases
 Tested kubernetes versions
 
 <https://argo-cd.readthedocs.io/en/stable/operator-manual/installation/>
+
+## Jaeger Operator
+
+<https://github.com/jaegertracing/jaeger-operator/blob/main/COMPATIBILITY.md>
