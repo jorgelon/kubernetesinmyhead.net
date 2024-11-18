@@ -24,7 +24,7 @@ stages:
 trufflehog-git:
   stage: security
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
   image:
     name: docker.io/trufflesecurity/trufflehog:3.82.1
     entrypoint: ["/bin/sh", "-c"]
