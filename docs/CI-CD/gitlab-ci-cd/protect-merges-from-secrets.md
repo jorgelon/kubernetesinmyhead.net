@@ -35,3 +35,13 @@ trufflehog-git:
 ## Test
 
 In order to test it, push a new branch with changes and do a merge request to main
+
+## Links
+
+- Merge request pipelines
+
+<https://docs.gitlab.com/ee/ci/pipelines/merge_request_pipelines.html>
+
+- CI_PIPELINE_SOURCE predefined variable
+
+<https://docs.gitlab.com/ee/ci/jobs/job_rules.html#ci_pipeline_source-predefined-variable>
