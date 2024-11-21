@@ -23,6 +23,12 @@ Some tips:
 
 - We can do better rules specifying users, databases and hosts
 - The controller applies these rules without restarting the pods
+- We can get the current rules with this
+
+```postgresql
+select pg_reload_conf();
+table pg_hba_file_rules;
+```
 
 ## Links
 
