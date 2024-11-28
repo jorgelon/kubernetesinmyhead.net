@@ -95,3 +95,7 @@ notifications.argoproj.io/subscribe.on-sync-status-unknown.telegram: sre;develop
 - Notification subscriptions
 
 <https://argo-cd.readthedocs.io/en/stable/user-guide/subscriptions/>
+
+- Triggers
+
+<https://argo-cd.readthedocs.io/en/stable/operator-manual/notifications/triggers/>
