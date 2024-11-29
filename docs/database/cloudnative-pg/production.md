@@ -3,8 +3,8 @@
 ## Deployment
 
 - Use gitops tools (argocd, flux,...) to control the deployment
-- Use gitops tools like external-secrets operator to control the credentialsç
-- Setup a monitoring and alerting system
+- Use gitops tools like external-secrets operator to control the credentials
+- You can enable the spec.monitoring.enablePodMonitor setting and setup a monitoring and alerting system
 
 ## Configuration
 
