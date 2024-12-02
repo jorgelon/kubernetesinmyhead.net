@@ -75,6 +75,8 @@ This gives the average duration of etcd commits called by backend
 etcd_disk_backend_commit_duration_seconds_sum/etcd_disk_backend_commit_duration_seconds_count
 ```
 
+Use the histogram_quantile() function to calculate quantiles from histograms or even aggregations of histograms. A histogram is also suitable to calculate an Apdex score. When operating on buckets, remember that the histogram is cumulative. See histograms and summaries for details of histogram usage and differences to summaries.
+
 ## Summary
 
 pending
