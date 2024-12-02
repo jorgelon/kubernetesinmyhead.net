@@ -98,6 +98,10 @@ pending
 
 <https://prometheus.io/docs/alerting/latest/overview/>
 
+- Alerting rules
+
+<https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/>
+
 - Prometheus Operator
 
 <https://prometheus-operator.dev/docs/developer/alerting/>
