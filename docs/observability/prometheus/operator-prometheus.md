@@ -1,4 +1,4 @@
-# Define a prometheus resource
+# Prometheus operator instance
 
 This will deploy a prometheus statefulset and its settings
 

@@ -1,4 +1,4 @@
-# How prometheus operator works
+# Prometheus operator and alerting
 
 ## Define a prometheus resource
 
