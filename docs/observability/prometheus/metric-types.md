@@ -69,6 +69,12 @@ The metric name http_request_duration_seconds_count indicates that it is trackin
 
 > It is useful for calculating the average request duration when combined with the corresponding sum metric (http_request_duration_seconds_sum). For example, dividing the sum of durations by the count gives the average duration of an HTTP request.
 
+This gives the average duration of etcd commits called by backend
+
+```promql
+etcd_disk_backend_commit_duration_seconds_sum/etcd_disk_backend_commit_duration_seconds_count
+```
+
 ## Summary
 
 pending
