@@ -1,8 +1,6 @@
 # Prometheus operator and alerting
 
-## Define a prometheus resource
-
-This will deploy a prometheus statefulset and its settings
+## Configure the prometheus resource
 
 | Section                              | Explanation                                                       |
 |--------------------------------------|-------------------------------------------------------------------|
@@ -94,14 +92,18 @@ pending
 
 ## Links
 
-- Alerting overwiew
+- Prometheus: Alerting overwiew
 
 <https://prometheus.io/docs/alerting/latest/overview/>
 
-- Alerting rules
+- Prometheus: Alerting rules
 
 <https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/>
 
-- Prometheus Operator
+- Prometheus Operator: Alerting Routes
 
 <https://prometheus-operator.dev/docs/developer/alerting/>
+
+- Why does alertmanagerconfigs automatically add a namespace matcher
+
+<https://github.com/prometheus-operator/prometheus-operator/discussions/3733>
