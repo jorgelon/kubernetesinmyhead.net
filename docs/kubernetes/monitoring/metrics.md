@@ -23,3 +23,9 @@ Provides resource usage metrics (e.g., CPU, memory) for Kubernetes objects
 <https://github.com/kubernetes-sigs/prometheus-adapter>
 
 Allows custom metrics to be exposed to the Kubernetes API, but it relies on Prometheus to collect the metrics.
+
+## Links
+
+- Kubernetes Metrics Reference
+
+<https://kubernetes.io/docs/reference/instrumentation/metrics/>
