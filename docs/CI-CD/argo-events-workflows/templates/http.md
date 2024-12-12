@@ -108,6 +108,10 @@ Inside the http template we can use some configurations:
 - successCondition: what make the request successfull
 - timeoutSeconds: timeout of the request (default 30s)
 
+## Bug: Workflow-controller was unable to obtain node
+
+<https://github.com/argoproj/argo-workflows/issues/13847>
+
 ## Links
 
 - HTTP Template
