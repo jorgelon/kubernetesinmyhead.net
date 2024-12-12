@@ -49,66 +49,7 @@ subjects:
 
 ### Using the http template
 
-The http template needs additional permissions.
-
-<https://github.com/argoproj/argo-workflows/issues/10340>
-<https://github.com/argoproj/argo-workflows/issues/13770>
-<https://argo-workflows.readthedocs.io/en/stable/upgrading/#06d4bf76f-fix-reduce-agent-permissions-fixes-7986-7987>
-
-```yaml
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: executor-http
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: executor-http
-rules:
-  - apiGroups:
-      - argoproj.io
-    resources:
-      - workflowtaskresults
-    verbs:
-      - create
-      - patch
-  - apiGroups:
-      - argoproj.io
-    resources:
-      - workflowtasksets
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - argoproj.io
-    resources:
-      - workflowtasksets/status
-    verbs:
-      - patch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: executor-http
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: executor-http
-subjects:
-  - kind: ServiceAccount
-    name: executor-http
-    namespace: argo
----
-apiVersion: v1
-kind: Secret
-metadata:
-  annotations:
-    kubernetes.io/service-account.name: executor-http
-  name: executor-http.service-account-token
-type: kubernetes.io/service-account-token
-```
+See the [http template doc](templates/http.md)
 
 ### Workflow links
 
