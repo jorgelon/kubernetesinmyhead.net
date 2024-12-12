@@ -108,9 +108,15 @@ Inside the http template we can use some configurations:
 - successCondition: what make the request successfull
 - timeoutSeconds: timeout of the request (default 30s)
 
-## Bug: Workflow-controller was unable to obtain node
+## Bugs | Missing features
+
+- Workflow-controller was unable to obtain node
 
 <https://github.com/argoproj/argo-workflows/issues/13847>
+
+- Enable PodGC for the agent pod
+
+<https://github.com/argoproj/argo-workflows/issues/12692>
 
 ## Links
 
