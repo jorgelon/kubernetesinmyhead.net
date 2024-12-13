@@ -108,6 +108,10 @@ Inside the http template we can use some configurations:
 - successCondition: what make the request successfull
 - timeoutSeconds: timeout of the request (default 30s)
 
+## Outputs
+
+outputs.result in an HTTP template stores the response body
+
 ## Bugs | Missing features
 
 - Workflow-controller was unable to obtain node
