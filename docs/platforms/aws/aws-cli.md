@@ -38,13 +38,19 @@ export AWS_PROFILE=profile
 aws s3 ls --profile myprofile
 ```
 
+## Get my kubeconfig
+
+```shell
+export AWS_PROFILE=myprofile
+aws eks update-kubeconfig --region region-code --name my-cluster --kubeconfig pathtomykubeconfig
+```
 
 ## Other
 
-aws eks get-token  --cluster-name aws-appolow
-
+```shell
+aws eks get-token  --cluster-name my-cluster
 
 aws sts get-caller-identity
 
-
 aws sts get-session-token
+```
