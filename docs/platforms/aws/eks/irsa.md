@@ -10,6 +10,8 @@ Create an IAM OIDC provider for your cluster
 
 Create a policy with the desired permissions to the kubernetes application
 
+[Generate Policy Script](./policy.sh)
+
 ## Create the role
 
 Create a role with that policy and this trust relationship
