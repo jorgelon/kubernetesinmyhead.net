@@ -28,5 +28,4 @@ cat << EOF > policy.json
 }
 EOF
 
-echo "Policy created"
-echo "You can also use the AWSBackupServiceRolePolicyForS3Backup predefined policy"
+echo "Policy file created"

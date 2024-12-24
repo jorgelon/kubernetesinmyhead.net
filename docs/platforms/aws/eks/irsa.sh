@@ -40,3 +40,5 @@ cat << EOF > trust-relationship.json
   ]
 }
 EOF
+
+echo "Trust relationship file created"
