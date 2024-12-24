@@ -15,6 +15,27 @@ spec:
     size: 1Gi
 ```
 
+## Recreate all the cluster nodes
+
+- Destroy 2 replicas
+
+```shell
+kubectl cnpg destroy MYCLUSTER ONE-REPLICA
+kubectl cnpg destroy MYCLUSTER ANOTHER-REPLICA
+```
+
+Once they are ok, promote a replica to be primary
+
+```shell
+kubectl cnpg promote MYCLUSTER ONE-REPLICA
+```
+
+Once is prometed, destroy the older primary
+
+```shell
+kubectl cnpg destroy MYCLUSTER OLD-PRIMARY
+```
+
 ## Info about primary replicas
 
 Show the nodes where the replicas are located
