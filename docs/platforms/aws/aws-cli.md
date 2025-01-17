@@ -45,6 +45,12 @@ export AWS_PROFILE=myprofile
 aws eks update-kubeconfig --region region-code --name my-cluster --kubeconfig pathtomykubeconfig
 ```
 
+## Login to ecr
+
+```shell
+aws ecr get-login-password --region region | docker login --username AWS --password-stdin aws_account_id.dkr.ecr.region.amazonaws.com
+```
+
 ## Other
 
 ```shell
