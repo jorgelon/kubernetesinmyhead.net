@@ -1,3 +1,4 @@
+namespace: external-secrets
 resources:
   - external-secrets.yaml # See https://github.com/external-secrets/external-secrets/releases
 images:
