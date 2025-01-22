@@ -1,0 +1,19 @@
+resources:
+  - external-secrets.yaml # See https://github.com/external-secrets/external-secrets/releases
+  - sa-puller.yaml
+images:
+  - name: oci.external-secrets.io/external-secrets/external-secrets
+    newName: MYREPOURL/MYPROJECT/external-secrets
+patches:
+  - path: sa-imagepullsecrets.yaml
+    target:
+      kind: ServiceAccount
+      name: external-secrets
+  - path: sa-imagepullsecrets.yaml
+    target:
+      kind: ServiceAccount
+      name: external-secrets-cert-controller
+  - path: sa-imagepullsecrets.yaml
+    target:
+      kind: ServiceAccount
+      name: external-secrets-webhook
