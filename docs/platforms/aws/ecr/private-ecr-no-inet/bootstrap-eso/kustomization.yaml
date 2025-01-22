@@ -1,6 +1,5 @@
 resources:
   - external-secrets.yaml # See https://github.com/external-secrets/external-secrets/releases
-  - sa-puller.yaml
 images:
   - name: oci.external-secrets.io/external-secrets/external-secrets
     newName: MYREPOURL/MYPROJECT/external-secrets
