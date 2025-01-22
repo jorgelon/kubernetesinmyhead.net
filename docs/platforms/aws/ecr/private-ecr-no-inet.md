@@ -43,7 +43,7 @@ Go to Elastic Container Registry and create a repository called, for example, MY
 
 ```txt
 MYREPOARN
-MYREPOURL
+MYREPOURL  (MYACCOUNTID.dkr.ecr.MYREGION.amazonaws.com)
 ```
 
 ### Push the external secrets image
