@@ -41,3 +41,7 @@ This is an AWS IAM permissions issue. Probably you need to add "s3:ListBucket" A
     "Version": "2012-10-17"
 }
 ```
+
+## "HTTP communication issue" error
+
+Restart the controller
