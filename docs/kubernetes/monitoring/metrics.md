@@ -1,12 +1,17 @@
 # Metrics
 
+{{ if .Values.rules.resource }}
+  kubectl get --raw /apis/metrics.k8s.io/v1beta1
+{{- end }}
+  kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1
+{{ if .Values.rules.external }}
+  kubectl get --raw /apis/external.metrics.k8s.io/v1beta1
+
 There are 3 ways to get kubernetes metrics:
 
 - The resource metrics api
 - The custom metrics api
 - The external metrics api
-
-Kube state metrics and node exporter can provide more kubernetes metrics. Also, every application can provide its own metrics.
 
 ## Resource Metrics API (metrics api)
 
@@ -22,9 +27,13 @@ The metrics are collected from kubelet and published under /apis/metrics.k8s.io/
 For example we can get those metrics this way
 
 ```shell
-# pending using raw
 kubectl get NodeMetrics # /apis/metrics.k8s.io/v1beta1/nodes?limit=500
+kubectl get --raw /apis/metrics.k8s.io/v1beta1/nodes | jq -r
+```
+
+```shell
 kubectl get PodMetrics -A # /apis/metrics.k8s.io/v1beta1/pods?limit=500
+kubectl get --raw /apis/metrics.k8s.io/v1beta1/pods | jq -r
 ```
 
 We can get who is providing that metrics with
@@ -51,27 +60,36 @@ It is designed for auotoescaling, not for monitoring purposes, the usage metrics
 
 <https://github.com/kubernetes-sigs/metrics-server>
 
-### Prometheus adapter
-
-The prometheus adapter can replace the metrics-server and it is has more featured addon because contains an implementation of the Kubernetes Custom, Resource and External Metric APIs
-
-- Prometheus adapter in github
-
-<https://github.com/kubernetes-sigs/prometheus-adapter>
-
 ## Custom metrics API
 
-pending
+The Custom Metrics API allows you to define and use custom metrics for autoscaling and monitoring purposes. These metrics can be collected from various sources, such as Prometheus, and are used for more advanced autoscaling scenarios.
 
 <https://kubernetes.io/docs/reference/external-api/custom-metrics.v1beta2/>
 
 ## External metrics API
 
-pending
+The External Metrics API allows you to use metrics from sources external to the Kubernetes cluster for autoscaling purposes. These metrics can be anything that is relevant to your application, such as metrics from a cloud provider or an external monitoring system.
 
 <https://kubernetes.io/docs/reference/external-api/external-metrics.v1beta1/>
 
-## Kube state metrics
+## Other tools
+
+### Prometheus adapter
+
+The Prometheus Adapter is a component that registers itself using the Kubernetes API aggregation layer so it can serve metrics apis querying a prometheus instance. This allows you to query custom metrics using the Kubernetes API, similar to how you query built-in metrics.
+
+For example it can serve resource metrics, replacing metrics server, using prometheus metrics as source of truth.
+Because we can configure the metrics we want to create querying prometheus, we can use horizontal pod autoescaling features with prometheus queries.
+
+- Prometheus adapter in github
+
+<https://github.com/kubernetes-sigs/prometheus-adapter>
+
+- Prometheus adapter helm chart readme
+
+<https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-adapter/README.md>
+
+### Kube state metrics
 
 Kube state metrics is a kubernetes addon that talks with the kubernetes api and exposes information about the state of the some objects in the cluster. Kube state metrics holds an entire snapshot of Kubernetes state in memory and continuously generates new metrics based off of it. It shows information like:
 
@@ -96,7 +114,7 @@ That exposed metrics can be sent to a prometheus instance. Some distributions li
 
 <https://github.com/kubernetes/kube-state-metrics>
 
-## Node exporter
+### Node exporter
 
 pending
 <https://github.com/prometheus/node_exporter>
@@ -107,6 +125,10 @@ pending
 - Kubernetes metrics API type definitions and clients
 
 <https://github.com/kubernetes/metrics>
+
+- Kubernetes api aggregation layer
+
+<https://github.com/kubernetes-sigs/apiserver-builder-alpha/blob/master/docs/concepts/aggregation.md>
 
 - Instrumentation
 
