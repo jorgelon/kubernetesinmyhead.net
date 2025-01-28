@@ -45,3 +45,20 @@ This is an AWS IAM permissions issue. Probably you need to add "s3:ListBucket" A
 ## "HTTP communication issue" error
 
 Restart the controller
+
+## A replica cannot be created
+
+If we get errors like
+
+```txt
+"requested timeline XXX is not a child of this server's history"
+"Latest checkpoint is at XXX on timeline XXX, but in the history of the requested timeline, the server forked off from that timeline at YYY."
+```
+
+and only the primary is up. We can:
+
+- Do a manual backup via pgdump of every database
+- Leave the cluster with only 1 replica and no backup section
+- Rename the s3 folder or use a different serverName in the backup section.
+- Enable the backup section and do a backup via the kubectl cnpg plugin
+- If it works, increase the replicas to 3
