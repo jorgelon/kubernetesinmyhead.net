@@ -22,7 +22,7 @@ They include the deployment, the v1beta1.metrics.k8s.io apiService and the Confi
 
 - Helm chart
 
-They include the deployment. To deploy the apiService and the ConfigMap we need to enable the **rules.resource** section in our values.yaml file and enable the APIVersions Capability with "apiregistration.k8s.io/v1" as value.
+They include the deployment. To deploy the apiService and the ConfigMap we need to enable the **rules.resource** section in our values.yaml file and **enable the APIVersions Capability** with "apiregistration.k8s.io/v1" as value.
 
 <https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-adapter>
 
