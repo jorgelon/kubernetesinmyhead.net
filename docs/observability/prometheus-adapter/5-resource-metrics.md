@@ -2,7 +2,7 @@
 
 The most simple way to make **horizontal pod autoescaler** and **kubectl top** work is to deploy metrics adapter. But if we want, for example, to use custom metrics with HPA, we need prometheus adapter.
 
-In order to make prometheus adapter the application who provides that functions, we need:
+In order to make prometheus adapter provide that functions, we need:
 
 - Deploy metrics adapter deployment
 
