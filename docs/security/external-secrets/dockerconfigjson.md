@@ -6,6 +6,7 @@ With this template we can create an external secret to pull images from a privat
 The important thing here is the template. The data section can be different for every secret store.
 
 ```yaml
+apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
   name: privatepull
