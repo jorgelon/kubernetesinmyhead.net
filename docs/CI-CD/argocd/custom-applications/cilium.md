@@ -1,5 +1,22 @@
 # Cilium
 
+At argocd-cm level
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  resource.exclusions: |
+    - apiGroups: 
+      - cilium.io
+      kinds:
+      - CiliumIdentity
+      clusters:
+      - "*"
+```
+
 At application level
 
 ```yaml
@@ -30,3 +47,7 @@ At application level
           - /data/ca.crt
           - /data/ca.key
 ```
+
+More info here
+
+<https://docs.cilium.io/en/latest/configuration/argocd-issues/>
