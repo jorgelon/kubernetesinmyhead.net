@@ -63,9 +63,11 @@ and only the primary is up. We can:
 - Enable the backup section and do a backup via the kubectl cnpg plugin
 - If it works, increase the replicas to 3
 
-## Permissions errors in csi driver nfs
+## Using the csi driver NFS
 
-You can fix this giving more permissions
+- You can probably need to give more permissions
+- spec.postgresUID and spec.postgresGID (default 26) in the cluster resource definition gives you more possibilities
+- Don't use the subDir parameter
 
 ```yaml
 apiVersion: storage.k8s.io/v1
@@ -77,14 +79,16 @@ parameters:
 ...
 ```
 
-Also spec.postgresUID and spec.postgresGID (default 26) in the cluster resource definition can help
-
-## controller with name instance-cluster already exists
+This avoids some permission errors and other like:
 
 ```txt
 controller with name instance-cluster already exists. Controller names must be unique to avoid multiple controllers reporting to the same metric
 ```
 
-## stale NFS file handle
+```txt
+stale NFS file handle
+```
 
-If the storageclass is nfs and you are recreating the cluster from 0, it can be related with a racecondition between deleting y recreating the cluster
+```txt
+This is an old primary instance in a new cluster without backup
+```
