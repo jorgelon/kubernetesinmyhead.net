@@ -5,7 +5,7 @@
 We can setup 2 environment variables:
 
 - ADMIN_PASSWORD stores the admin password credentials in a bcrypt format
-- APPLICATION_URL
+- APPLICATION_URL stores the fqdn (myhost.domain.com)
 
 ## Some web endpoints
 
