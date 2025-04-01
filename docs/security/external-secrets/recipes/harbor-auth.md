@@ -8,6 +8,8 @@ This recipe permits to create string to authenticate against the vmware harbor a
 
 Recipe, using the list, join and b64enc sprig functions
 
+> The data section changes depending the secret store provider
+
 ```yaml
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
