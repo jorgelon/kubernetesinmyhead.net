@@ -1,5 +1,34 @@
 # Errors
 
+## Timeline | server's history | checkpoint error
+
+Sympthoms:
+
+The operator is trying to create a replica but it can't and the new instance fails with this error
+
+```txt
+...
+requested timeline XXX is not a child of this server's history
+Latest checkpoint is at YYY on timeline XXX, but in the history of the requested timeline, the server forked off from that timeline at YYY
+```
+
+Destroying the failing replicas and forcing to create a new one does not solve the problem.
+
+Cause:
+
+There is difference between the primary instance and the backups
+
+Workaround:
+
+- Do a manual backup not with the operator
+- Change the cluster to 1 instance. Probably needs a manual destroy of the failing instances
+- Change where the backups will be stored. We must change the backup section selecting another bucket o changing the serverName. The goal is to start an empty backup folder.
+- Do a manual backup using the operator and check it is working.
+- Also check the wal files are being written in the barmanObjectStore
+- Change the instances to the desired number
+
+> I have tried this using barmanObjectStore based backup.
+
 ## WAL file not found in the recovery object store"
 
 - See the logs in every cnpg instance
