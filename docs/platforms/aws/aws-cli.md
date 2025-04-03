@@ -60,3 +60,18 @@ aws sts get-caller-identity
 
 aws sts get-session-token
 ```
+
+To delete a profile with the AWS CLI, you need to manually remove the profile's configuration from the AWS configuration files. The AWS CLI stores profiles in two files: ~/.aws/config and ~/.aws/credentials.
+
+Steps to Delete a Profile:
+Open the Configuration Files:
+
+Open ~/.aws/config and ~/.aws/credentials in a text editor.
+Remove the Profile from ~/.aws/config:
+
+Locate the profile section you want to delete. Profile sections start with [profile profile-name] for named profiles.
+Delete the entire section for the profile.
+Remove the Profile from ~/.aws/credentials:
+
+Locate the profile section you want to delete. Profile sections start with [profile-name].
+Delete the entire section for the profile.
