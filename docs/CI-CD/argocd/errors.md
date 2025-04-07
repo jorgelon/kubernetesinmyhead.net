@@ -21,3 +21,5 @@ Links
 - rpc error: code = Internal desc
 
 <https://github.com/argoproj/argo-cd/issues/19174>
+
+> If you delete the project from the repositories and the errors in the appset don't dissapear, you can force a restart  with kubectl -n argocd rollout restart sts,deploy
