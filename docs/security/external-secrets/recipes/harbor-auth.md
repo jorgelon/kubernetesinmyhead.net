@@ -1,14 +1,12 @@
 # Vmware harbor auth
 
-This recipe permits to create string to authenticate against the vmware harbor api
+This recipe creates the Authorization header using the username and password
 
 ```txt
- -H 'authorization: Basic THIS_WILL_BE_CREATED'
+ -H 'Authorization: THIS_WILL_BE_CREATED'
 ```
 
-Recipe, using the list, join and b64enc sprig functions
-
-> The data section changes depending the secret store provider
+> The spec.data section changes depending of the secret store provider
 
 ```yaml
 apiVersion: external-secrets.io/v1beta1
@@ -26,7 +24,7 @@ spec:
   target:
     template:
       data:
-        auth: '{{ list .username .password | join ":" | b64enc }}'
+        auth: '{{ printf "Basic %s" (printf "%s:%s" .username .password | b64enc) }}'
   secretStoreRef:
     ...
 ```
