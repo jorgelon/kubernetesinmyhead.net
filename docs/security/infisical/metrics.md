@@ -30,3 +30,10 @@ http_server_duration_bucket
 http_server_duration_count
 http_server_duration_sum
 ```
+
+### Some tips
+
+- If you have an old infisical version you must probably need to update to get the metrics
+- The helm chart currently does not support adding the environment variables and pod's port. The environment variables can be provided via the infisical-secrets secret.
+
+<https://github.com/Infisical/infisical/issues/3382>
