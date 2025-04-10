@@ -18,7 +18,7 @@ Also we can override the controller default value in the secretstore resource
 apiVersion: external-secrets.io/v1beta1
 kind: SecretStore
 metadata:
-  name: mycss
+  name: myss
 spec:
   refreshInterval: 30m
 ```
