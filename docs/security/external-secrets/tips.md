@@ -12,7 +12,7 @@ extraArgs:
   store-requeue-interval: 1h # increase to 1 h
 ```
 
-Also we can override the controller default value in the secretstore resource
+Also we can override the controller's default value in the secretstore resource
 
 ```yaml
 apiVersion: external-secrets.io/v1beta1
