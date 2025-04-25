@@ -7,6 +7,7 @@ There are 2 ways to define the application template that an applicationset will 
 By default, an argocd applicationset uses fastemplate as template engine to define an application.
 
 > According the argocd documentation, it will be deprecated
+> <https://github.com/argoproj/argo-cd/issues/10858>
 
 ## Go text template
 
