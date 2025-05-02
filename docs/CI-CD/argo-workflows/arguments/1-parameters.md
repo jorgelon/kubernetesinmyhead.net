@@ -59,7 +59,7 @@ They can be used inside the templates as:
 ```
 
 !!! note
-If we want to provide values to a local parameter, we can make it template caller level, input level and workflow level. [See this](2-resolved.md)
+If we want to provide values to a local parameter, we can make it using template caller (dag, steps) level, input level and workflow level. [See this](2-resolved.md)
 
 > "{{inputs.parameters.json}}" is also a variable with all the parameters as a json string
 
