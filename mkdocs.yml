@@ -6,19 +6,19 @@ theme:
   palette:
     scheme: default
   features:
-  - content.code.copy # permit copy code
-  - navigation.footer # include links to the previous and next page of the current page
-  - navigation.path # breadcrumb navigation
-  - navigation.prune
-  - navigation.top
-  - toc.follow
+    - content.code.copy # permit copy code
+    - navigation.footer # include links to the previous and next page of the current page
+    - navigation.path # breadcrumb navigation
+    - navigation.prune
+    - navigation.top
+    - toc.follow
 extra:
   social:
-  - icon: fontawesome/brands/linkedin
-    link: https://linkedin.com/in/jorge-p-275960300
-    name: LinkedIn
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/in/jorge-p-275960300
+      name: LinkedIn
 markdown_extensions:
-- toc:
-    permalink: true
-    title: Indice
-    permalink_title: Anchor link to this section for reference
+  - toc:
+      permalink: true
+      title: Index
+      permalink_title: Anchor link to this section for reference
