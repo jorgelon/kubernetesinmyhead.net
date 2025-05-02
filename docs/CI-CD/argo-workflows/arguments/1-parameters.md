@@ -1,4 +1,4 @@
-# Parameters en arguments e inputs
+# Parameters intro
 
 ## Global parameters (arguments)
 
