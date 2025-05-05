@@ -7,11 +7,22 @@ spec:
   templates:
     - name: my-template
       TYPEOFTEMPLATE:
+    - name: my-template2
+      TYPEOFTEMPLATE:
+    - name: my-template3
+      TYPEOFTEMPLATE:
+    - name: my-template4
+      TYPEOFTEMPLATE:
+    ...
 ```
 
-## Template callers
+> There is a possible confussion with terms. A template is something like a function defined in a workflow, workflowtemplate or clusterworkflowtemplate. But a WorkflowTemplate or ClusterWorkflowTemplate is a kubernetes CRD acting like a base to create workflows. They include templates inside and other several fields.
 
-There are 2 special template types called template callers or template invocators. They really call other "normal" templates with some additional logic
+## List of template types
+
+### Template callers
+
+There are 2 special template types called template callers or template invocators. They invoke templates, workflowtemplates or clusterworkflowtemplates.
 
 - Steps
 
@@ -21,7 +32,7 @@ In the "steps" template caller you can define a list of tasks to be executed seq
 
 The "dag" template invocator executes other normal templates using dependencies between them
 
-## Template
+## Other templates
 
 - Container
 
@@ -49,7 +60,3 @@ This template permits to transform a source of data.
 - Suspend
 
 Permits to suspend the execution of the workflow. It can be resumed manually or after a defined duration.
-
-## Links
-
-<https://argo-workflows.readthedocs.io/en/stable/workflow-concepts/>
