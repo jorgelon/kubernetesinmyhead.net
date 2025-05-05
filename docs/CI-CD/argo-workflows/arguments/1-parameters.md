@@ -65,6 +65,4 @@ If we want to provide values to a local parameter, we can make it using template
 
 ## Notes
 
-- If you want to use a parameter in some templates, declare it at spec level and consume it with "{{workflow.parameters.param1}}"
-- If you want to use a parameter only in one template, declare it at template level and consume it with "{{inputs.parameters.param1}}"
 - In containerset, container and script templates, inputs and outputs can only be loaded a saved from a template called main.

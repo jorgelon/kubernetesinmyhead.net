@@ -2,7 +2,7 @@
 
 When a parameter is used in a task or template, the value is resolved in the following order of precedence:
 
-- Task-Level arguments: If a parameter is passed to a task using arguments, this value takes precedence.
+- Task/Step-Level arguments: If a parameter is passed to a task/step using arguments, this value takes precedence.
 - Template inputs: If no task-level arguments are provided, the value defined in the template's inputs is used.
 - Global arguments: If neither task-level arguments nor template inputs provide a value, the global arguments value is used.
 
