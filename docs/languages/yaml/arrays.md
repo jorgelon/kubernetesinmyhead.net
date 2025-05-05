@@ -2,11 +2,13 @@
 
 There are 2 ways to represent an array
 
+## Abbreviated form
+
 ```yaml
 rebootDays: [mo,tu,we,th]
 ```
 
-Block style (multi line format)
+## Block style (multi line format)
 
 ```yaml
 rebootDays:
