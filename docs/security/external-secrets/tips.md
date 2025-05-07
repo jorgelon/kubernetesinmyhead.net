@@ -37,3 +37,15 @@ spec:
 ## Reduce the externalsecret and clusterexternalsecret calls
 
 pending
+
+## template bad character U+002D '-'
+
+This is a limitation of the go template language. You can not use "-" in variable names (secretKey)
+
+```yaml
+secretKey: my-key # this fails
+```
+
+```yaml
+secretKey: myKey # this works
+```
