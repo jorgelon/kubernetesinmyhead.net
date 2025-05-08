@@ -1,6 +1,6 @@
 # Kured notifications to
 
-Microsoft changed the url of the webhook created in Teams. In order to support kured notifications, this recipe adapts que webhook url to the new format
+Microsoft changed the url of the webhook created in Teams. In order to support kured notifications, this recipe adapts that webhook url to the new format.
 
 ```yaml
 apiVersion: external-secrets.io/v1beta1
