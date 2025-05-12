@@ -73,6 +73,7 @@ patches:
 ```
 
 <https://github.com/kubernetes-sigs/kustomize/issues/1256>
+<https://github.com/kubernetes-sigs/kustomize/issues/907>
 
 ## Notes
 
