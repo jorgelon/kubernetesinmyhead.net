@@ -40,7 +40,7 @@ patches:
 
 If we want to use the inline option in a json6902 patch, we must provide it this way.
 
-"Op" can be add, replace,
+"op" can be "add", "replace", or "remove".
 
 ```yaml
 patches:
