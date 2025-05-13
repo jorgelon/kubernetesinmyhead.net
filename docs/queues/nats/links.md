@@ -18,9 +18,23 @@
 
 <https://natsbyexample.com/>
 
+## Monitoring and dashboards
+
+- Nats Surveyor
+
+<https://github.com/nats-io/nats-surveyor>
+
+- Prometheus nats exporter
+
+<https://github.com/nats-io/prometheus-nats-exporter/>
+
 - Nats Dashboard  
 <https://natsdashboard.com/>  
 <https://github.com/mdawar/nats-dashboard>
+
+- Nats-top
+
+<https://github.com/nats-io/nats-top>
 
 ## Videos
 
