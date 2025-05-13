@@ -2,6 +2,8 @@
 
 A nats stream is a messsage store with some settings like the retention. It is related with nats subjects, and any message published there will be stored in the configured storage
 
+> Streams are responsible for storing the published messages,
+
 ## Configuration
 
 We can see the settings of an stream with
