@@ -63,6 +63,8 @@ The hook is deleted is it fails
 
 The hook is deleted before the new one is created. It exits to be used with named hooks
 
+> Multiple hook delete policies can be specified as a comma separated list.
+
 ## Named hooks
 
 If the Resource hook have a name, it is considered a named hook and it will be only created once. If we want to create it at every sync, we have 2 options:
@@ -97,6 +99,7 @@ There are some entries that suggest there is a bug here
 
 - <https://github.com/argoproj/argo-cd/issues/14929>
 - <https://github.com/argoproj/gitops-engine/pull/461>
+- <https://github.com/argoproj/argo-cd/issues/16446>
 
 ## Links
 
