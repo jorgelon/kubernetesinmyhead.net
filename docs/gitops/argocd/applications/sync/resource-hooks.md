@@ -76,6 +76,28 @@ A job has the field **ttlSecondsAfterFinished** and a workflow (from Argo Workfl
 
 Using this fields can cause an OutOfSync state when the deletion comes. Using deletion hooks instead of ttlSecondsAfterFinished and ttlStrategy avoids this situation.
 
+## Argocd cannot delete a resource hook
+
+In some situations I have detected argocd cannot delete a resource hook in a job with
+
+```yaml
+argocd.argoproj.io/hook: Sync
+argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+```
+
+In the application controller
+
+```txt
+deleted resource batch/Job ... reason=ResourceDeleted type=Normal
+```
+
+But the resource hooks keeps in a Pending Deletion state
+
+There are some entries that suggest there is a bug here
+
+- <https://github.com/argoproj/argo-cd/issues/14929>
+- <https://github.com/argoproj/gitops-engine/pull/461>
+
 ## Links
 
 - Resource Hooks
