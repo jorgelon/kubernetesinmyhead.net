@@ -1,4 +1,4 @@
-# Keda Tips
+# Tips
 
 ## Multiple triggers
 
