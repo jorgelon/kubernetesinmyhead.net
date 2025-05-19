@@ -12,3 +12,13 @@ We can configure the title and description in the argo workflows dashboard with 
 
 - workflows.argoproj.io/title
 - workflows.argoproj.io/description
+
+## was unable to obtain the node
+
+The following error can be ignored
+
+```txt
+... level=warning msg="was unable to obtain the node for XXXX, taskName XXXX"
+```
+
+More info here <https://github.com/argoproj/argo-workflows/issues/12382>
