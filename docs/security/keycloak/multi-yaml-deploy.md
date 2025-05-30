@@ -60,16 +60,24 @@ Our deployment folder and its kustomization.yaml file will deploy the operator i
 ```yaml
 resources:
   - ../operator-crds-folder-location
-  - namespace-1
-  - namespace-2
+  - ns-1
+  - ns-2
 ```
 
 Inside every namespace folder, we need a kustomization file with a suffix (or prefix). This adds a suffix or prefix to the resource name.
 
 ```yaml
-nameSuffix: -mysuffix
+namespace: ns-1
 resources:
   - ../operator-base-folder-location
+nameSuffix: -ns-1
+```
+
+```yaml
+namespace: ns-2
+resources:
+  - ../operator-base-folder-location
+nameSuffix: -ns-2
 ```
 
 > The ClusterRoleBinding created with our prefix is binded to an unexistant service account, but it is openshift related.
