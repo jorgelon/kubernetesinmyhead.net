@@ -29,23 +29,24 @@ The old way (v1) was the only option until the 25.0.0 release (jun 2024). In thi
 
 > The hostname v1 option was removed in 26.0.0
 
-- Using --hostname-url (KC_HOSTNAME_URL)
+```txt
+Using --hostname-url (KC_HOSTNAME_URL)
 
 We can provide the full url with the --hostname-url parameter or the KC_HOSTNAME_URL environemnt variable using this format:
 
-```txt
 <scheme>://<host>:<port>/<path>
-```
 
 This setting is not supported directly in the keycloak operator
+```
 
-- Using --hostname (KC_HOSTNAME) or spec.hostname.hostname in the operator
+```txt
+Using --hostname (KC_HOSTNAME) or spec.hostname.hostname in the operator
 
 Here we provide only the hostname (my.domain.com).
 
 Notes about the scheme
 
-```txt
+
 The scheme will be https unless you set --hostname-strict-https=false (KC_HOSTNAME_STRICT_HTTPS). This is an undocumented setting
 This setting is not supported directly in the keycloak operator
 ```
@@ -77,8 +78,13 @@ Using --hostname (KC_HOSTNAME) or spec.hostname.hostname in the operator we can 
 
 ### Shared options
 
-- hostname-strict (KC_HOSTNAME_STRICT) by default disables dynamically resolving the hostname from request headers. With false as value, enables the dinamic resolution
-  hostname-debug (KC_HOSTNAME_DEBUG) toggles the hostname debug page that is accessible at /realms/master/hostname-debug.
+- hostname-strict (KC_HOSTNAME_STRICT)
+
+By default disables dynamically resolving the hostname from request headers. With false as value, enables the dinamic resolution
+
+- hostname-debug (KC_HOSTNAME_DEBUG)
+
+Toggles the hostname debug page that is accessible at /realms/master/hostname-debug.
 
 ## Backend endpoints
 
