@@ -119,7 +119,7 @@ or the full url with
 
 ### hostname-v2 admin console
 
-Here only hostname-admin is available and only supports a full URL. Use this option if you are exposing the administration console using a reverse proxy on a different address than specified in the hostname option.
+Here only hostname-admin is available and **only supports a full URL**. Use this option if you are exposing the administration console using a reverse proxy on a different address than specified in the hostname option.
 
 > The administration endpoints and the admin Console should not be publicly accessible. Therefore, you can secure them by using a reverse proxy.
 
@@ -129,13 +129,17 @@ Here only hostname-admin is available and only supports a full URL. Use this opt
 
 ## Links
 
-- Configuring the hostname: (v1)
+- Configuring the hostname: (v1) Redhat
 
 <https://docs.redhat.com/en/documentation/red_hat_build_of_keycloak/24.0/html/server_guide/hostname->
 
 - Configuring the hostname (v2)  
 
 <https://www.keycloak.org/server/hostname>
+
+- Configuring the hostname (v2) Redhat
+
+<https://docs.redhat.com/en/documentation/red_hat_build_of_keycloak/26.2/html/server_configuration_guide/hostname->
 
 - Upgrade to 25.0.0  
 
