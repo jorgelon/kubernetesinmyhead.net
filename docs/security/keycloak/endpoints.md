@@ -95,7 +95,7 @@ Here there is another setting called hostname-backchannel-dynamic (KC_HOSTNAME_B
 
 The default value is false. Set to true if your application accesses Keycloak via a private network. If set to true, hostname option needs to be specified as a full URL.
 
-## Admin console
+## Admin endpoints
 
 The server exposes the administration console and static resources using a specific URL.
 
@@ -121,7 +121,7 @@ or the full url with
 
 Here only hostname-admin is available and only supports a full URL. Use this option if you are exposing the administration console using a reverse proxy on a different address than specified in the hostname option.
 
-> The administration endpoints for Red Hat build of Keycloak and the Admin Console should not be publicly accessible. Therefore, you can secure them by using a reverse proxy.
+> The administration endpoints and the admin Console should not be publicly accessible. Therefore, you can secure them by using a reverse proxy.
 
 ### Changed settings
 
