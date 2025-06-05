@@ -75,10 +75,11 @@ spec:
   bootstrap:
     pg_basebackup:
       source: my-remote-cluster
-      database: desired-db # if we want to setup the db
-      owner: db-owner-name # if we want to setup the owner
+      # Next settings if we can create a database, owner and assign credentials to that user
+      database: desired-db
+      owner: db-owner-name
       secret:
-        name: desired-db-secret # if we want to setup the credentials
+        name: desired-db-secret
 ```
 
 ## Links
