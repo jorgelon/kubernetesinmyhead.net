@@ -77,6 +77,12 @@ etcd_disk_backend_commit_duration_seconds_sum/etcd_disk_backend_commit_duration_
 
 Use the histogram_quantile() function to calculate quantiles from histograms or even aggregations of histograms. A histogram is also suitable to calculate an Apdex score. When operating on buckets, remember that the histogram is cumulative. See histograms and summaries for details of histogram usage and differences to summaries.
 
+## Know the metric type
+
+## Via prometheus UI
+
+To know the metric type in the prometheus UI, we must go to Query > Explain
+
 ## Summary
 
 pending
