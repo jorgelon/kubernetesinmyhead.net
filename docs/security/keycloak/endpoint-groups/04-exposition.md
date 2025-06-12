@@ -30,15 +30,15 @@ via operator: spec.http.httpPort
 
 ## Some best practices
 
-## About ports
+- About ports
 
 Only expose the https port and do not enable the http port
 
-## Management interface
+- Management interface
 
 Dot not expose the management interface
 
-## Move the administration REST API and admin UI
+- Move the administration REST API and admin UI
 
 Expose the administration REST API and admin UI (--hostname-admin) in a different hostname or context-path than the one used for the public frontend URLs that are used.
 
