@@ -28,6 +28,10 @@
 
 <https://www.keycloak.org/docs/latest/authorization_services/>
 
+- Keycloak Admin REST API
+
+<https://www.keycloak.org/docs-api/latest/rest-api/index.html>
+
 ## Updates and releases
 
 - Release Notes
