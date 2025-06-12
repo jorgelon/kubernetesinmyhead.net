@@ -28,14 +28,6 @@ via environement variable: KC_HTTP_PORT
 via operator: spec.http.httpPort
 ```
 
-The management interface port is 9000. We can change it this way:
-
-```txt
-via cli: --http-management-port
-via environement variable: KC_HTTP_MANAGEMENT_PORT
-via operator: spec.httpManagement.port
-```
-
 ## Some best practices
 
 ## About ports
