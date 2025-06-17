@@ -22,11 +22,19 @@ This command will place the build output in the ./output directory on your local
 
 ## Docker tarball
 
-pending
+We can also export it to a tarball.
+
+```txt
+--output type=tar,dest=out.tar
+```
 
 ## OCI tarball
 
-pending
+We can also export it to an OCI tarball
+
+```txt
+--output type=oci,dest=path/to/output.tar
+```
 
 ## containerd image store
 
