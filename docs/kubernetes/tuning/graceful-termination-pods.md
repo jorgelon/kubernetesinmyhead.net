@@ -77,16 +77,25 @@ This can suggest **the preStop hook is a safer way** in that cases because it is
 ## More info
 
 - Pod Lifecycle  
+
 <https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/>
 
 - Pod Lifecycle spec  
+
 <https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#lifecycle>
 
 - Dockerfile reference: STOPSIGNAL
+
 <https://docs.docker.com/reference/dockerfile/#stopsignal>
 
 - Graceful shutdown in Kubernetes  
+
 <https://learnk8s.io/graceful-shutdown>
 
 - How to Gracefully Shutdown Your Apps with a preStop Hook
+
 <https://www.youtube.com/watch?v=ahCuWAsAPlc>
+
+- Decoding the pod termination lifecycle in Kubernetes: a comprehensive guide
+
+<https://www.cncf.io/blog/2024/12/19/decoding-the-pod-termination-lifecycle-in-kubernetes-a-comprehensive-guide/>
