@@ -18,3 +18,13 @@ This field controls if we permit or not the execution of multiple jobs from this
 > If the current job finishes and the second one is in the spec.startingDeadlineSeconds time, this will make the second instance start.
 
 - The "Replace" policy replaces the currently running Job run with a new Job run
+
+## Links
+
+- CronJob
+
+<https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/>
+
+- CronJob spec
+
+<https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/cron-job-v1/>
