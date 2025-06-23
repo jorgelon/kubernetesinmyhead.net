@@ -42,6 +42,7 @@ We can move files from one state to another
 | staging area               | next snapshot              | git commit                             |
 | modified file              | unmodified file            | git restore (--worktree)               |
 | staging area               | untracked or modified file | git restore --staged or git reset HEAD |
+| last snapshot              | untracked                  | git rm --cached                        |
 
 checkout
 
