@@ -34,13 +34,3 @@ Tools to check
 
 <https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/>
 <https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/upgrading-linux-nodes/>
-
-## In eks
-
-### Eks Documentation
-
-<https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html>
-
-### Karpenter compatibility
-
-<https://karpenter.sh/docs/upgrading/compatibility/>
