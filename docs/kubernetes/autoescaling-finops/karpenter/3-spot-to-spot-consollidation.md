@@ -46,3 +46,13 @@ settings:
   featureGates:
     spotToSpotConsolidation: true
 ```
+
+## Links
+
+- Disruption
+
+<https://karpenter.sh/docs/concepts/disruption/>
+
+- Applying Spot-to-Spot consolidation best practices with Karpenter  
+
+<https://aws.amazon.com/blogs/compute/applying-spot-to-spot-consolidation-best-practices-with-karpenter/>

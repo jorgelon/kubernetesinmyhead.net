@@ -18,8 +18,5 @@
 - Amazon EC2 Instance Selector
 <https://github.com/aws/amazon-ec2-instance-selector>
 
-- Applying Spot-to-Spot consolidation best practices with Karpenter  
-<https://aws.amazon.com/blogs/compute/applying-spot-to-spot-consolidation-best-practices-with-karpenter/>
-
 - Introducing the price-capacity-optimized allocation strategy for EC2 Spot Instances
 <https://aws.amazon.com/blogs/compute/introducing-price-capacity-optimized-allocation-strategy-for-ec2-spot-instances/>
