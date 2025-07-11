@@ -1,0 +1,2214 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kubernetesinmyhead.net/gitops/argocd/sync/syncPolicy-syncOptions/">
+      
+      
+        <link rel="prev" href="../syncPolicy-retry/">
+      
+      
+        <link rel="next" href="../../../fluxcd/source-controller/gitrepository/">
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.15">
+    
+    
+      
+        <title>Sync and compare options - Kubernetes in my head</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.342714a4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sync-and-compare-options" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Kubernetes in my head" class="md-header__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kubernetes in my head
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sync and compare options
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Kubernetes in my head" class="md-nav__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kubernetes in my head
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    kubernetesinmyhead.net
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../CI-CD/argo-events/filtering/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    CI CD
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../database/cloudnative-pg/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Database
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../deployment/argo-rollouts/analysis/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Deployment
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Gitops
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Gitops
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../get-raw-yaml/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ways to get a raw yaml
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_2" id="__nav_5_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Argocd
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_2">
+            <span class="md-nav__icon md-icon"></span>
+            Argocd
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../argocd-secret-eso/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    argocd-secret via extenalsecret
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../settings-stable/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Settings table
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../clusters/add-a-cluster/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Clusters
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_2_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_5_2_4" id="__nav_5_2_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Sync
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_5_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5_2_4">
+            <span class="md-nav__icon md-icon"></span>
+            Sync
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../00-sync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Sync
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02-ways-to-sync/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Ways to sync
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ServerSideApply/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    ServerSideApply
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../resource-hooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Resource Hooks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../syncPolicy-retry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Control retries and timeouts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Sync and compare options
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Sync and compare options
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sync-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sync options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sync options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#at-application-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      At application level
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#at-resource-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      At resource level
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-of-sync-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      List of sync options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="List of sync options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#failonsharedresource" class="md-nav__link">
+    <span class="md-ellipsis">
+      FailOnSharedResource
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Replace
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#force-and-replace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Force and Replace
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serversideapply" class="md-nav__link">
+    <span class="md-ellipsis">
+      ServerSideApply
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#createnamespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      CreateNamespace
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#applyoutofsynconly" class="md-nav__link">
+    <span class="md-ellipsis">
+      ApplyOutOfSyncOnly
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prune-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prune settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prune settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prune" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prune
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prunepropagationpolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      PrunePropagationPolicy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prunelast" class="md-nav__link">
+    <span class="md-ellipsis">
+      PruneLast
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Delete
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#respectignoredifferences" class="md-nav__link">
+    <span class="md-ellipsis">
+      RespectIgnoreDifferences
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skipdryrunonmissingresource" class="md-nav__link">
+    <span class="md-ellipsis">
+      SkipDryRunOnMissingResource
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compare-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compare options
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#argocdargoprojiocompare-options-ignoreextraneous" class="md-nav__link">
+    <span class="md-ellipsis">
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Links
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../fluxcd/source-controller/gitrepository/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Fluxcd
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../kubernetes/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Kubernetes
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../languages/comment-comment-out/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Languages
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../misc/licenses-adquisitions/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Misc
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../networking/cilium/99-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Networking
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../observability/tools/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Observability
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../offtopic/android/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Offtopic
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../operating-systems/too-many-open-files/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Operating systems
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../platforms/aws/aws-cli/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Platforms
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../queues/nats/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Queues
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../security/cert-manager/perlas/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Security
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../services/external-dns/aws-route53-pia/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Services
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../storage/filestash/info/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Storage
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../tools/Buildkit/output/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Tools
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#sync-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sync options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sync options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#at-application-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      At application level
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#at-resource-level" class="md-nav__link">
+    <span class="md-ellipsis">
+      At resource level
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#list-of-sync-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      List of sync options
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="List of sync options">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#failonsharedresource" class="md-nav__link">
+    <span class="md-ellipsis">
+      FailOnSharedResource
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Replace
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#force-and-replace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Force and Replace
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#serversideapply" class="md-nav__link">
+    <span class="md-ellipsis">
+      ServerSideApply
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#createnamespace" class="md-nav__link">
+    <span class="md-ellipsis">
+      CreateNamespace
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#applyoutofsynconly" class="md-nav__link">
+    <span class="md-ellipsis">
+      ApplyOutOfSyncOnly
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prune-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prune settings
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prune settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prune" class="md-nav__link">
+    <span class="md-ellipsis">
+      Prune
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prunepropagationpolicy" class="md-nav__link">
+    <span class="md-ellipsis">
+      PrunePropagationPolicy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prunelast" class="md-nav__link">
+    <span class="md-ellipsis">
+      PruneLast
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#delete" class="md-nav__link">
+    <span class="md-ellipsis">
+      Delete
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#respectignoredifferences" class="md-nav__link">
+    <span class="md-ellipsis">
+      RespectIgnoreDifferences
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#skipdryrunonmissingresource" class="md-nav__link">
+    <span class="md-ellipsis">
+      SkipDryRunOnMissingResource
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#compare-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compare options
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#argocdargoprojiocompare-options-ignoreextraneous" class="md-nav__link">
+    <span class="md-ellipsis">
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      Links
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="sync-and-compare-options">Sync and compare options<a class="headerlink" href="#sync-and-compare-options" title="Anchor link to this section for reference">&para;</a></h1>
+<h2 id="sync-options">Sync options<a class="headerlink" href="#sync-options" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Argocd offer several sync options to configure the Sync process.</p>
+<p>This options can be configured at application level, resource level, or both</p>
+<h3 id="at-application-level">At application level<a class="headerlink" href="#at-application-level" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook
+spec:
+  syncPolicy:
+    syncOptions:
+    - OPTION=VALUE
+</code></pre>
+<h3 id="at-resource-level">At resource level<a class="headerlink" href="#at-resource-level" title="Anchor link to this section for reference">&para;</a></h3>
+<p>At resource level is made using an annotation in the resource. Multiple options can be configured comma separated.</p>
+<pre><code class="language-yaml">metadata:
+  annotations:
+    argocd.argoproj.io/sync-options: OPTION1=VALUE,OPTION2=VALUE
+</code></pre>
+<p>Multiple Sync Options can be configured</p>
+<h2 id="list-of-sync-options">List of sync options<a class="headerlink" href="#list-of-sync-options" title="Anchor link to this section for reference">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Application level</th>
+<th>Resource level</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Validate</td>
+<td></td>
+<td>X</td>
+</tr>
+<tr>
+<td>ServerSideApply</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>FailOnSharedResource</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr>
+<td>CreateNamespace</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr>
+<td>ApplyOutOfSyncOnly</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr>
+<td>Replace</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>Force</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>Prune</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>PrunePropagationPolicy</td>
+<td>X</td>
+<td></td>
+</tr>
+<tr>
+<td>PruneLast</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>Delete</td>
+<td></td>
+<td>X</td>
+</tr>
+<tr>
+<td>RespectIgnoreDifferences</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>SkipDryRunOnMissingResource</td>
+<td></td>
+<td>X</td>
+</tr>
+</tbody>
+</table>
+<h3 id="validate">Validate<a class="headerlink" href="#validate" title="Anchor link to this section for reference">&para;</a></h3>
+<p>We can pass to "kubectl apply" the --validate=false parameter with this Sync option</p>
+<h3 id="failonsharedresource">FailOnSharedResource<a class="headerlink" href="#failonsharedresource" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Enabling this makes the sync process fail if a resource is managed by other argocd application</p>
+<h3 id="replace">Replace<a class="headerlink" href="#replace" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Enabling it converts kubectl apply operation in a kubectl replace or kubectl create operation</p>
+<h3 id="force-and-replace">Force and Replace<a class="headerlink" href="#force-and-replace" title="Anchor link to this section for reference">&para;</a></h3>
+<p>If we want to delete and recreate a resource at every sync, we can use Force=true,Replace=true as sync options</p>
+<h3 id="serversideapply">ServerSideApply<a class="headerlink" href="#serversideapply" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Argocd by default uses a client side kubectl apply operation. This stores the last operation under the kubectl.kubernetes.io/last-applied-configuration annotation. See the server side apply document</p>
+<p>Enabling this Sync option make argocd use the --server-side=true kubectl parameter</p>
+<blockquote>
+<p>Replace=true takes precedence over ServerSideApply=true.</p>
+</blockquote>
+<h3 id="createnamespace">CreateNamespace<a class="headerlink" href="#createnamespace" title="Anchor link to this section for reference">&para;</a></h3>
+<p>If the application definition has a namespace configured under spec.destination.namespace, enabling this Sync option will create it.</p>
+<blockquote>
+<p>Under spec.syncPolicy.managedNamespaceMetadata we can configure some labels and annotations to add to that created namespace. But if we configure managedNamespaceMetadata with an existing namespace with metadata, we must upgrade the resource to server-side apply to preserve the existing metadata.</p>
+</blockquote>
+<h3 id="applyoutofsynconly">ApplyOutOfSyncOnly<a class="headerlink" href="#applyoutofsynconly" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Enabling ApplyOutOfSyncOnly the sync operation will only affect the OutOfSync resources. This makes the sync operation lighter for the api server. Specially relevant in big applications or low resource api servers.</p>
+<h3 id="prune-settings">Prune settings<a class="headerlink" href="#prune-settings" title="Anchor link to this section for reference">&para;</a></h3>
+<p>When a resource is not declared in the target state but it exists in the live state, we can configure the sync process to prune that resource.</p>
+<h4 id="prune">Prune<a class="headerlink" href="#prune" title="Anchor link to this section for reference">&para;</a></h4>
+<ul>
+<li>Prune=true</li>
+</ul>
+<p>The Sync operation will delete the resource</p>
+<ul>
+<li>Prune=false</li>
+</ul>
+<p>Prevents a resource from being pruned</p>
+<ul>
+<li>Prune=confirm</li>
+</ul>
+<p>Requires manual confirmation before pruning</p>
+<h4 id="prunepropagationpolicy">PrunePropagationPolicy<a class="headerlink" href="#prunepropagationpolicy" title="Anchor link to this section for reference">&para;</a></h4>
+<p>PrunePropagationPolicy permits to choose the garbage collection option. The default value is foreground</p>
+<ul>
+<li>PrunePropagationPolicy=foreground</li>
+<li>PrunePropagationPolicy=background</li>
+<li>PrunePropagationPolicy=orphan</li>
+</ul>
+<p>Garbage Collection</p>
+<p><a href="https://kubernetes.io/docs/concepts/architecture/garbage-collection/">https://kubernetes.io/docs/concepts/architecture/garbage-collection/</a></p>
+<h4 id="prunelast">PruneLast<a class="headerlink" href="#prunelast" title="Anchor link to this section for reference">&para;</a></h4>
+<p>If enabled, moves the prune process at the end of the sync operation</p>
+<pre><code class="language-txt">PruneLast=true
+PruneLast=false
+</code></pre>
+<h3 id="delete">Delete<a class="headerlink" href="#delete" title="Anchor link to this section for reference">&para;</a></h3>
+<p>The Delete Sync options configures how a resource will be deleted after the application is deleted</p>
+<ul>
+<li>Delete=false</li>
+</ul>
+<p>Don't delete the resource from the cluster during app deletion</p>
+<ul>
+<li>Delete=confirm</li>
+</ul>
+<p>Requires manual confirmation before deletion</p>
+<h3 id="respectignoredifferences">RespectIgnoreDifferences<a class="headerlink" href="#respectignoredifferences" title="Anchor link to this section for reference">&para;</a></h3>
+<p>We can configure under spec.ignoreDifferences some fields of the manifests we want to ignore when checking the target (desired state) and the live state and showing the sync state.
+Enabling the RespectIgnoreDifferences Sync option, applies that ignoreDifferences also to the sync process. This is, the fields declared under spec.ignoreDifferences will not be applied to the cluster.</p>
+<blockquote>
+<p>RespectIgnoreDifferences sync option is only effective when the resource is already created in the cluster. If the Application is being created and no live state exists, the desired state is applied as-is</p>
+</blockquote>
+<h3 id="skipdryrunonmissingresource">SkipDryRunOnMissingResource<a class="headerlink" href="#skipdryrunonmissingresource" title="Anchor link to this section for reference">&para;</a></h3>
+<p>When we want to apply a resource but the CRD does not exists in the cluster but both are located in the sync operation, argocd solves it. But if the CRDs are created dynamically during the sync operation, we can enable SkipDryRunOnMissingResource in the resource to avoid an error when argocd discovers if the CRD exists.</p>
+<h2 id="compare-options">Compare options<a class="headerlink" href="#compare-options" title="Anchor link to this section for reference">&para;</a></h2>
+<h2 id="argocdargoprojiocompare-options-ignoreextraneous">argocd.argoproj.io/compare-options: IgnoreExtraneous<a class="headerlink" href="#argocdargoprojiocompare-options-ignoreextraneous" title="Anchor link to this section for reference">&para;</a></h2>
+<p>This annotation makes argocd ignore if a kubernetes resource is not synced in terms of considering the whole argocd application like synced or not.</p>
+<p>This is useful when a different controller is making modifications in the resource and avoids unnecessary syncs.</p>
+<h2 id="links">Links<a class="headerlink" href="#links" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li>Sync Options</li>
+</ul>
+<p><a href="https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/">https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/</a></p>
+<ul>
+<li>Compare Options</li>
+</ul>
+<p><a href="https://argo-cd.readthedocs.io/en/stable/user-guide/compare-options/">https://argo-cd.readthedocs.io/en/stable/user-guide/compare-options/</a></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../syncPolicy-retry/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Control retries and timeouts">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Control retries and timeouts
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../../fluxcd/source-controller/gitrepository/" class="md-footer__link md-footer__link--next" aria-label="Next: GitRepository">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                GitRepository
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://linkedin.com/in/jorge-p-275960300" target="_blank" rel="noopener" title="LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5m282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.56ea9cef.min.js"></script>
+      
+    
+  </body>
+</html>
