@@ -31,24 +31,4 @@ There are differences between the target state and the live state. Sometimes a S
 
 There is a problem with the Sync process
 
-## Ways to sync
-
-## From the web interface
-
-## Using the argocd cli
-
-<https://argo-cd.readthedocs.io/en/stable/user-guide/commands/argocd_app_sync/>
-
-## Using kubectl
-
-<https://argo-cd.readthedocs.io/en/stable/user-guide/sync-kubectl/>
-
-## AutoSync
-
-<https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/>
-
-## Auto sync
-
-By default, an application does not make and automatic sync when it detects differences between the target and the live
-
-See the other links in this section for more information
+> See the other links in this section for more information
