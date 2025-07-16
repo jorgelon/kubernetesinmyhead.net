@@ -1,5 +1,7 @@
 # Missing key options
 
+Control the behavior during execution if a map is indexed with a key that is not present in the map.
+
 ## missingkey=default / "missingkey=invalid"
 
 The default behavior: Do nothing and continue execution.
