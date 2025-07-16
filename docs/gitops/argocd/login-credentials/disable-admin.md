@@ -1,4 +1,4 @@
-# Disable admin user
+# Change admin user
 
 Argocd documentation recommends to disable the admin user.
 
