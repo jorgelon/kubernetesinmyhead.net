@@ -11,3 +11,7 @@
 ## Oficial prometheus registry
 
 <https://quay.io/prometheus/prometheus>
+
+<https://samber.github.io/awesome-prometheus-alerts/rules>
+
+<https://github.com/zalando-incubator/kube-metrics-adapter>
