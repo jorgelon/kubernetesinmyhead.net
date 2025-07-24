@@ -75,10 +75,11 @@ These tools are related with implementing scans in pre-commit hooks, pre-receive
 
 |                | Contributors | Stars  | Notes                 | URL                                             |
 |----------------|--------------|--------|-----------------------|-------------------------------------------------|
-| Gitleaks       | 178          | 17.800 | Active                | <https://github.com/gitleaks/gitleaks>          |
-| Trufflehog     | 132          | 16.000 | Active                | <https://github.com/trufflesecurity/trufflehog> |
-| Detect-secrets | 71           | 3.800  | Active                | <https://github.com/Yelp/detect-secrets>        |
-| Talisman       | 63           | 1.900  | Active?               | <https://github.com/thoughtworks/talisman>      |
+| Gitleaks       | 212          | 22.500 | Active                | <https://github.com/gitleaks/gitleaks>          |
+| Trufflehog     | 163          | 20.000 | Active                | <https://github.com/trufflesecurity/trufflehog> |
+| Trivy          | 466          | 27.600 | Active                | <https://github.com/aquasecurity/trivy>         |
+| Talisman       | 68           | 2.000  | Active                | <https://github.com/thoughtworks/talisman>      |
+| Detect-secrets | 71           | 3.800  | Active?               | <https://github.com/Yelp/detect-secrets>        |
 | Git secrets    | 30           | 12.400 | Awslabs. Unmaintained | <https://github.com/awslabs/git-secrets>        |
 | Git guardian   |              |        | Platform              | <https://www.gitguardian.com/>                  |
 
