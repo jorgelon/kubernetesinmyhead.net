@@ -16,9 +16,9 @@ OTEL_EXPORT_TYPE: "prometheus"
 - API latency
 
 ```txt
-API_latency_bucket
 API_latency_count
 API_latency_sum
+API_latency_bucket
 ```
 
 - Http server duration:
@@ -26,10 +26,34 @@ API_latency_sum
 Measures the duration of inbound HTTP requests
 
 ```txt
-http_server_duration_bucket
 http_server_duration_count
 http_server_duration_sum
+http_server_duration_bucket
 ```
+
+```txt
+API_errors_count
+```
+
+API_errors_count tracks the total number of errors that occurred for the specified route, method, and error type.
+
+```txt
+API_errors_sum
+```
+
+API_errors_sum tracks the cumulative value of the errors.
+
+```txt
+API_errors_bucket
+```
+
+API_errors_bucket is an histogram that measures the distribution of errors over different time buckets (latency or duration). Each bucket represents the number of errors that occurred within a specific time range (e.g., less than or equal to 5ms, 10ms, etc.).
+Labels:
+route: The API route (/api/v3/secrets/raw).
+method: The HTTP method (GET).
+type: The type of error (RateLimitError).
+name: The specific error name (RateLimitExceeded).
+le: The upper bound of the bucket (e.g., 5ms, 10ms, etc.).
 
 ### Some tips
 
