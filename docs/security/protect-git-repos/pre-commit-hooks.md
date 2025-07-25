@@ -28,7 +28,7 @@ This changes the path where the hooks are located
 git config core.hooksPath .githooks # the default value is .git/hooks
 ```
 
-## Pre-commit
+## Pre-commit framework
 
 Another way to share the pre commit hooks is using the pre-commit framework.
 
@@ -38,14 +38,30 @@ For this you must :
 - configure .pre-commit-config.yaml in the root of your git repo with your pre-commit hooks
 - install the pre-commit scripts in your git repo
 
+### Links and integrations
+
+Pre-commit framework
+
 <https://pre-commit.com/>
+
+- Trufflehog
+
+<https://docs.trufflesecurity.com/pre-commit-hooks>
+
+- Gitleaks
+
+<https://github.com/gitleaks/gitleaks>
+
+- Talisman
+
+<https://github.com/thoughtworks/talisman>
+
+- Trivy
+
+<https://github.com/mxab/pre-commit-trivy>
 
 ## Husky
 
 pending
 
 <https://typicode.github.io/husky/>
-
-## Links
-
-<https://docs.trufflesecurity.com/pre-commit-hooks>
