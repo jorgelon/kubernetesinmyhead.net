@@ -14,7 +14,7 @@ By default, when an ApplicationSet is deleted, this will occur by order
 
 ### Changing this behaviour
 
-- ApplicationSet finalizer
+#### ApplicationSet finalizer
 
 We can also configure the foreground and background finalizer in an ApplicationSet.
 
@@ -23,7 +23,34 @@ The foreground finalizer blocks deletion until all Applications are deleted and 
 The background finalizer initiates the deletion in the background. Faster, but may leave resources if deletion fails
 ```
 
-- Don't delete Applications
+Changing to forereground finalizer has some benefits:
+
+- Controlled Cleanup
+
+Ensures all generated Applications are properly deleted before the ApplicationSet is removed. Prevents orphaned Applications that could continue running without management
+
+- Dependency Management
+
+Applications are deleted in the correct order (children before parent). Prevents resource conflicts during cleanup
+
+- Consistent State
+Guarantees that when the ApplicationSet deletion completes, all related resources are actually gone. Avoids partial cleanup scenarios
+
+And some cons
+
+- Blocking deletion:
+
+If child Applications fail to delete cleanly, the ApplicationSet deletion will hang indefinitely
+
+- Cascading failures:
+
+Problems with individual applications can prevent the entire ApplicationSet from being removed
+
+- Operational complexity:
+
+Requires manual intervention to resolve stuck deletions
+
+#### Don't delete Applications
 
 To delete an ApplicationSet resource, while preventing Applications (and their deployed resources) from also being deleted, using a non-cascading delete:
 
