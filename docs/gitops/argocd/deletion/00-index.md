@@ -15,25 +15,3 @@ There are several ways to disable automatic deletion of things in argocd
 | dry-run mode                                  | Controller                  | Prevent all ApplicationSet doing actions                                          |
 | argocd.argoproj.io/sync-options: Delete=false | Resource                    |                                                                                   |
 | argocd.argoproj.io/sync-options: Prune=false  | Resource                    |                                                                                   |
-
-## Best practices
-
-### ApplicationSet foreground cascade deletion
-
-Enable the foreground cascade deletion the ApplicationSet resources:
-
-Benefits:
-
-- Controlled deletion: Ensures Applications are properly deleted before the ApplicationSet is removed
-
-- Prevents orphaned resources: Makes sure all generated resources are cleaned up properly
-
-- Explicit behavior: Makes the deletion behavior clear and predictable rather than relying on Kubernetes garbage collection alone
-
-- Complete cleanup: Guarantees that all resources are removed in the correct order
-
-Exceptions:
-
-- Where quick deletion might be preferred (use background finalizer)
-- Very large ApplicationSets: Where deletion speed is a concern (background might be better)
-- Migration scenarios: Where you want to keep Applications (use --cascade=orphan instead)

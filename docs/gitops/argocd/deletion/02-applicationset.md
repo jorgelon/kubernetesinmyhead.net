@@ -17,8 +17,11 @@ By default, when an ApplicationSet is deleted, this will occur by order
 - ApplicationSet finalizer
 
 We can also configure the foreground and background finalizer in an ApplicationSet.
+
+```txt
 The foreground finalizer blocks deletion until all Applications are deleted and ensures complete cleanup.
 The background finalizer initiates the deletion in the background. Faster, but may leave resources if deletion fails
+```
 
 - Don't delete Applications
 
