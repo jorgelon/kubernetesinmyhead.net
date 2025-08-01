@@ -1,0 +1,4 @@
+fileignoreconfig:
+- filename: docs/CI-CD/gitlab-ci-cd/98-tips.md
+  checksum: d14a4d5d0e4e778a8ba97565c3c9574375ee9f395e5c7abe887c58fc679f753d
+version: "1.0"
