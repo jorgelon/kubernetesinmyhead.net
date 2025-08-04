@@ -58,7 +58,7 @@ To delete an ApplicationSet resource, while preventing Applications (and their d
 kubectl delete ApplicationSet (NAME) --cascade=orphan
 ```
 
-- Preserve Application's resources
+#### Preserve Application's resources
 
 If we want to **preserve the deletion of the Application's resources** we can enable spec.syncPolicy.preserveResourcesOnDeletion. This prevents the ApplicationSet controller from setting up a finalizer during application generation.
 
