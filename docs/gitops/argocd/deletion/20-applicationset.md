@@ -86,11 +86,6 @@ This is done enabling the dryrun mode (--dryrun parameter) via the **data.Applic
 
 Also we can control the individual actions an ApplicationSet can to in its applications via the spec.syncPolicy.applicationsSync setting with the following values:
 
-- sync
-- create-only
-- create-delete
-- create-update
-
 | Action         | create   | update   | delete   |
 |----------------|----------|----------|----------|
 | sync (default) | &#x2611; | &#x2611; | &#x2611; |
