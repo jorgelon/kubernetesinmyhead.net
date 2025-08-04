@@ -5,6 +5,7 @@ Changing an Applicationset can be dangerous because by default it can create and
 ## Preparation: Disable autosync in parent Application
 
 !!! danger "This is critical"
+
     If the Applicationset itself is deployed using gitops, disable autosync (at least, the prune option) in the application that manages our Applicationset.
 
 ## Preparation: Disable autosync in generated Applications
@@ -67,6 +68,7 @@ With our Applicationset with pending changes:
 - Check the Applicationset's name does not change and the old one will not be deleted (pruned).
 
 !!! danger ""
+
     The default behaviour when deleting an Applicationset is delete the Applicationset itself and all the generated applications and resources.
 
 ## Sync your changes
