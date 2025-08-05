@@ -1,66 +1,55 @@
 # ApplicationSet
 
-## ApplicationSet deletion
+## Relation between the the ApplicationSet and generated Applications
 
-An ApplicationSet can generate Application resources. We can see in the .metadata.ownerReferences field the Application the ApplicationSet that generated it.
+The generated Applications by an ApplicationSet have:
 
-By default, when an ApplicationSet is deleted, this will occur by order
+- In .metadata.ownerReferences, a reference to the ApplicationSet as owner
+- In .metadata.finalizers a **resources-finalizer.argocd.argoproj.io** finalizer if the ApplicationSet has .syncPolicy.preserveResourcesOnDeletion as false
+- By default they have the resources-finalizer.argocd.argoproj.io finalizer
 
-- The ApplicationSet is deleted
+## Deleting an ApplicationSet
 
-- Any Application resource created with this ApplicationSet (ownerreference) will be deleted. This is based in the kubernetes garbage collector. Kubernetes automatically garbage-collects resources when their owner is deleted.
+When an ApplicationSet is deleted, this will occur in order
 
-- The Application's resources will also be deleted.
+- the ApplicationSet is deleted
 
-### Changing this behaviour
+- the generated Applications are deleted (because of the owner reference)
 
-#### ApplicationSet finalizer
+- the deployed resources created in that Application are deleted
 
-We can also configure the foreground and background finalizer in an ApplicationSet.
+There are 3 ways to control how this deletion is done via finalizers
 
-```txt
-The foreground finalizer blocks deletion until all Applications are deleted and ensures complete cleanup.
-The background finalizer initiates the deletion in the background. Faster, but may leave resources if deletion fails
-```
+### Default (no finalizer)
 
-Changing to forereground finalizer has some benefits:
+By default an ApplicationSet has not finalizer. This means the argocd applicationset controller will not manage the deletion of the ApplicationSet. It will be done using **kubernetes garbage collector**.
 
-- Controlled Cleanup
+- Nothing blocks or delays its deletion. The ApplicationSet is deleted inmediately
+- This performs a cascade deletion of the Applications and resources, because of the owner reference
 
-Ensures all generated Applications are properly deleted before the ApplicationSet is removed. Prevents orphaned Applications that could continue running without management
+<https://kubernetes.io/docs/concepts/architecture/garbage-collection/>
 
-- Dependency Management
-
-Applications are deleted in the correct order (children before parent). Prevents resource conflicts during cleanup
-
-- Consistent State
-Guarantees that when the ApplicationSet deletion completes, all related resources are actually gone. Avoids partial cleanup scenarios
-
-And some cons
-
-- Blocking deletion:
-
-If child Applications fail to delete cleanly, the ApplicationSet deletion will hang indefinitely
-
-- Cascading failures:
-
-Problems with individual applications can prevent the entire ApplicationSet from being removed
-
-- Operational complexity:
-
-Requires manual intervention to resolve stuck deletions
-
-#### Don't delete Applications
-
-To delete an ApplicationSet resource, while preventing Applications (and their deployed resources) from also being deleted, using a non-cascading delete:
+If we want to delete an ApplicationSet resource, while preventing Applications (and their deployed resources) from being deleted, we can use a non-cascading delete:
 
 ```shell
 kubectl delete ApplicationSet (NAME) --cascade=orphan
 ```
 
-#### Preserve Application's resources
+### Using argocd finalizer
 
-If we want to **preserve the deletion of the Application's resources** we can enable spec.syncPolicy.preserveResourcesOnDeletion. This prevents the ApplicationSet controller from setting up a finalizer during application generation.
+We can add a finalizer an ApplicationSet. This makes the applicationset controller responsible to manage how the Applications and resources are deleted
+
+- Foreground
+
+The foreground finalizer blocks deletion until all Applications are deleted and ensures complete and ordered cleanup.
+
+- Background
+
+The background finalizer initiates the deletion in the background. Faster, but may leave resources if deletion of child resources fails.
+
+### Preserve Application's resources
+
+If we want to **preserve the deletion of the Application's resources** we can enable spec.syncPolicy.preserveResourcesOnDeletion in the ApplicationSet.
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -70,7 +59,9 @@ spec:
     preserveResourcesOnDeletion: true
 ```
 
-## ApplicationSet permissions in apps
+> This removes the resources-finalizer.argocd.argoproj.io finalizer in the generated Applications so a non cascading (orphan) deletion is performed in the Application
+
+## ApplicationSet permissions
 
 We can configure if an ApplicationSet can create, update and delete its discovered applications.
 
