@@ -4,7 +4,7 @@ This tools permit to group some kubernetes resources in templates and create ins
 
 ## List of tools
 
-|               | How it defines                                      | Link                                  |
+| Name          | How it defines                                      | Link                                  |
 |---------------|-----------------------------------------------------|---------------------------------------|
 | Helm          | Using Go templating                                 | <https://helm.sh/docs/>               |
 | Kustomize     | With overlays                                       | <https://kustomize.io/>               |
@@ -15,4 +15,6 @@ This tools permit to group some kubernetes resources in templates and create ins
 | Timoni        | Using cue                                           | <https://timoni.sh/quickstart/>       |
 | Kubevela      | Application CRD                                     | <https://kubevela.io/docs/>           |
 | KPT           |                                                     | <https://kpt.dev/>                    |
-| Grafana Tanka |                                                     | <https://tanka.dev/>                  |
+| Grafana Tanka | With jsonnet                                        | <https://tanka.dev/>                  |
+| Operator SDK  | Custom operators for complex templating             | <https://sdk.operatorframework.io/>   |
+| CDK8s         | Cloud Development Kit for Kubernetes                | <https://cdk8s.io/>                   |
