@@ -1,4 +1,4 @@
-# Commands
+# Slash Commands
 
 ## List
 
@@ -33,3 +33,26 @@
   /vim - Toggle between Vim and Normal editing modes
 
 * see vscode for terminal-setup
+
+## Custom commands
+
+It possible to define custom slash commands via md files
+
+* Per user
+
+```txt
+~/.claude/commands/
+
+```
+
+* Per project
+
+```txt
+.claude/commands/
+```
+
+## Links
+
+* Slash commands
+
+<https://docs.anthropic.com/en/docs/claude-code/slash-commands>
