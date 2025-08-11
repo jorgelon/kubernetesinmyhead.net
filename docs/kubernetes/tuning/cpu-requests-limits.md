@@ -1,94 +1,141 @@
-# CPU requests y limits
+# CPU requests and limits
+
+## Units
+
+The CPU requests and limits can be specified in some formats:
+
+- Using a number, with or without decimals
+- Using milicores / milicpu (a cpu capacity / 1000)
+
+> For values less that 1 CPU, it is recommended to use the milicpu format and not the decimal format
+
+```yaml
+resources:
+    requests:
+    cpu: 2 # 2 CPU
+```
+
+```yaml
+resources:
+    requests:
+    cpu: 0.5 # Half CPU
+```
+
+```yaml
+resources:
+    requests:
+    cpu: "200m" # 200 milicores = 0.2
+```
+
+> If we define a cpu limit but not a CPU request, kubernetes gives both the same value.
 
 ## CPU request
 
-Asignar un valor de cpu request a un contenedor tiene estas implicaciones principales:
+Giving a CPU request to a kubernetes container has some implications:
 
-- Kube scheduler asignara a ese pod un nodo del cluster que tenga al menos esa cantidad de recursos disponibles. Si ningun nodo la tiene, el pod se queda sin desplegarse, en espera a que la haya.
+- Scheduling:
 
-- Una vez en el nodo, el contenedor tendra garantizado ese valor de cpu en el nodo, que no podra ser asignado a otros.
+Kube scheduler will assign that pod to a node that has that CPU resources as available. If no node has that resources the pod will be in Pending state until they new resources are available.
 
-- Ademas, el valor de cpu request se tiene en cuenta a la hora de que los contenedores se disputen el computo sobrante de un nodo. De esta forma, un contenedor con 500m de cpu requests tendra el doble de prioridad que uno con 250m intentando obtener el maximo de cpu que pueda. Es decir, cpu request es ademas un peso. Este maximo de cpu que puede lograr vendra dado por la capacidad del nodo o, si el container tiene cpu limit, por dicho limite.
+- Guarantee:
 
-- El valor de cpu request se tiene en cuenta para el horizontal pod autoescaler
+Once the container is up in the node, that CPU resources will be guaranteed.
+
+- Weight in CPU contention:
+
+The requested CPU will be used during CPU contention situations in the node. Containers with higher CPU requests will have higher priority accesing the node CPU.
+
+Este maximo de cpu que puede lograr vendra dado por la capacidad del nodo o, si el container tiene cpu limit, por dicho limite.
+
+- HPA
+
+That value will be used in the CPU horizontal pod autoescaler
 
 ## CPU limit
 
-Definir en un contenedor un cpu limit supone la maxima cantidad de cpu time que un contenedor puede utilizar. CPU se considera en kubernetes un recurso comprimible (compressible) lo que significa que, si un contenedor con limite llega a esta cantidad, aparece el denominado **cpu throttling**.
-No se libera cpu matando el contenedor, sino que la tarea tendra que **esperar a que haya cpu mas tarde**.
+The CPU limit in kubernetes is controlled by the linux kernel and the Completely Fair Scheduler (CFS).
 
-Con ello se ve **perjudicada la latencia y rendimiento** del mismo, y pueden aparecer **situaciones indeseadas e incontroladas**, como el fallo en las probes. Ademas supone que si hay mas recursos dentro del nodo, el contenedor con cpu limit no puede acceder a ellos (infrautilizacion).
+It can be defined as **the maximum CPU time a container can use every in a CPU cycle interval**
 
-Pero definir limits permite asegurar que un contenedor **no pueda usar demasiados recursos** y afectar al resto.
-No definir cpu limits permite un **mejor aprovechamiento de los recursos** del nodo.
+The CPU limit is translated to the CFS as the **cpu_quota_us** setting, and the cycle interval as the **cpu_period_us**
 
-> El valor de un cpu request o limit se puede establecer a nivel de contenedor ya sea por numero de milicores o por una fraccion. Asi, 500m es lo mismo que 0,5 (media cpu).
+> The default cpu_period_us is 100 ms
 
-## El valor en practica
+So a container with 200m as limit, cannot use more than 200 milicpu at every 100 miliseconds.
 
-El valor de cpu request y limit tiene que ver con cuanto tiempo de cpu dispone un pod cada 100 milisegundos, que es el valor por defecto de **cpu_period_us** del kernel de linux (100000us o 100ms). El valor del limite sera el valor de **cpu.cfs_quota_us** para el cgroup del container.
+Using CPU limits has some implications:
 
-> El valor de cpu request de un contenedor es la cantidad de tiempo de cpu garantizada, que usara si la necesita.
+- Protecting other containers
 
-**Ejemplo**
-Por ejemplo, un contenedor con 100m (o 0,1 de request) tendra garantizados 10 milisegundos (0.1 x 100).  
-Si el contenedor para ejecutar una tarea solo necesita 6 ms, los restantes 4 ms estaran disponibles para el resto de contenedores del nodo.
+Ensures a container cannot use too much resources and affect others
 
-Supongamos ahora que para ejecutar una tarea necesitara 50 ms. Sin cpu limit podra acceder a esos 10ms garantizados y, si hay disponibles recursos en el nodo, a los otros 40 que necesita dentro del mismo ciclo.
+- CPU throttling
 
-Supongamos que ahora tiene un limite en 0.2. En este caso necesitara 3 ciclos de cpu time (20+20+10) para poder realizarla, independientemente del estado del nodo.
+CPU under kubernetes is a compressible resource. When a container reaches that quota, it will have to wait to the next period (100 ms) to try to access to the CPU resources.
+This affects the performance and latency in the container and unwanted an uncontrolled situations can appear, like readiness or liveness probe failures.
 
-Y eso es en un ejemplo donde hay un cpu y es solo un hilo para esa tarea. En multihilo y varias cpu, ese limite se reparte entre los cores.
-En 2 cpu, consumiria la cuota en 0.1ms sin poder hacer uso del 0.9 restante. A mas cores, mas rapido consume la cuota (limit).
+- Underutilization
 
-> Cuando defines un cpu limit pero no un request, kubernetes entiende que el valor para request es tambien el del limit.
+Also, the node can have free CPU resources available, but they are not accesible by the limited container (**underused**)
+Not using CPU limits permits a better use of the CPU node resources
 
-## Algunas conclusiones y directrices
+## Some thougts and best practices
 
-- Es necesario obtener informacion para una correcta observacion y analisis, por lo que debemos servirnos de un sistema de monitorizacion y utilidades como Goldilocks (vpa) o Robusta KRR.
+- Always define CPU requests. This also avoids the qos class besteffort
 
-- Siempre hay que definir un valor de cpu request para cada container, teniendo en cuenta lo que implica. Con ello ademas se evita la qos class besteffort.
+- In order to define a good value it is very important to have access to metrics about cpu consumption. Utilities like Goldilocks (vpa) o Robusta KRR can give recommendations.
 
-- Algunas voces recomiendan no utilizar cpu limits. Aqui se da prioridad al rendimiento y como medida el establecer valores de cpu requests apropiados para proteger a los contenedores. Incluso hay quien habla de deshabilitarlo en kubelet mediante cpuCFSQuota=0.
+- Using CPU limits gives more importance to protect the nodes and other containers during high CPU usage and to having a controlled environment.
 
-- En segun que entornos se puede reducir el cpu_period_us para que los ciclos sean mas cortos
+- Some people recommends not using CPU limits and only use good CPU request values. It can also be disabled at kubelet level using cpuCFSQuota=0.
 
-- Establecer cpu limits da mas prioridad a la proteccion de los nodos y otros contenedores frente a cargas de trabajo excesivas, asi como a tener un entorno controlado en ese sentido.
+- For pods that can have more that 1 replicas it can be useful to use horizontal pod autoescaler or Keda
 
-- Estudiar la posibilidad de usar autoescalados como horizontal pod autoescaler o Keda
+- For pods with only 1 replica,  it can be useful to use vertical pod autoescaling
 
-- Estudiar el uso de vertical pod autoescaling en aplicaciones sin replicas
-
-Dependiendo del entorno o caso, puede tener mas sentido o no definir cpu limits.
+- In some environments can be a good practice to change the cpu_period_us
 
 ## Links
 
 - Resource Management for Pods and Containers  
+
 <https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/>
 
 - Assign CPU Resources to Containers and Pods  
+
 <https://kubernetes.io/docs/tasks/configure-pod-container/assign-cpu-resource/>
 
 - Pod Overhead  
+
 <https://kubernetes.io/docs/concepts/scheduling-eviction/pod-overhead/>
 
 - For the Love of God, Stop Using CPU Limits on Kubernetes  
+
 <https://home.robusta.dev/blog/stop-using-cpu-limits>
 
 - For the love of god, learn when to use CPU limits on Kubernetes  
+
 <https://medium.com/@eliran89c/for-the-love-of-god-learn-when-to-use-cpu-limits-on-kubernetes-2225341e9dbd>
 
 - Why You Should Keep Using CPU Limits on Kubernetes  
+
 <https://dnastacio.medium.com/why-you-should-keep-using-cpu-limits-on-kubernetes-60c4e50dfc61>
 
 - Kubernetes resources under the hood – Part 1  
+
 <https://directeam.io/blog/kubernetes-resources-under-the-hood-part-1/>
 
 - Kubernetes resources under the hood – Part 2  
+
 <https://directeam.io/blog/kubernetes-resources-under-the-hood-part-2/>
 
 - Kubernetes resources under the hood – Part 3  
+
 <https://directeam.io/blog/kubernetes-resources-under-the-hood-part-3/>
+
+- CPU Limits in Kubernetes: Why Your Pod is Idle but Still Throttled: A Deep Dive into What Really Happens from K8s to Linux Kernel and Cgroups v2
+
+<https://www.reddit.com/r/kubernetes/comments/1k28c00/cpu_limits_in_kubernetes_why_your_pod_is_idle_but/>
 
 ### Tools
 
