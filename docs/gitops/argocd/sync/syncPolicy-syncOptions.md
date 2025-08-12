@@ -44,7 +44,7 @@ Multiple Sync Options can be configured
 | PruneLast                   | Moves the prune process at the end of the sync operation                                              |
 | PrunePropagationPolicy      | Permits to choose the garbage collection (foreground,background or orphan)                            |
 | Replace                     | Converts kubectl apply operation in a kubectl replace or kubectl create operation                     |
-| RespectIgnoreDifferences    | Used spec.ignoreDifferences also in the sync process                                                  |
+| RespectIgnoreDifferences    | Used spec.ignoreDifferences also in the sync process. Don't sync/correct that fields                  |
 | ServerSideApply             | With true, we pass --server-side=true parameter to kubectl                                            |
 | SkipDryRunOnMissingResource | Ignores if a resource to be created does not have its CRD                                             |
 | Validate                    | With false, we pass --validate=false to kubectl                                                       |
