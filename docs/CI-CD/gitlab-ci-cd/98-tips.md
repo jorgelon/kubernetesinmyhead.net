@@ -20,3 +20,7 @@ value: {"auths":{"FQDN":{"username":"your-username","password":"your-password"}}
 ```
 
 And thats it. GitLab will automatically use these credentials to authenticate with your registry. The authentication happens at the GitLab Runner level, not within your job container.
+
+- Run your CI/CD jobs in Docker containers
+
+<https://docs.gitlab.com/ci/docker/using_docker_images/>
