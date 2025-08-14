@@ -4,8 +4,6 @@
 
 If we want to remove a kubernetes resources from an argocd Application we can make it in different ways.
 
-First of all the more secure starting point is to **disable autoSync** in the Application
-
 ### With the tracking method
 
 When argocd manages a kubernetes marks it to know it is being managed.
@@ -20,12 +18,25 @@ Until 3.0 the default tracking method was adding the app.kubernetes.io/instance 
 
 > <https://argo-cd.readthedocs.io/en/stable/user-guide/resource_tracking/>
 
-- With autosync disabled or, at least, **selfHeal to false**, we only need to **delete that tracking method** from the resource, for example the annotation, but autosync and self heal will be add it. So we need
+STEPS
 
-- Next we cat edit that resource and remove the tracking annotation. The resource will be shown out of sync.
+- First of all the more secure starting point is to **disable autoSync** in the Application or, at least, **selfHeal to false**
 
-- Then we push the changes to git where we declare we dont want the resource in that Application. Refresh the Application and the resource will dissapear from but it will not be deleted
+- Then we only need to **delete that tracking method** from the resource, for example the annotation, but autosync and self heal will be add it. So we need
+
+- Next we can edit that resource and remove the tracking annotation. The resource will be shown out of sync. This can be done via kubectl or argocd web interface.
+
+- Then we push the changes to git where we declare we dont want the resource in that Application. Refresh the Application and the resource will dissapear but it will not be deleted from the cluster
 
 ### With orphan deletion
 
-pending
+This is faster but it is also potentially less secure because implies a deletion.
+
+- First of all disable autosync in the application
+
+- Then remove the resource from the argocd ui using **Non-cascading (Orphan) Delete**. The resource will be shown out of sync.
+
+![alt text](image-1.png)
+![alt text](image.png)
+
+- Then we push the changes to git where we declare we dont want the resource in that Application. Refresh the Application and the resource will dissapear but it will not be deleted from the cluster
