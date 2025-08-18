@@ -45,7 +45,7 @@ spec:
 
 - This setting has no effect in Applications managed by ApplicationSets.
   
-To enable/disable autosync in an Application managed by ApplicationSet without changing the setting in all generated Applications, we have some options. For example we can use templatePatch or ignoring that field in the ApplicationSet and then changing manually the desired value in our Application
+To enable/disable autosync in an Application managed by ApplicationSet without changing the setting in all generated Applications, we have some options. For example we can use **templatePatch** or **ignoring that field in the ApplicationSet** and then changing manually the desired value in our Application
 
 ```yaml
 apiVersion: argoproj.io/v1alpha1
@@ -53,8 +53,10 @@ kind: ApplicationSet
 spec:
   ignoreApplicationDifferences:
     - jsonPointers:
-        - /spec/syncPolicy/automated
+        - /spec/syncPolicy/automated/enabled
 ```
+
+> This permits enabling and disabling the autosync manually and directly in the Application resource but loosing gitops control of desired state.
 
 ## Links
 
