@@ -1,6 +1,6 @@
 # Automated sync
 
-By default, an application does not make and automatic sync when it detects differences between the target and the live
+By default, after a reconciliation/refresh, an Application does not make and automatic sync when it detects differences between the target and the live state. So the differences between them are not applied in an automated way. For that we need to enable the autosync feature in the Application (or Applicationset)
 
 ## Enabling autosync
 
@@ -14,6 +14,8 @@ spec:
 
 ## autosync options
 
+There some options here to configure the automated sync.
+
 - prune
 
 Enables automatic deletion of resources that they are not defined in the Application but they were. The default value is false.
@@ -24,7 +26,7 @@ This setting is disabled by default and prevents a pruning operation can remove 
 
 - selfHeal
 
-When a change in detected in the kubernetes cluster that generates a drift, argocd by default ignores it. Enabling selfHeal triggers a sync.
+When a change in detected in the kubernetes cluster that generates a drift, argocd by default ignores it. Enabling selfHeal triggers a new sync.
 
 ## Toggling autosync
 
@@ -37,7 +39,7 @@ spec:
       enabled: true # or false
 ```
 
-### Some notes about the new feature
+### Some notes about this new feature
 
 - Setting this value to false, disables autosync but permits to configure prune, allowEmpty and selfHeal
 
