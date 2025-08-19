@@ -86,10 +86,10 @@ AI coding assistant with focus on code quality and team collaboration features.
 
 <https://marketplace.visualstudio.com/items?itemName=augment.vscode-augment>
 
-## MCP servers
+## Other
 
-- For Visual studio code
+- Taskmaster
 
-Model Context Protocol servers enabling AI assistants to securely access external tools and data.
+AI's personal project manager
 
-<https://code.visualstudio.com/mcp>
+<https://www.task-master.dev/>
