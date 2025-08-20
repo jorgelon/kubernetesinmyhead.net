@@ -85,11 +85,3 @@ AI code completion tool trained on open source code with privacy-focused options
 AI coding assistant with focus on code quality and team collaboration features.
 
 <https://marketplace.visualstudio.com/items?itemName=augment.vscode-augment>
-
-## Other
-
-- Taskmaster
-
-AI's personal project manager
-
-<https://www.task-master.dev/>

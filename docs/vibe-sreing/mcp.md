@@ -23,3 +23,9 @@ Model Context Protocol servers enabling AI assistants to securely access externa
 - Model Context Protocol
 
 <https://modelcontextprotocol.io/>
+
+- Taskmaster
+
+AI's personal project manager
+
+<https://www.task-master.dev/>
