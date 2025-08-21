@@ -58,6 +58,7 @@ In a helm source, argocd downloads the desired chart version, generates the fina
 
 We can invalidate that cache and force to get the git repo / helm chart again with a hard refresh
 
+- At controller level with the **timeout.hard.reconciliation** setting in the argocd-cm ConfigMap
 - Manually via argocd ui (refresh + hard button)
 - Using the argocd cli (argocd app get --hard-refresh)
 - Via argocd.argoproj.io/refresh=hard annotation to the application
