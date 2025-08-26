@@ -61,3 +61,21 @@ spec:
 In the UI
 
 ![alt text](ep.png)
+
+## Precedence
+
+A workflow can call a (cluster)workflowTemplate and this (cluster)workflowTemplate can call other (cluster)workflowTemplate(s).
+
+For example:
+
+```txt
+Workflow > (cluster)workflowTemplate A > (cluster)workflowTemplate B
+```
+
+Argo Workflows handles nested template calls by dynamically expanding and composing templates at runtime.
+
+- When submitting the workflow, Argo workflows resolves (cluster)workflowTemplate A and then (cluster)workflowTemplate B. This continues until all template references are resolved into concrete steps.
+
+- Parameters, volumes, and other configurations cascade down through template calls. So parameters, volumes and other metadatas at higher levels take precedence with lower levels if defined in both. With ServiceAccount, the most specific serviceAccount definition wins
+
+- The result is a single, expanded Workflow object with all steps defined concretely. Once expanded, the final Workflow doesn't change even if source templates are modified

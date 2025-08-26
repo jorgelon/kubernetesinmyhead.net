@@ -7,3 +7,7 @@
 - Claudelog
 
 <https://claudelog.com/>
+
+- Awesome claude code
+
+<https://github.com/hesreallyhim/awesome-claude-code>
