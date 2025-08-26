@@ -79,3 +79,41 @@ Argo Workflows handles nested template calls by dynamically expanding and compos
 - Parameters, volumes, and other configurations cascade down through template calls. So parameters, volumes and other metadatas at higher levels take precedence with lower levels if defined in both. With ServiceAccount, the most specific serviceAccount definition wins
 
 - The result is a single, expanded Workflow object with all steps defined concretely. Once expanded, the final Workflow doesn't change even if source templates are modified
+
+```yaml
+# Workflow (highest precedence)
+  spec:
+    arguments:
+      parameters:
+      - name: image-tag
+        value: "v1.0.0"  # This wins
+    workflowTemplateRef:
+      name: deploy-template
+
+  # WorkflowTemplate (middle precedence)
+  spec:
+    arguments:
+      parameters:
+      - name: image-tag
+        value: "latest"   # Overridden by Workflow
+      - name: namespace
+        value: "staging"  # This wins (not defined in Workflow)
+    templates:
+    - name: main
+      templateRef:
+        name: build-template
+        template: build
+
+  # WorkflowTemplate 2 (lowest precedence)
+  spec:
+    arguments:
+      parameters:
+      - name: image-tag
+        value: "dev"      # Overridden
+      - name: namespace
+        value: "default"  # Overridden
+      - name: registry
+        value: "harbor.local" # This wins (not defined upstream)
+
+  Result: image-tag: "v1.0.0", namespace: "staging", registry: "harbor.local"
+```
