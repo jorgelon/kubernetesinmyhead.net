@@ -4,7 +4,7 @@ Karpenter's disruption is the process that makes Karpenter terminates nodes in t
 
 ## Planning phase (disruption controller)
 
-### Search for disruptable nodes
+### Search candidates
 
 The disruption controller is continuously discovering nodes that can be disrupted because of this reasons:
 
@@ -34,7 +34,7 @@ kubectl get events --all-namespaces --field-selector involvedObject.kind=Node | 
 
 If no nodes cannot be disrupted, the **same process will start with the consolidation disruption**.
 
-### Evaluate disruptable nodes
+### Evaluate candidates
 
 - NodePool’s disruption budget
 
@@ -82,12 +82,12 @@ The termination controller starts evicting the pods using the Kubernetes Evictio
 ### Cleaning
 
 - When the node is drained, the NodeClaim is deleted
-- Finally the finalizer is removed from the node so the APIServer can it
+- Finally the finalizer is removed from the node so the APIServer can remove it
 
 ## Forceful deletion
 
-The expiration and interruption methods have different paths:
+In **expiration and interruption methods** the disruption controller immediately triggers tainting and draining as soon as the event is detected (interruption signal or expireAfter).
 
-- they start being drained when the condition is met
-- they do not respect NodePool’s disruption budget. Pod disruption budgets can be used to control the speed.
-- they do not wait for a replacement node to be healthy
+- That methods do not respect NodePool’s disruption budget.
+- Pod disruption budgets can be used to control the disruption speed at application level.
+- That methods they do not wait for a replacement node to be healthy
