@@ -46,13 +46,19 @@ spec:
 
 ## Calling the whole tamplate
 
-If we call the whole template, without choosing the entrypoint, the workflow will not have entrypoint and the printed value will be A
+If we create a workflow calling the whole template without choosing the entrypoint
+
+- the workflow will not have entrypoint
+- the printed value will be A
 
 ![alt text](image.png)
 
 ## Calling the main template
 
-If we call the main template (the entrypoint will be main) the printed value will be C
+If we create a workflow calling the main template
+
+- the entrypoint will be main
+- the printed value will be C
 
 The order will be C > B > A
 
@@ -60,7 +66,10 @@ The order will be C > B > A
 
 ## Calling whalesay
 
-If we call the whalesay template using a workflow, D will have preference over A. D will be the value.
+If we we create a workflow calling the whalesay template
+
+- the entrypoint will be whalesay
+- D will have preference over A. D will be the value.
 
 The order will be D > A
 
