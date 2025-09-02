@@ -12,21 +12,6 @@ Changing an Applicationset can be dangerous because by default it can create and
 
 This is optional, depending of the changes. We can disable autoSync in the generated Applications (spec.template.spec.syncPolicy)
 
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: ApplicationSet
-metadata:
-  name: myappset
-spec:
-  template:
-    spec:
-      ...
-      syncPolicy:
-        # automated:
-        #  selfHeal: true
-      ...
-```
-
 ## Preparation: Prevent applications being deleted
 
 If your have modified things in the the generators, this can potentially delete applications.
