@@ -23,6 +23,10 @@ In a strategic merge patch, the file will be a yaml file. In a json6902 will be 
 
 - The target resource can be a single resource or multiple resources
 
+## Notes about patching specific array elements
+
+Kustomize doesn't support fine-grained patching of specific array elements. The standard way to modify an array element while maintaining the others, is to overwrite the whole resource.
+
 ## Links
 
 - Kustomize patches
