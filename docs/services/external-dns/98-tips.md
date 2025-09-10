@@ -33,6 +33,7 @@ But if we share the same --txt-owner-id between clusters, both controllers will 
 **Recommended approaches for multi-cluster Route53 setups**:
 
 1. **Separate hosted zones**: Give each cluster its own subdomain zone
+
    ```yaml
    # Cluster 1
    domainFilters: ["cluster1.example.com"]
@@ -44,11 +45,13 @@ But if we share the same --txt-owner-id between clusters, both controllers will 
    ```
 
 2. **Use aws-sd registry**: Switch from "txt" to "aws-sd" registry
+
    ```yaml
    registry: aws-sd
    ```
 
 3. **Use noop registry**: Disable ownership tracking (loses safety features)
+
    ```yaml
    registry: noop
    ```
