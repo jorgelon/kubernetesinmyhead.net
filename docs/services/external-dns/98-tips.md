@@ -26,4 +26,29 @@ External secrets by default uses txt dns entries for tracking the ownership of D
 
 But if we share the same --txt-owner-id between clusters, both controllers will create entries in that zones but both will think they own all records in that zone. This can cause several problems.
 
-The solution is to use different --txt-owner-id per external-dns controller.
+**For AWS Route53**: The txtOwnerId should be the Hosted Zone ID (e.g., Z1D633PJN98FT9).
+
+**For multi-cluster setups with Route53**: Since txtOwnerId must be the Hosted Zone ID, **sharing the same Route53 zone between multiple external-dns controllers is NOT recommended** when using the default "txt" registry. All controllers would use the same txtOwnerId, causing ownership conflicts and unpredictable behavior.
+
+**Recommended approaches for multi-cluster Route53 setups**:
+
+1. **Separate hosted zones**: Give each cluster its own subdomain zone
+   ```yaml
+   # Cluster 1
+   domainFilters: ["cluster1.example.com"]
+   txtOwnerId: Z1D633PJN98FT9
+   
+   # Cluster 2  
+   domainFilters: ["cluster2.example.com"]
+   txtOwnerId: Z2E744QKM09GHI
+   ```
+
+2. **Use aws-sd registry**: Switch from "txt" to "aws-sd" registry
+   ```yaml
+   registry: aws-sd
+   ```
+
+3. **Use noop registry**: Disable ownership tracking (loses safety features)
+   ```yaml
+   registry: noop
+   ```

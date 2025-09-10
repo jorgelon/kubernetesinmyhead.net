@@ -68,7 +68,7 @@ provider:
   name: aws
 domainFilters:
   - yourhostedzone
-txtOwnerId: the txtOwnerId of yourhostedzone
+txtOwnerId: Z1D633PJN98FT9  # Your Route53 Hosted Zone ID
 extraArgs: ["--aws-zone-type=public"]   # if it is a public zone
 ```
 
