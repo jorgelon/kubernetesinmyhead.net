@@ -6,24 +6,15 @@ Prometheus, while excellent for real-time monitoring and short-term metric stora
 
 This document explores five major open-source solutions that extend Prometheus capabilities for long-term storage: **Mimir**, **Cortex**, **Thanos**, **VictoriaMetrics**, and **GreptimeDB**.
 
-## The Prometheus Storage Challenge
+## Governance and Company Dependency Risk
 
-### Native Limitations
-
-- **Local Storage Only**: Data stored on local disk, creating single points of failure
-- **Limited Scalability**: Single-node architecture with vertical scaling limits
-- **Retention Constraints**: Local storage capacity limits data retention periods
-- **No High Availability**: Native Prometheus lacks built-in HA capabilities
-- **Query Performance**: Performance degrades with large datasets and long retention periods
-
-### Requirements for Long-Term Storage
-
-- **Horizontal Scalability**: Ability to scale storage and compute independently
-- **High Availability**: Redundancy and fault tolerance
-- **Cost-Effective Storage**: Integration with object storage (S3, GCS, Azure Blob)
-- **Global Querying**: Ability to query across multiple clusters and time ranges
-- **Data Durability**: Protection against data loss
-- **Performance**: Efficient querying across large datasets
+| Solution            | **Risk Level**     | **Primary Controller**        | **Governance Model** | **Community Independence**            |
+|---------------------|--------------------|-------------------------------|----------------------|---------------------------------------|
+| **Mimir**           | 🟡 **Medium-High** | Grafana Labs (single company) | Corporate-controlled | Limited - Grafana Labs drives roadmap |
+| **Cortex**          | 🟢 **Low**         | CNCF (vendor-neutral)         | Community governance | High - Multi-vendor collaboration     |
+| **Thanos**          | 🟢 **Low-Medium**  | CNCF (vendor-neutral)         | Community governance | High - No single company dominance    |
+| **VictoriaMetrics** | 🔴 **High**        | VictoriaMetrics company       | Corporate-controlled | Low - Single company development      |
+| **GreptimeDB**      | 🔴 **High**        | Greptime Inc.                 | Corporate-controlled | Low - Single company development      |
 
 ## Solution Architectures
 
@@ -32,7 +23,8 @@ This document explores five major open-source solutions that extend Prometheus c
 **Origin**: Fork of Cortex by Grafana Labs (2022)  
 **Architecture**: Microservices-based with horizontal scaling  
 **Repository**: [grafana/mimir](https://github.com/grafana/mimir) ⭐ 4.1k+ stars, 500+ contributors  
-**CNCF Status**: Not a CNCF project (Grafana Labs proprietary)
+**CNCF Status**: Not a CNCF project (Grafana Labs proprietary)  
+**Key Contributors**: Grafana Labs, Microsoft, Red Hat, Bloomberg, GitLab
 
 #### Key Components
 
@@ -71,7 +63,8 @@ This document explores five major open-source solutions that extend Prometheus c
 **Origin**: CNCF project originally developed by Weaveworks  
 **Architecture**: Microservices-based, highly configurable  
 **Repository**: [cortexproject/cortex](https://github.com/cortexproject/cortex) ⭐ 5.5k+ stars, 800+ contributors  
-**CNCF Status**: Graduated project (2020)
+**CNCF Status**: Graduated project (2020)  
+**Key Contributors**: Weaveworks, Grafana Labs, Red Hat, Google, AWS, Microsoft
 
 #### Cortex Components
 
@@ -111,7 +104,8 @@ This document explores five major open-source solutions that extend Prometheus c
 **Origin**: Developed by Improbable, now CNCF project  
 **Architecture**: Sidecar-based approach with global querying  
 **Repository**: [thanos-io/thanos](https://github.com/thanos-io/thanos) ⭐ 13k+ stars, 1,000+ contributors  
-**CNCF Status**: Incubating project (2019)
+**CNCF Status**: Incubating project (2019)  
+**Key Contributors**: Improbable, Red Hat, Google, Polar Signals, GitLab
 
 #### Thanos Components
 
@@ -128,7 +122,7 @@ This document explores five major open-source solutions that extend Prometheus c
 ```text
 ┌─────────────┐    ┌─────────────┐    ┌─────────────┐
 │ Prometheus A│◀──▶│Thanos Sidecar│   │Object Storage│
-│             │    │             │──▶│   Backend   │
+│             │    │             │──▶ │   Backend   │
 └─────────────┘    └─────────────┘    │             │
                                       │             │
 ┌─────────────┐    ┌─────────────┐    │             │
@@ -154,7 +148,8 @@ This document explores five major open-source solutions that extend Prometheus c
 **Origin**: Developed by VictoriaMetrics team, focused on performance and cost efficiency  
 **Architecture**: Single binary or cluster mode with emphasis on resource efficiency  
 **Repository**: [VictoriaMetrics/VictoriaMetrics](https://github.com/VictoriaMetrics/VictoriaMetrics) ⭐ 12k+ stars, 400+ contributors  
-**CNCF Status**: Not a CNCF project (independent open-source)
+**CNCF Status**: Not a CNCF project (independent open-source)  
+**Key Contributors**: VictoriaMetrics, Individual contributors, Community-driven development
 
 #### VictoriaMetrics Components
 
@@ -203,7 +198,8 @@ This document explores five major open-source solutions that extend Prometheus c
 **Origin**: Developed by Greptime team, modern cloud-native time series database  
 **Architecture**: SQL-based time series database with storage/compute separation  
 **Repository**: [GreptimeTeam/greptimedb](https://github.com/GreptimeTeam/greptimedb) ⭐ 4.2k+ stars, 300+ contributors  
-**CNCF Status**: Not a CNCF project (independent open-source)
+**CNCF Status**: Not a CNCF project (independent open-source)  
+**Key Contributors**: Greptime Inc., PingCAP, TiKV contributors, Community developers
 
 #### GreptimeDB Components
 
@@ -250,43 +246,43 @@ This document explores five major open-source solutions that extend Prometheus c
 
 ### Deployment Complexity
 
-| Aspect | Mimir | Cortex | Thanos | VictoriaMetrics | GreptimeDB |
-|--------|-------|--------|--------|----------------|------------|
-| **Setup Complexity** | Medium | High | Low-Medium | Low | Low |
-| **Operational Overhead** | Medium | High | Low | Very Low | Low |
-| **Prometheus Changes** | Remote write only | Remote write only | Minimal (sidecar) | Remote write only | Remote write only |
-| **Learning Curve** | Medium | High | Low-Medium | Low | Low-Medium |
+| Aspect                   | Mimir             | Cortex            | Thanos            | VictoriaMetrics   | GreptimeDB        |
+|--------------------------|-------------------|-------------------|-------------------|-------------------|-------------------|
+| **Setup Complexity**     | Medium            | High              | Low-Medium        | Low               | Low               |
+| **Operational Overhead** | Medium            | High              | Low               | Very Low          | Low               |
+| **Prometheus Changes**   | Remote write only | Remote write only | Minimal (sidecar) | Remote write only | Remote write only |
+| **Learning Curve**       | Medium            | High              | Low-Medium        | Low               | Low-Medium        |
 
 ### Scalability & Performance
 
-| Feature | Mimir | Cortex | Thanos | VictoriaMetrics | GreptimeDB |
-|---------|-------|--------|--------|----------------|------------|
-| **Horizontal Scaling** | Excellent | Excellent | Good | Excellent | Excellent |
-| **Query Performance** | High | High | Medium-High | Very High | Very High |
-| **Ingestion Rate** | Very High | High | Medium | Exceptional | Exceptional |
-| **Memory Efficiency** | Optimized | Good | Good | Exceptional | Exceptional |
-| **Storage Efficiency** | High | High | Very High (downsampling) | Exceptional | Exceptional |
+| Feature                | Mimir     | Cortex    | Thanos                   | VictoriaMetrics | GreptimeDB  |
+|------------------------|-----------|-----------|--------------------------|-----------------|-------------|
+| **Horizontal Scaling** | Excellent | Excellent | Good                     | Excellent       | Excellent   |
+| **Query Performance**  | High      | High      | Medium-High              | Very High       | Very High   |
+| **Ingestion Rate**     | Very High | High      | Medium                   | Exceptional     | Exceptional |
+| **Memory Efficiency**  | Optimized | Good      | Good                     | Exceptional     | Exceptional |
+| **Storage Efficiency** | High      | High      | Very High (downsampling) | Exceptional     | Exceptional |
 
 ### Features & Capabilities
 
-| Feature | Mimir | Cortex | Thanos | VictoriaMetrics | GreptimeDB |
-|---------|-------|--------|--------|----------------|------------|
-| **Multi-Tenancy** | ✅ Advanced | ✅ Advanced | ✅ Basic | ✅ Advanced | ✅ Advanced |
-| **Global Querying** | ✅ | ✅ | ✅ Excellent | ✅ | ✅ |
-| **Deduplication** | ✅ | ✅ | ✅ Advanced | ✅ | ✅ |
-| **Downsampling** | ✅ | ✅ | ✅ Automatic | ✅ Automatic | ✅ Automatic |
-| **Rule Evaluation** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Alerting** | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Stream Processing** | ✅ | ❌ | ❌ | ✅ Advanced | ✅ Native |
+| Feature               | Mimir      | Cortex     | Thanos      | VictoriaMetrics | GreptimeDB  |
+|-----------------------|------------|------------|-------------|-----------------|-------------|
+| **Multi-Tenancy**     | ✅ Advanced | ✅ Advanced | ✅ Basic     | ✅ Advanced      | ✅ Advanced  |
+| **Global Querying**   | ✅          | ✅          | ✅ Excellent | ✅               | ✅           |
+| **Deduplication**     | ✅          | ✅          | ✅ Advanced  | ✅               | ✅           |
+| **Downsampling**      | ✅          | ✅          | ✅ Automatic | ✅ Automatic     | ✅ Automatic |
+| **Rule Evaluation**   | ✅          | ✅          | ✅           | ✅               | ✅           |
+| **Alerting**          | ✅          | ✅          | ✅           | ✅               | ✅           |
+| **Stream Processing** | ✅          | ❌          | ❌           | ✅ Advanced      | ✅ Native    |
 
 ### Storage & Retention
 
-| Aspect | Mimir | Cortex | Thanos | VictoriaMetrics | GreptimeDB |
-|--------|-------|--------|--------|----------------|------------|
-| **Object Storage** | S3, GCS, Azure | S3, GCS, Azure, Swift | S3, GCS, Azure, Swift | S3, GCS, Azure, Local | S3, GCS, Azure |
-| **Compression** | Excellent | Good | Excellent | Exceptional | Exceptional |
-| **Retention Policies** | Flexible | Flexible | Flexible | Very Flexible | Very Flexible |
-| **Block Management** | Advanced | Standard | Advanced | Optimized | Advanced |
+| Aspect                 | Mimir          | Cortex                | Thanos                | VictoriaMetrics       | GreptimeDB     |
+|------------------------|----------------|-----------------------|-----------------------|-----------------------|----------------|
+| **Object Storage**     | S3, GCS, Azure | S3, GCS, Azure, Swift | S3, GCS, Azure, Swift | S3, GCS, Azure, Local | S3, GCS, Azure |
+| **Compression**        | Excellent      | Good                  | Excellent             | Exceptional           | Exceptional    |
+| **Retention Policies** | Flexible       | Flexible              | Flexible              | Very Flexible         | Very Flexible  |
+| **Block Management**   | Advanced       | Standard              | Advanced              | Optimized             | Advanced       |
 
 ## Use Case Recommendations
 
@@ -372,11 +368,11 @@ All solutions provide comprehensive metrics for monitoring:
 
 ### Infrastructure Costs
 
-| Component | Mimir | Cortex | Thanos | VictoriaMetrics | GreptimeDB |
-|-----------|-------|--------|--------|----------------|------------|
-| **Compute** | High (microservices) | High (microservices) | Medium (fewer components) | Low (efficient) | Very Low (optimized) |
-| **Storage** | Medium (efficient compression) | Medium | Low (excellent compression) | Very Low (superior compression) | Very Low (advanced compression) |
-| **Network** | Medium | Medium | Low (query optimization) | Low (optimized protocols) | Low (efficient protocols) |
+| Component   | Mimir                          | Cortex               | Thanos                      | VictoriaMetrics                 | GreptimeDB                      |
+|-------------|--------------------------------|----------------------|-----------------------------|---------------------------------|---------------------------------|
+| **Compute** | High (microservices)           | High (microservices) | Medium (fewer components)   | Low (efficient)                 | Very Low (optimized)            |
+| **Storage** | Medium (efficient compression) | Medium               | Low (excellent compression) | Very Low (superior compression) | Very Low (advanced compression) |
+| **Network** | Medium                         | Medium               | Low (query optimization)    | Low (optimized protocols)       | Low (efficient protocols)       |
 
 ### Operational Costs
 
