@@ -39,3 +39,7 @@ metadata:
 - Annotated Gateway resource
 
 <https://cert-manager.io/docs/usage/gateway/>
+
+- Envoy Proxy
+
+<https://gateway.envoyproxy.io/docs/tasks/security/tls-cert-manager/>
