@@ -4,6 +4,12 @@
 
 Under AWS ew can use this solutions with gateway api
 
+### AWS Gateway API Controller
+
+The official AWS controller for Amazon VPC Lattice
+
+See <https://www.gateway-api-controller.eks.aws.dev/latest/>
+
 ### AWS Load Balancer Controller
 
 In version v2.13 "Using the LBC and Gateway API together is not suggested for production workloads"
@@ -24,16 +30,11 @@ With an AWS ALB:
 
 Implementation
 
-- How to use it with kgateway
+- kgateway
 
-<https://kgateway.dev/docs/main/setup/customize/aws-elb/>
+<https://kgateway.dev/docs/main/integrations/aws-elb/alb/>
+<https://kgateway.dev/docs/main/integrations/aws-elb/nlb/>
 
-- Envoy gateway is done via EnvoyProxy resource
+- Envoy gateway (via EnvoyProxy resource
 
 <https://gateway.envoyproxy.io/latest/tasks/operations/customize-envoyproxy/>
-
-### AWS Gateway API Controller
-
-The official AWS controller for Amazon VPC Lattice
-
-See <https://www.gateway-api-controller.eks.aws.dev/latest/>
