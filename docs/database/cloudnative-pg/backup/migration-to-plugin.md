@@ -65,4 +65,12 @@ Finally don't use legacy or system images and migrate to minimal or standard ima
 
 ## Links
 
+- Migrating from Built-in CloudNativePG Backup
+
 <https://cloudnative-pg.io/plugin-barman-cloud/docs/migration/>
+
+- [Bug]: Missing prometheus metrics
+
+After migrating to the barman cloud plugin, some Prometheus metrics related to backup monitoring may not be available or properly exposed. This affects monitoring dashboards that rely on backup-specific metrics to track backup success/failure rates and timing.
+
+<https://github.com/cloudnative-pg/cloudnative-pg/issues/7812>
