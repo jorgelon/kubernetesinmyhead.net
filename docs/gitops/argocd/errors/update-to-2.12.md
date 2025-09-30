@@ -1,6 +1,4 @@
-# Errors and solutions
-
-## Update to 2.12 breaks appset
+# Update to 2.12 breaks appset
 
 Until argocd 2.11 there should be a relation between the repository url defined in the repository secret and the repoURL configured in the application and applicationset.
 
