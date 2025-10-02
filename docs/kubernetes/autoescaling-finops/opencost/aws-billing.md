@@ -34,8 +34,8 @@ S3 bucket: Choose the s3bucket created for the billing data
 S3 path prefix: Choose a prefix
 ```
 
-> First export can take 24-48 hours to appear in S3. Wait for initial data generation exploring the s3 bucket some hours later.
->
+> First export can take some hours to appear in S3. Wait for initial data generation exploring the s3 bucket some hours later.
+
 ## Configure Athena
 
 Using the AWS Console, go to AWS Athena
@@ -73,7 +73,7 @@ Or repair all partitions:
 MSCK REPAIR TABLE billing;
 ```
 
-Test (change the billing period)
+### Test (change the billing period)
 
 ```sql
 SELECT
