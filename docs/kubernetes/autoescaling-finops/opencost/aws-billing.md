@@ -47,17 +47,43 @@ Create an Athena workgroup for opencost:
 - Query result configuration: customer-managed
 - Location of query result: associate the created bucket for athena queries
 
-### Create database and table
+### Create database and billing table
 
-Under athena query editor, select the workgroup opencost and create S3 Bucket data
+Under athena query editor, select the workgroup opencost and create the database (glue)
 
-![alt text](image.png)
+```sql
+CREATE DATABASE IF NOT EXISTS MYDATABASE;
+```
 
-```yaml
-Table name: billing
-Database configuration: Choose an existing database (our data created database)
-Dataset: s3://MYEXPORTBUCKET/PATH_TO_DATA # the view button permits to check if the path is correct
-Column details: import [this columns](table.txt) using bulk add columns
+Then select in the dropdown menu the created database and create the table using the following sql, changing the LOCATION
+
+- [Create table file](create-table.sql)
+
+Add partition (change the billing period)
+
+```sql
+ALTER TABLE billing ADD IF NOT EXISTS
+PARTITION (billing_period='2025-09')
+LOCATION 's3://BUCKET/path-to-data/BILLING_PERIOD=2025-09/';
+```
+
+Or repair all partitions:
+
+```sql
+MSCK REPAIR TABLE billing;
+```
+
+Test (change the billing period)
+
+```sql
+SELECT
+  line_item_usage_start_date,
+  line_item_product_code,
+  SUM(line_item_unblended_cost) as cost
+FROM billing
+WHERE billing_period = '2025-09'
+GROUP BY line_item_usage_start_date, line_item_product_code
+LIMIT 10;
 ```
 
 ## Opencost
