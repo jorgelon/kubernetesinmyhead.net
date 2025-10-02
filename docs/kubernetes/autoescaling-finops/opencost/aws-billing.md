@@ -49,98 +49,15 @@ Create an Athena workgroup for opencost:
 
 ### Create database and table
 
-Under athena query editor, select the workgroup opencost and
+Under athena query editor, select the workgroup opencost and create S3 Bucket data
 
-```sql
-CREATE DATABASE IF NOT EXISTS opencost_cur;
-```
+![alt text](image.png)
 
-Then choose the database from the dropdown menu and
-
-```sql
-CREATE EXTERNAL TABLE IF NOT EXISTS opencost_cur.cur_data (
-  bill_bill_type STRING,
-  bill_billing_entity STRING,
-  bill_billing_period_end_date TIMESTAMP,
-  bill_billing_period_start_date TIMESTAMP,
-  bill_invoice_id STRING,
-  bill_invoicing_entity STRING,
-  bill_payer_account_id STRING,
-  bill_payer_account_name STRING,
-  cost_category MAP<STRING, STRING>,
-  discount MAP<STRING, STRING>,
-  discount_bundled_discount DOUBLE,
-  discount_total_discount DOUBLE,
-  identity_line_item_id STRING,
-  identity_time_interval STRING,
-  line_item_availability_zone STRING,
-  line_item_blended_cost DOUBLE,
-  line_item_blended_rate STRING,
-  line_item_currency_code STRING,
-  line_item_legal_entity STRING,
-  line_item_line_item_description STRING,
-  line_item_line_item_type STRING,
-  line_item_net_unblended_cost DOUBLE,
-  line_item_net_unblended_rate STRING,
-  line_item_normalization_factor DOUBLE,
-  line_item_normalized_usage_amount DOUBLE,
-  line_item_operation STRING,
-  line_item_product_code STRING,
-  line_item_tax_type STRING,
-  line_item_unblended_cost DOUBLE,
-  line_item_unblended_rate STRING,
-  line_item_usage_account_id STRING,
-  line_item_usage_account_name STRING,
-  line_item_usage_amount DOUBLE,
-  line_item_usage_end_date TIMESTAMP,
-  line_item_usage_start_date TIMESTAMP,
-  line_item_usage_type STRING,
-  pricing_currency STRING,
-  pricing_lease_contract_length STRING,
-  pricing_offering_class STRING,
-  pricing_public_on_demand_cost DOUBLE,
-  pricing_public_on_demand_rate STRING,
-  pricing_purchase_option STRING,
-  pricing_rate_code STRING,
-  pricing_rate_id STRING,
-  pricing_term STRING,
-  pricing_unit STRING,
-  product MAP<STRING, STRING>,
-  resource_tags MAP<STRING, STRING>
-)
-PARTITIONED BY (
-  billing_period STRING
-)
-STORED AS PARQUET
-LOCATION 's3://MYBUCKET/path-to-data/'
-TBLPROPERTIES ('parquet.compression'='SNAPPY');
-```
-
-### Add Partition
-
-```sql
-ALTER TABLE opencost_cur.cur_data ADD IF NOT EXISTS
-PARTITION (billing_period='2025-09')
-LOCATION 's3://BUCKET/path-to-data/BILLING_PERIOD=2025-09/';
-```
-
-Or repair all partitions:
-
-```sql
-MSCK REPAIR TABLE opencost_cur.cur_data;
-```
-
-### Test Query
-
-```sql
-SELECT
-  line_item_usage_start_date,
-  line_item_product_code,
-  SUM(line_item_unblended_cost) as cost
-FROM opencost_cur.cur_data
-WHERE billing_period = '2025-09'
-GROUP BY line_item_usage_start_date, line_item_product_code
-LIMIT 10;
+```yaml
+Table name: billing
+Database configuration: Choose an existing database (our data created database)
+Dataset: s3://MYEXPORTBUCKET/PATH_TO_DATA # the view button permits to check if the path is correct
+Column details: import [this columns](table.txt) using bulk add columns
 ```
 
 ## Opencost
