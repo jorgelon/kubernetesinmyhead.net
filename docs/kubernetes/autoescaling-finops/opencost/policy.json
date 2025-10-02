@@ -12,6 +12,7 @@
                 "glue:GetTables",
                 "glue:GetDatabase",
                 "glue:GetDatabases",
+                "glue:GetPartitions",
                 "s3:ListBucket",
                 "s3:GetBucketLocation",
                 "s3:GetObject",

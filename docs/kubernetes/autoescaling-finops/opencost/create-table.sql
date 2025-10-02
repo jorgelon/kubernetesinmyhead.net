@@ -26,6 +26,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS billing (
   line_item_normalized_usage_amount DOUBLE,
   line_item_operation STRING,
   line_item_product_code STRING,
+  line_item_resource_id STRING,
   line_item_tax_type STRING,
   line_item_unblended_cost DOUBLE,
   line_item_unblended_rate STRING,
@@ -46,6 +47,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS billing (
   pricing_term STRING,
   pricing_unit STRING,
   product MAP<STRING, STRING>,
+  product_region_code STRING,
   resource_tags MAP<STRING, STRING>
 )
 PARTITIONED BY (

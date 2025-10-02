@@ -59,21 +59,39 @@ Then select in the dropdown menu the created database and create the table using
 
 - [Create table file](create-table.sql)
 
-Add partition (change the billing period)
+### Add partitions (REQUIRED)
+
+After creating the table, you **must** add partitions for the billing periods. Without partitions, OpenCost will fail with SQL errors.
+
+Check your S3 bucket structure first to see available billing periods, then choose one of these approaches:
+
+**Option 1: Add partitions manually** (change the billing period and bucket path):
 
 ```sql
 ALTER TABLE billing ADD IF NOT EXISTS
-PARTITION (billing_period='2025-09')
-LOCATION 's3://BUCKET/path-to-data/BILLING_PERIOD=2025-09/';
+PARTITION (billing_period='2025-10')
+LOCATION 's3://YOUR-BUCKET/path-to-data/BILLING_PERIOD=2025-10/';
 ```
 
-Or repair all partitions:
+**Option 2: Auto-discover all partitions** (recommended):
 
 ```sql
 MSCK REPAIR TABLE billing;
+
 ```
 
-### Test (change the billing period)
+The MSCK REPAIR TABLE command will scan your S3 bucket structure and automatically discover all the partition folders (like BILLING_PERIOD=2024-10/, BILLING_PERIOD=2024-09/, etc.) and add them to the table metadata.
+
+### Tests (change the billing period)
+
+**Verify partitions were added**:
+
+```sql
+DESCRIBE billing;
+SHOW PARTITIONS billing;
+```
+
+Query
 
 ```sql
 SELECT
