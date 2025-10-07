@@ -24,7 +24,7 @@ Same as CTRL+P and Claude Code: Open in terminal
 - Also click the Claude Code icon
 - Also CTRL+P and Claude Code: Open in new tab
 
-## Commands table
+## Slash Commands table
 
 | Features            | terminal | vscode extension | Description                                                                                    |
 |---------------------|----------|------------------|------------------------------------------------------------------------------------------------|
