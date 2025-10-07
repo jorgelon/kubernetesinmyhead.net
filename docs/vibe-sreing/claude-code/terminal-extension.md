@@ -68,26 +68,38 @@ Same as CTRL+P and Claude Code: Open in terminal
 | /upgrade            | ✅        | ❌                | Upgrade to Max for higher rate limits and more Opus                                            |
 | /usage              | ✅        | ❌                | Check plan usage limits                                                                        |
 | /vim                | ✅        | ❌                | Toggle between Vim and Normal editing modes                                                    |
-| @                   | ✅        | ✅                | Mention a file                                                                                 |
-| Attach a file       | ❌        | ✅                |                                                                                                |
-| TAB                 | ✅        | ❌                | Enable and disable thinking                                                                    |
 
-## Other features table
+## Keyboard shortcuts
 
-| Features      | terminal | vscode extension | Description                            |
-|---------------|----------|------------------|----------------------------------------|
-| !             | ✅        | ❌                | Shortcut to run bash commands directly |
-| #             | ✅        | ❌                | Shortcut to add to memory              |
-| @             | ✅        | ✅                | Mention a file                         |
-| ALT+CTRL+K    | ✅        | ❌                | Mention a focused file             |
-| Attach a file | ❌        | ✅                |                                        |
-| TAB           | ✅        | ❌                | Enable and disable thinking            |
+| Shortcuts      | terminal | vscode extension | Description                                                                  |
+|----------------|----------|------------------|------------------------------------------------------------------------------|
+| !              | ✅        | ❌                | Shortcut to run bash commands directly                                       |
+| #              | ✅        | ❌                | Shortcut to add to memory                                                    |
+| @              | ✅        | ✅                | Mention a file                                                               |
+| \ + ENTER      | ✅        | ❌                | Multiline input (quick escape, all terminals)                                |
+| ALT+CTRL+K     | ✅        | ❌                | Mention a focused file                                                       |
+| Attach a file  | ❌        | ✅                |                                                                              |
+| CTRL+B         | ✅        | ❌                | Move bash command to background                                              |
+| CTRL+C         | ✅        | ❌                | Cancel current input or generation                                           |
+| CTRL+D         | ✅        | ❌                | Exit Claude Code session                                                     |
+| CTRL+J         | ✅        | ❌                | Line feed character (multiline input)                                        |
+| CTRL+L         | ✅        | ❌                | Clear terminal screen                                                        |
+| CTRL+R         | ✅        | ❌                | Reverse search command history                                               |
+| ESC + ESC      | ✅        | ❌                | Rewind code/conversation                                                     |
+| SHIFT+ENTER    | ✅        | ❌                | Multiline input (after /terminal-setup)                                      |
+| SHIFT+TAB      | ✅        | ❌                | Cycle through modes: Default → Auto-Accept (⏵⏵) → Plan Mode (⏸) → Default... |
+| TAB            | ✅        | ❌                | Toggle extended thinking                                                     |
+| Up/Down arrows | ✅        | ❌                | Navigate command history                                                     |
 
 ## Links
 
 - Optimize your terminal setup
 
 <https://docs.claude.com/en/docs/claude-code/terminal-config>
+
+- Interactive mode
+
+<https://docs.claude.com/en/docs/claude-code/interactive-mode>
 
 - Visual Studio Code
 
