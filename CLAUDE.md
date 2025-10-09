@@ -50,7 +50,7 @@ This is a MkDocs-based documentation site (`kubernetesinmyhead.net`) containing 
 ### Content Creation
 
 - Follow existing directory structure when adding new topics
-- Use consistent file naming (98-tips.md, 99-links.md pattern)
+- Use consistent file naming (97-errors.md, 98-tips.md, 99-links.md pattern)
 - Include practical examples and YAML manifests where applicable
 - Focus on defensive security practices and configurations
 
