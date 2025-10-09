@@ -4,25 +4,30 @@ This document lists the available features using claude code in a linux terminal
 
 > It can change in newer versions
 
-## How to open claude code
+## Ways to open claude code
 
-We can open claude code two ways
+### From a linux terminal
 
-### In a linux terminal or vscode terminal
+Open a linux terminal and type "claude"
+or
+CTRL+P + "Claude Code: Open in Terminal" (needs the claude code extension installed)
 
-Simply write
+### From the vscode terminal
 
-```shell
-claude
+Open a vscode terminal and type "claude"
+
+### Using the vscode extension tab
+
+- Via `Ctrl+Esc` shortcut.
+- Click the Claude Code icon
+
+There is a vscode setting that changes this behaviour and make this icon open the vscode terminal, not the extension tab
+
+```txt
+"claude-code.useTerminal": true
 ```
 
-Same as CTRL+P and Claude Code: Open in terminal
-
-## In a vscode extension tab
-
-- Via `Ctrl+Esc` shortcut
-- Also click the Claude Code icon
-- Also CTRL+P and Claude Code: Open in new tab
+- CTRL+P + "Claude Code: Open in new tab"
 
 ## Slash Commands table
 
