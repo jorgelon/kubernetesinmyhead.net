@@ -17,7 +17,11 @@ Distroless images are minimal container images that contain only the application
 
 ## Popular Distroless and Minimal Base Images
 
-### Google Distroless
+### True Distroless Images (No Package Manager)
+
+These images do not include package managers in the final image, providing maximum security by eliminating the ability to install additional packages at runtime.
+
+#### Google Distroless
 
 Primarily maintained by Google and available at `gcr.io/distroless/`.
 
@@ -33,7 +37,7 @@ Primarily maintained by Google and available at `gcr.io/distroless/`.
 
 - [GitHub Repository](https://github.com/GoogleContainerTools/distroless)
 
-### Chainguard Images (Wolfi-based)
+#### Chainguard Images (Wolfi-based)
 
 Built on Wolfi, a Linux distribution designed for cloud workloads with zero known CVEs.
 
@@ -43,7 +47,7 @@ Built on Wolfi, a Linux distribution designed for cloud workloads with zero know
 - Constantly rebuilt with latest sources
 - Includes SBOMs for every image
 - No kernel (container runtime only)
-- Uses apk package manager
+- No package manager in runtime image (apk only during build)
 
 **Available at:** `cgr.dev/chainguard/`
 
@@ -55,7 +59,60 @@ Built on Wolfi, a Linux distribution designed for cloud workloads with zero know
 - [Image Directory](https://images.chainguard.dev/)
 - [Documentation](https://edu.chainguard.dev/)
 
-### Alpine Linux
+#### Ubuntu Chiseled
+
+Distroless images built from Ubuntu packages using Chisel.
+
+**Key Features:**
+
+- Uses glibc
+- No shell or package manager in final image
+- Only minimal required dependencies included
+- Carefully sliced packages
+
+**Available at:** `ubuntu/` on Docker Hub
+
+**Links:**
+
+- [Official Page](https://ubuntu.com/containers/chiseled)
+- [Chisel Documentation](https://documentation.ubuntu.com/chisel/)
+- [Docker Hub](https://hub.docker.com/r/ubuntu/chiselled-jre)
+
+#### BusyBox
+
+Single compact executable with simplified Linux tools.
+
+**Key Features:**
+
+- Multiple libc flavors: musl, glibc, uclibc
+- Includes basic utilities (file archiving, process manipulation, etc.)
+- No package manager
+- Extremely minimal
+
+**Links:**
+
+- [Official Website](https://busybox.net/)
+- [Docker Hub](https://hub.docker.com/_/busybox)
+
+#### Scratch
+
+Docker's most minimal base - literally empty.
+
+**Key Features:**
+
+- Contains nothing at all
+- Only suitable for static binaries
+- Smallest possible image
+
+**Links:**
+
+- [Docker Documentation](https://hub.docker.com/_/scratch)
+
+### Minimal Images with Package Managers
+
+These images include package managers, allowing installation of additional packages at runtime. They offer more flexibility but a larger attack surface compared to true distroless images.
+
+#### Alpine Linux
 
 Popular minimal Linux distribution (~5MB base image).
 
@@ -77,26 +134,7 @@ Popular minimal Linux distribution (~5MB base image).
 - [Official Website](https://alpinelinux.org/)
 - [Docker Hub](https://hub.docker.com/_/alpine)
 
-### Ubuntu Chiseled
-
-Distroless images built from Ubuntu packages using Chisel.
-
-**Key Features:**
-
-- Uses glibc
-- No shell or package manager in final image
-- Only minimal required dependencies included
-- Carefully sliced packages
-
-**Available at:** `ubuntu/` on Docker Hub
-
-**Links:**
-
-- [Official Page](https://ubuntu.com/containers/chiseled)
-- [Chisel Documentation](https://documentation.ubuntu.com/chisel/)
-- [Docker Hub](https://hub.docker.com/r/ubuntu/chiselled-jre)
-
-### Debian Slim
+#### Debian Slim
 
 Pared-down Debian with commonly needed tools removed.
 
@@ -112,7 +150,7 @@ Pared-down Debian with commonly needed tools removed.
 - [Official Website](https://www.debian.org/)
 - [Docker Hub](https://hub.docker.com/_/debian)
 
-### Red Hat UBI Minimal
+#### Red Hat UBI Minimal
 
 RHEL-based minimal image for enterprise environments.
 
@@ -135,65 +173,64 @@ RHEL-based minimal image for enterprise environments.
 - [UBI FAQ](https://developers.redhat.com/articles/ubi-faq)
 - [Documentation](https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/8/html/building_running_and_managing_containers/)
 
-### Bitnami Minideb
-
-Debian-based image built with debootstrap.
-
-**Key Features:**
-
-- Uses glibc
-- apt package manager included
-- `install_packages` helper command
-- ~50MB base size
-- Base for many Bitnami application images
-
-**Links:**
-
-- [GitHub Repository](https://github.com/bitnami/minideb)
-- [Docker Hub](https://hub.docker.com/r/bitnami/minideb)
-
-### BusyBox
-
-Single compact executable with simplified Linux tools.
-
-**Key Features:**
-
-- Multiple libc flavors: musl, glibc, uclibc
-- Includes basic utilities (file archiving, process manipulation, etc.)
-- Extremely minimal
-
-**Links:**
-
-- [Official Website](https://busybox.net/)
-- [Docker Hub](https://hub.docker.com/_/busybox)
-
-### Scratch
-
-Docker's most minimal base - literally empty.
-
-**Key Features:**
-
-- Contains nothing at all
-- Only suitable for static binaries
-- Smallest possible image
-
-**Links:**
-
-- [Docker Documentation](https://hub.docker.com/_/scratch)
-
 ## Comparison Summary
+
+### True Distroless Images (No Runtime Package Manager)
+
+| Image           | Maintainer        | Size       | Package Manager       | libc    | Use Case                       |
+|-----------------|-------------------|------------|-----------------------|---------|--------------------------------|
+| Scratch         | Docker            | 0 MB       | None                  | None    | Static binaries only           |
+| BusyBox         | BusyBox Project   | ~5 MB      | None                  | Various | Basic utilities needed         |
+| Chainguard      | Chainguard        | ~20-80 MB  | None (apk build only) | glibc   | Supply chain security          |
+| Ubuntu Chiseled | Canonical         | ~20-50 MB  | None                  | glibc   | Ubuntu ecosystem               |
+| Distroless      | Google            | ~25-100 MB | None                  | glibc   | Production, high security      |
+
+### Images with Package Managers
 
 | Image           | Maintainer        | Size       | Package Manager  | libc    | Use Case                       |
 |-----------------|-------------------|------------|------------------|---------|--------------------------------|
-| Scratch         | Docker            | 0 MB       | None             | None    | Static binaries only           |
 | Alpine          | Alpine Linux      | ~5 MB      | apk              | musl    | General purpose, size-critical |
-| Distroless      | Google            | ~25-100 MB | None             | glibc   | Production, high security      |
-| BusyBox         | BusyBox Project   | ~5 MB      | None             | Various | Basic utilities needed         |
-| Chainguard      | Chainguard        | ~20-80 MB  | apk (build only) | glibc   | Supply chain security          |
-| Ubuntu Chiseled | Canonical         | ~20-50 MB  | None             | glibc   | Ubuntu ecosystem               |
-| Minideb         | Bitnami (VMware)  | ~50 MB     | apt              | glibc   | Balance of size and packages   |
 | Debian Slim     | Debian Project    | ~74 MB     | apt              | glibc   | More tooling, Debian packages  |
 | UBI Minimal     | Red Hat           | ~92 MB     | microdnf         | glibc   | Enterprise/Red Hat ecosystem   |
+
+## Use Cases for Distroless Images
+
+- **Pure static binaries** - Use **scratch** (most minimal, zero attack surface)
+- **Static binaries needing ca-certificates** - Using distroless/static variant
+- **Precompiled Java JAR/WAR files** - Using Java runtime variants
+- **Precompiled Python applications** - Using Python runtime variant
+- **Precompiled Node.js applications** - Using Node.js runtime variants
+- **Precompiled .NET applications** - Using .NET runtime variants
+- **Dynamic binaries requiring glibc** - Using base or glibc-dynamic variants
+- **C/C++ applications** - Using cc variant (includes libgcc, libstdc++)
+- **Go binaries with CGO enabled** - Using base variant (includes glibc and SSL libraries)
+
+## Specific Distroless Implementations
+
+### Liberica Runtime Container (BellSoft)
+
+Optimized Java runtime containers from BellSoft, available as both JDK and JRE variants.
+
+**Available at:** `bellsoft/liberica-runtime-container`
+
+**Links:**
+
+- [Docker Hub](https://hub.docker.com/r/bellsoft/liberica-runtime-container)
+- [BellSoft Documentation](https://bell-sw.com/liberica-runtime-container/)
+- [GitHub Repository](https://github.com/bell-sw/Liberica)
+
+### Amazon Corretto
+
+No-cost, production-ready distribution of OpenJDK from Amazon Web Services.
+
+**Available at:** `amazoncorretto`
+
+**Links:**
+
+- [Docker Hub](https://hub.docker.com/_/amazoncorretto)
+- [ECR Public Gallery](https://gallery.ecr.aws/amazoncorretto/amazoncorretto)
+- [Official Website](https://aws.amazon.com/corretto/)
+- [GitHub Repository](https://github.com/corretto/corretto-docker)
 
 ## Multi-Stage Build Pattern
 
