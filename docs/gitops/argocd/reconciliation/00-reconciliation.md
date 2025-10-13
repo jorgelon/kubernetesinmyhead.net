@@ -11,7 +11,7 @@ Argocd permits to define 3 repository types (application sources) we can use to 
 The reconcilation is a discovery process where:
 
 - the argocd repo server checks if there are changes in the application sources (and update the stored cache)
-- the argocd application generates
+- the argocd application generates the final manifests (desired state)
 - the argocd application controller checks if there are differences with the live state (drift detection)
 
 > If there are any Git changes, Argo CD will only update applications with the auto-sync setting enabled
