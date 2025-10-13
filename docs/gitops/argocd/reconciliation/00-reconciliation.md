@@ -142,7 +142,7 @@ This can cause high CPU with frequently-changing resources and it can be avoid e
 |----------------|---------|------------------------------------|-------------------------------|---------------------|
 | Normal refresh | 120s    | ARGOCD_RECONCILIATION_TIMEOUT      | timeout.reconciliation        | --app-resync        |
 | Jitter         | 60s     | ARGOCD_RECONCILIATION_JITTER       | timeout.reconciliation.jitter | --app-resync-jitter |
-| Hard refresh   |         | ARGOCD_HARD_RECONCILIATION_TIMEOUT | timeout.hard.reconciliation   | --app-hard-resync   |ç
+| Hard refresh   |         | ARGOCD_HARD_RECONCILIATION_TIMEOUT | timeout.hard.reconciliation   | --app-hard-resync   |
 | Hard refresh   |         | ARGOCD_HARD_RECONCILIATION_TIMEOUT | timeout.hard.reconciliation   | --app-hard-resync   |
 
 ### Application controller references
