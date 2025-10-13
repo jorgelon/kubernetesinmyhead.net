@@ -86,8 +86,7 @@ In the application controller, the ARGOCD_RECONCILIATION_TIMEOUT (timeout.reconc
 - If no timeout.reconciliation is configured, the default value is 120s
 - Valid values are duration strings (5m, 3h, 5d,..)
 - A zero value disables this reconciliation operation
-- The argocd-repo-server and argocd-application-controller must be restarted to apply this settingç
-- Undocummented behaviour accessing applications the web UI.
+- The argocd-repo-server and argocd-application-controller must be restarted to apply this setting
 
 ### Jitter
 
@@ -128,6 +127,7 @@ We can also configure a periodic hard refresh. This is done at controller level 
 - Via a webhook (a change in the source notifies a change to argocd)
 - Via argocd.argoproj.io/refresh=normal annotation to the application
 - Using the api
+- Undocummented behaviour accessing applications the web UI.
 
 #### Event driver automatic refresh
 
