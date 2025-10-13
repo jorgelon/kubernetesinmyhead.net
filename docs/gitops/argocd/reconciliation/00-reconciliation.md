@@ -136,13 +136,12 @@ There is another mecanism where argocd application controller triggers a refresh
 Application-controller watches Kubernetes resources using watch APIs. When a resource's resourceVersion changes, triggers immediate reconciliation. We can see in the logs strings like "Requesting app refresh caused by object update".
 This can cause high CPU with frequently-changing resources and it can be avoid enabling resource.ignoreResourceUpdatesEnabled in the argocd-cm ConfigMap, enabled by default since argocd 3.0
 
-#### Application controller settings table
+#### Refresh settings table
 
 | Concept        | Default | Environment variable               | argocd-cm ConfigMap           | Binary              |
 |----------------|---------|------------------------------------|-------------------------------|---------------------|
 | Normal refresh | 120s    | ARGOCD_RECONCILIATION_TIMEOUT      | timeout.reconciliation        | --app-resync        |
 | Jitter         | 60s     | ARGOCD_RECONCILIATION_JITTER       | timeout.reconciliation.jitter | --app-resync-jitter |
-| Hard refresh   |         | ARGOCD_HARD_RECONCILIATION_TIMEOUT | timeout.hard.reconciliation   | --app-hard-resync   |
 | Hard refresh   |         | ARGOCD_HARD_RECONCILIATION_TIMEOUT | timeout.hard.reconciliation   | --app-hard-resync   |
 
 ### Application controller references
