@@ -1,47 +1,62 @@
 # Reconciliation
 
-## Concepts
+## Application sources
 
-Argocd permits to define 3 repository types (application sources) we can use to define the desired state of the cluster:
+Argocd permits to define 3 repository types (Application sources) and we can use them to define the desired state of the cluster:
 
 - Git repositories
 - Helm repositories
 - Oci registries
 
-The reconcilation is a discovery process where:
+## What is the reconciliation process
 
-- the argocd repo server checks if there are changes in the application sources (and update the stored cache)
-- the argocd application generates the final manifests (desired state)
-- the argocd application controller checks if there are differences with the live state (drift detection)
+The reconcilation is a discovery process where some tasks are done:
+
+- argocd-repo-server checks if there are changes in the application sources (and update the stored cache)
+- argocd-repo-server generates the final manifests (desired state)
+- argocd-application-controller checks if there are differences with the live state (drift detection)
 
 > If there are any Git changes, Argo CD will only update applications with the auto-sync setting enabled
 
-## Argocd repo server
+## argocd-repo-server operations
 
-The argocd server binary has a parameter --revision-cache-expiration that controls the cache TTL for revision metadata that repo-server fetches from Git, Helm, and OCI registries. When that cache expires it stores a new one in redis.
+### Recheck repository and store in cache
 
-- Git References (git ls-remote output):
-  - Branch names → commit SHAs
-  - Tag names → commit SHAs
-  - HEAD → commit SHA
-  - Used to resolve ambiguous revisions like "main" or "v1.0.0" to exact commit SHAs
-- Helm Index (from Helm chart repositories)
-  - Chart versions available
-  - Chart metadata
-  - Download URLs
-- OCI Tags (from OCI registries)
-  - Available image tags
-  - Tag metadata
+argocd-repo-server checks every certain time if there are changes in the Application source (repository) and stores the most recent one in the redis cache
 
-The default value for this setting is 3 minutes, but it can be overriden with the timeout.reconciliation setting in the argocd-cm ConfigMap, that is loaded with the ARGOCD_RECONCILIATION_TIMEOUT environment variable.
+The frequency is controlled this way:
 
-### Repo server settings table
+```txt
+CLI parameter: --revision-cache-expiration
+Default: 3m
+Setting: timeout.reconciliation in argocd-cm ConfigMAp
+ENV: ARGOCD_RECONCILIATION_TIMEOUT
+```
 
-| Concept                   | Default | Environment variable          | argocd-cm ConfigMap    | Binary                      |
-|---------------------------|---------|-------------------------------|------------------------|-----------------------------|
-| Revision Cache expiration | 180s    | ARGOCD_RECONCILIATION_TIMEOUT | timeout.reconciliation | --revision-cache-expiration |
+- In a **git source** checks if the latest commit SHA for the desired branch/tag has changed
+- In a helm source, checks for the index.yaml file
+- In an OCi repository checks the tag list
 
-### Repo Server References
+### Render manifests and store in cache
+
+Using that Application source cache, the argocd-repo-server:
+
+- Generates the final manifests that represents the desired (target) state using the  the proper tool (kustomize, helm template, ...)
+- Stores them in the redis cache.
+
+This is done for every application and returns the generated manifests to the application-controller.
+
+It is possible to control the expiration of that cache with this:
+
+```txt
+CLI parameter: --repo-cache-expiration  
+Default: 24h
+Setting: reposerver.repo.cache.expiration  in argocd-cmd-params-cm ConfigMAp
+ENV: ARGOCD_REPO_CACHE_EXPIRATION
+```
+
+> There is an additional  **per application** tunning that makes a new commit be ignored and consider our cache as valid, so no new manifests generation will be launched.
+This is done via **argocd.argoproj.io/manifest-generate-paths** annotation, that tells argocd the paths in the git repo must change to trigger a new manifest generation in our application.
 
 - Repo Server Cache Code
 
@@ -51,37 +66,14 @@ The default value for this setting is 3 minutes, but it can be overriden with th
 
 <https://argo-cd.readthedocs.io/en/stable/operator-manual/server-commands/argocd-repo-server/>
 
-## Application controller
+### Drift detection (application controller)
 
-### Manifest generation
+The application-controller compares that final manifests (desired/target state) with the live (real) state in the cluster in order to detect drift.
 
-The application controller uses that application source cache to generate the final manifests that represents the desired (target) state and stores them also in the redis cache. This is done for every application.
+- If a drift is detected, the application is consideres "Out of Sync"
+- Applying the desired state is part of the Sync process, not the reconciliation process and it can triggered automatically enabl AutoSync
 
-- Git source
-
-In a **git source**, argocd checks the latest commit for the desired branch/tag, generates the final manifests (helm template, kustomize or plain yaml) and it stores them in the cache.
-
-> If the commit SHA has not changed, it does not pull the cached git repo.
-
-We can also do an additional tunning **per application** that makes a new commit be ignored and consider our cache as valid, so no new manifests generation will be launched.
-
-This is done via **argocd.argoproj.io/manifest-generate-paths** annotation, that tells argocd the paths in the git repo must change to trigger a new manifest generation in our application.
-
-- Helm source
-
-In a helm source, argocd uses the cached chart version and it generates the final manifests via helm template
-
-> If the desired chart version is the same, it does not download the chart again.
-
-The Application cached manifests expire in redis after a day by default and it can be changed with the argocd-cmd-params-cm Configmap with **reposerver.repo.cache.expiration** setting.
-
-This setting controls the cache expiration for repo state, including app lists, app details, manifest generation and revision meta-data and it makes to regenerate the manifests after 24 hours, so a periodic hard refresh is not needed most of the times.
-
-> The default cache TTL for other cached data is controlled by reposerver.default.cache.expiration
-
-### Settings
-
-In the application controller, the ARGOCD_RECONCILIATION_TIMEOUT (timeout.reconciliation in the argocd-cm ConfigMap) controls how often the application-controller checks all applications for drift, regardless of whether any changes occurred. This is
+In the application controller, the ARGOCD_RECONCILIATION_TIMEOUT (timeout.reconciliation in the argocd-cm ConfigMap) controls how often the application-controller checks all applications for drift, regardless of whether any changes occurred. This is:
 
 - If no timeout.reconciliation is configured, the default value is 120s
 - Valid values are duration strings (5m, 3h, 5d,..)
@@ -129,14 +121,14 @@ We can also configure a periodic hard refresh. This is done at controller level 
 - Using the api
 - Undocummented behaviour accessing applications the web UI.
 
-#### Event driver automatic refresh
+### Event driven automatic refresh
 
 There is another mecanism where argocd application controller triggers a refresh.
 
 Application-controller watches Kubernetes resources using watch APIs. When a resource's resourceVersion changes, triggers immediate reconciliation. We can see in the logs strings like "Requesting app refresh caused by object update".
 This can cause high CPU with frequently-changing resources and it can be avoid enabling resource.ignoreResourceUpdatesEnabled in the argocd-cm ConfigMap, enabled by default since argocd 3.0
 
-#### Refresh settings table
+### Refresh settings table
 
 | Concept        | Default | Environment variable               | argocd-cm ConfigMap           | Binary              |
 |----------------|---------|------------------------------------|-------------------------------|---------------------|
