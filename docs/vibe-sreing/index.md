@@ -1,5 +1,31 @@
 # Intro to vibe sreing
 
+## Ai Agents
+
+List of AI agents
+
+|             | Type           | Company   |   |   |
+|-------------|----------------|-----------|---|---|
+| Claude Code | Terminal based | Anthropic |   |   |
+| Gemini CLI  | Terminal based | Google    |   |   |
+| Codex       |                | OpenAi    |   |   |
+|             |                |           |   |   |
+|             |                |           |   |   |
+|             |                |           |   |   |
+|             |                |           |   |   |
+|             |                |           |   |   |
+|             |                |           |   |   |
+|             |                |           |   |   |
+|             |                |           |   |   |
+
+## Web interfaces
+
+|         | Company   | URL |   |   |
+|---------|-----------|-----|---|---|
+| Claude  | Anthropic |     |   |   |
+| ChatGPT | OpenAi    |     |   |   |
+|         |           |     |   |   |
+
 ## AI-powered coding assistant
 
 - Claude Code

@@ -16,6 +16,14 @@
 
 <https://github.com/hesreallyhim/awesome-claude-code>
 
+- Awesome claude
+
+<https://github.com/alvinunreal/awesome-claude>
+
 - Claude Code Commands
 
 <https://claudecodecommands.directory/>
+
+- Claudepro directory
+
+<https://claudepro.directory/>
