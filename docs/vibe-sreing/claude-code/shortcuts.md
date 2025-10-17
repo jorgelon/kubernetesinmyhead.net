@@ -1,27 +1,29 @@
 # Shortcuts
 
-## Change between modes
+## Keyboard shortcuts
 
-```txt
-SHIFT + TAB
-```
-
-This permits to change between modes
-
-- default normal mode
-
-Claude provides code suggestions that require manual review and acceptance. No automatic planning phase occurs before implementing changes. You have full control over which edits to accept or reject
-
-- auto-accept edits on:
-
-When enabled, automatically applies Claude's code suggestions without manual confirmation
-
-- plan mode on:
-
-Creates a structured plan before implementing code changes, allowing review of the approach first.
+| Shortcuts      | Description                                                                  |
+|----------------|------------------------------------------------------------------------------|
+| !              | Shortcut to run bash commands directly                                       |
+| #              | Shortcut to add to memory                                                    |
+| @              | Mention a file                                                               |
+| \ + ENTER      | Multiline input (quick escape, all terminals)                                |
+| ALT+CTRL+K     | Mention a focused file                                                       |
+| Attach a file  |                                                                              |
+| CTRL+B         | Move bash command to background                                              |
+| CTRL+C         | Cancel current input or generation                                           |
+| CTRL+D         | Exit Claude Code session                                                     |
+| CTRL+J         | Line feed character (multiline input)                                        |
+| CTRL+L         | Clear terminal screen                                                        |
+| CTRL+R         | Reverse search command history                                               |
+| ESC + ESC      | Rewind code/conversation                                                     |
+| SHIFT+ENTER    | Multiline input (after /terminal-setup)                                      |
+| SHIFT+TAB      | Cycle through modes: Default → Auto-Accept (⏵⏵) → Plan Mode (⏸) → Default... |
+| TAB            | Toggle extended thinking                                                     |
+| Up/Down arrows | Navigate command history                                                     |
 
 ## Links
 
 - Interactive mode
 
-<https://docs.anthropic.com/en/docs/claude-code/interactive-mode>
+<https://docs.claude.com/en/docs/claude-code/interactive-mode>
