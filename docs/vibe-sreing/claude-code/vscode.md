@@ -5,6 +5,14 @@ There is an official Claude Code VSCode extension available in the marketplace.
 
 ## Tips
 
+### MCP settings file
+
+- The VS Code Extension uses ~/.config/Code/User/mcp.json file to configure the mcp servers
+
+- The Claude Code CLI users ~/.claude.json (the large history file)
+
+- Enabling enableAllProjectMcpServers at claude code settings, automatically approves all MCP servers defined in project .mcp.json
+
 ### Auto installation
 
 The /config command permits to enable|disable the autoinstallation of the claude code IDE extension, vscode in this case.
@@ -12,7 +20,7 @@ When you run claude under a vscode terminal, will will install the extension if 
 
 ## Check the integration with vscode
 
-With the extension installed, this command manage the integration into vscode a show the status
+With the extension installed, this command manages the integration into vscode a show the status
 
 ```txt
 /ide
@@ -29,7 +37,9 @@ In order to open the extension you can:
 
 There is a vscode setting that changes this behaviour and make this icon open the vscode terminal, not the extension tab
 
+```txt
 "claude-code.useTerminal": true
+```
 
 ### Add multiline input
 
