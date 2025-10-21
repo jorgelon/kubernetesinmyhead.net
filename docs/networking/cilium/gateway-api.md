@@ -18,3 +18,13 @@
 - Cilium must have l7Proxy=true (default)
 
 > Then enable gateway api with gatewayAPI.enabled=true in the helm chart
+
+## Links
+
+- Gateway API Support
+
+<https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/>
+
+- Migrating from Ingress to Gateway
+
+<https://docs.cilium.io/en/stable/network/servicemesh/ingress-to-gateway/ingress-to-gateway/>
