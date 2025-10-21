@@ -36,6 +36,9 @@ This is a MkDocs-based documentation site (`kubernetesinmyhead.net`) containing 
 
 ### File Naming Conventions
 
+Every folder can have a file with the following content:
+
+- `97-errors.md` - Some errors and solutions
 - `98-tips.md` - Tips and best practices for the topic
 - `99-links.md` - Reference links and external resources
 
