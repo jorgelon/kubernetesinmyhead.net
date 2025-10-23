@@ -27,39 +27,17 @@ Before upgrading to Crossplane v2, ensure:
 
 ### Step 1: Pre-Upgrade Assessment
 
-1. **Verify Crossplane version**
-
-   Check that you're running v1.20:
-
-   ```bash
-   kubectl get deployment crossplane -n crossplane-system -o jsonpath='{.spec.template.spec.containers[0].image}'
-   ```
-
-2. **Inventory your resources**
-
-   List all managed resources:
-
-   ```bash
-   kubectl get managed --all-namespaces
-   ```
-
-   List all providers:
-
-   ```bash
-   kubectl get providers
-   ```
-
-3. **Check for deprecated features**
-
+1. Verify Crossplane version (check that you're running v1.20)
+2. Inventory your resources (list all managed resources and providers)
+3. Check for deprecated features:
    - Review compositions for native patch and transform
    - Check for ControllerConfig resources
    - Verify no external secret stores are configured
 
 ### Step 2: Upgrade Crossplane Core
 
-1. Update Helm repository
-2. Upgrade to v2
-3. Verify the upgrade (check deployment and logs)
+1. Upgrade to v2
+2. Verify the upgrade (check deployment and logs)
 
 ### Step 3: Upgrade Provider Packages
 
@@ -73,7 +51,7 @@ Before upgrading to Crossplane v2, ensure:
    metadata:
      name: provider-aws-s3
    spec:
-     package: xpkg.upbound.io/upbound/provider-aws-s3:v2.0.0
+     package: xpkg.upbound.io/upbound/provider-aws-s3:v2
    ```
 
 2. **Deploy updated providers**
@@ -104,68 +82,6 @@ Before upgrading to Crossplane v2, ensure:
 - [ ] Upgrade provider packages to v2-compatible versions
 - [ ] Verify all existing resources continue working
 - [ ] Test existing infrastructure functionality
-
-## Rollback Strategy
-
-If issues occur during upgrade:
-
-1. **Crossplane core rollback**
-
-   ```bash
-   helm rollback crossplane -n crossplane-system
-   ```
-
-2. **Provider rollback**
-
-   Revert provider manifests to previous versions.
-
-3. **Keep existing resources**
-
-   Existing cluster-scoped resources continue working even after core upgrade. Only delete after confirming namespaced resources work.
-
-## Troubleshooting
-
-### MRAP Issues
-
-**Problem**: Resources not reconciling after upgrade
-
-**Solution**: Verify MRAP includes the resource type:
-
-```bash
-kubectl get managedresourceactivationpolicy -o yaml
-```
-
-### Provider Not Installing
-
-**Problem**: Provider stuck in "Installing" state
-
-**Solution**: Check provider logs and events:
-
-```bash
-kubectl describe provider provider-aws-s3
-kubectl logs -n crossplane-system deployment/provider-aws-s3
-```
-
-### Resource Not Adopting
-
-**Problem**: Using orphan-adopt strategy but resource not adopting existing cloud resource
-
-**Solutions**:
-
-- Verify cloud resource name exactly matches
-- Check all required spec fields match the existing cloud resource
-- Review provider logs for adoption errors
-- Ensure credentials have permission to describe/import the resource
-
-### Permission Issues
-
-**Problem**: Resources failing with permission errors
-
-**Solution**:
-
-- Verify ProviderConfig credentials are correct
-- Check RBAC permissions for the target namespace
-- Ensure service accounts have necessary permissions
 
 ## Best Practices
 
