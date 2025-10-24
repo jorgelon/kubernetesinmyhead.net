@@ -1,0 +1,2366 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kubernetesinmyhead.net/deployment/cluster-api/baremetal-providers/">
+      
+      
+        <link rel="prev" href="../99-links/">
+      
+      
+        <link rel="next" href="../concepts/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+    
+    
+      
+        <title>Bare Metal Infrastructure Providers - Kubernetes in my head</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.84d31ad4.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#bare-metal-infrastructure-providers" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Kubernetes in my head" class="md-header__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kubernetes in my head
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Bare Metal Infrastructure Providers
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Kubernetes in my head" class="md-nav__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kubernetes in my head
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    kubernetesinmyhead.net
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../CI-CD/argo-events/filtering/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    CI CD
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../database/cloudnative-pg/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Database
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Deployment
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Deployment
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../argo-rollouts/2-ways/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Argo rollouts
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Cluster api
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Cluster api
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../98-tips/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Tips
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../99-links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Links
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Bare Metal Infrastructure Providers
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Bare Metal Infrastructure Providers
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dedicated-bare-metal-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dedicated Bare Metal Providers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dedicated Bare Metal Providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metal3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metal3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tinkerbell" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tinkerbell
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sidero-community-maintained" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sidero (Community Maintained)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#omni-sidero-labs-alternative" class="md-nav__link">
+    <span class="md-ellipsis">
+      Omni (Sidero Labs Alternative)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hivelocity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hivelocity
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flexiblehybrid-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flexible/Hybrid Providers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flexible/Hybrid Providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#byoh-bring-your-own-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      BYOH (Bring Your Own Host)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maas-metal-as-a-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      MAAS (Metal as a Service)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#k0smotron-remotemachine" class="md-nav__link">
+    <span class="md-ellipsis">
+      k0smotron RemoteMachine
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provider-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Provider Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-a-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      Choosing a Provider
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Choosing a Provider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-metal3" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use Metal3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-tinkerbell" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use Tinkerbell
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-omni" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use Omni
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-sidero" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use Sidero
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-byoh" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use BYOH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-maas" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use MAAS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-provider-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Provider Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Resources
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Concepts
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment-operator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Deployment using operator
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../crossplane/providers-and-mrap/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Crossplane
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../git/detached-head/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Git
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../gitops/get-raw-yaml/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Gitops
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../kubernetes/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Kubernetes
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../languages/comment-comment-out/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Languages
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../misc/android/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Misc
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../networking/onpremise-loadbalancers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Networking
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../observability/architecture/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Observability
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../operating-systems/too-many-open-files/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Operating systems
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../platforms/aws/cli/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Platforms
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../queues/nats/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Queues
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../security/cert-manager/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Security
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../services/external-dns/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Services
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../storage/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Storage
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../tools/Buildkit/output/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Tools
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../vibe-sreing/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    Vibe sreing
+    
+  </span>
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dedicated-bare-metal-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dedicated Bare Metal Providers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dedicated Bare Metal Providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#metal3" class="md-nav__link">
+    <span class="md-ellipsis">
+      Metal3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tinkerbell" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tinkerbell
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sidero-community-maintained" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sidero (Community Maintained)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#omni-sidero-labs-alternative" class="md-nav__link">
+    <span class="md-ellipsis">
+      Omni (Sidero Labs Alternative)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hivelocity" class="md-nav__link">
+    <span class="md-ellipsis">
+      Hivelocity
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flexiblehybrid-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      Flexible/Hybrid Providers
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flexible/Hybrid Providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#byoh-bring-your-own-host" class="md-nav__link">
+    <span class="md-ellipsis">
+      BYOH (Bring Your Own Host)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#maas-metal-as-a-service" class="md-nav__link">
+    <span class="md-ellipsis">
+      MAAS (Metal as a Service)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#k0smotron-remotemachine" class="md-nav__link">
+    <span class="md-ellipsis">
+      k0smotron RemoteMachine
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provider-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Provider Comparison
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-a-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      Choosing a Provider
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Choosing a Provider">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-metal3" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use Metal3
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-tinkerbell" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use Tinkerbell
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-omni" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use Omni
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-sidero" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use Sidero
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-byoh" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use BYOH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-maas" class="md-nav__link">
+    <span class="md-ellipsis">
+      When to use MAAS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-provider-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Getting Provider Information
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      Common Requirements
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#additional-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Additional Resources
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="bare-metal-infrastructure-providers">Bare Metal Infrastructure Providers<a class="headerlink" href="#bare-metal-infrastructure-providers" title="Anchor link to this section for reference">&para;</a></h1>
+<p>Cluster API provides several infrastructure providers designed specifically for bare metal environments or that support bare metal deployments. This document explores the available options and their characteristics.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Bare metal infrastructure providers enable Kubernetes cluster provisioning on physical servers without requiring a virtualization layer or cloud provider. These providers handle hardware lifecycle management, OS provisioning, and Kubernetes node bootstrapping.</p>
+<h2 id="dedicated-bare-metal-providers">Dedicated Bare Metal Providers<a class="headerlink" href="#dedicated-bare-metal-providers" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="metal3">Metal3<a class="headerlink" href="#metal3" title="Anchor link to this section for reference">&para;</a></h3>
+<p>The most mature and widely adopted bare metal provider for Cluster API.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>Uses OpenStack Ironic for bare metal provisioning</li>
+<li>Supports hardware introspection and discovery</li>
+<li>Handles firmware and BIOS configuration</li>
+<li>Provides power management capabilities (IPMI, Redfish)</li>
+<li>Network boot support (PXE, iPXE)</li>
+</ul>
+<p><strong>Architecture:</strong></p>
+<ul>
+<li>Leverages BareMetalHost custom resources</li>
+<li>Integrates with Metal3-io ecosystem</li>
+<li>Supports multiple boot methods</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>On-premises data centers</li>
+<li>Edge computing deployments</li>
+<li>Environments requiring hardware-level control</li>
+</ul>
+<p><strong>Get started:</strong></p>
+<pre><code class="language-shell">clusterctl init --infrastructure metal3
+</code></pre>
+<p><strong>Links:</strong></p>
+<ul>
+<li><a href="https://github.com/metal3-io/cluster-api-provider-metal3">https://github.com/metal3-io/cluster-api-provider-metal3</a></li>
+<li><a href="https://metal3.io/">https://metal3.io/</a></li>
+</ul>
+<h3 id="tinkerbell">Tinkerbell<a class="headerlink" href="#tinkerbell" title="Anchor link to this section for reference">&para;</a></h3>
+<p>A bare metal provisioning framework designed for scalability and flexibility.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>Workflow-based provisioning system</li>
+<li>Microservices architecture</li>
+<li>Hardware data management</li>
+<li>DHCP and TFTP services included</li>
+<li>Custom workflow definitions</li>
+</ul>
+<p><strong>Architecture:</strong></p>
+<ul>
+<li>Workflow engine (temporal-based)</li>
+<li>Hardware database (Hegel)</li>
+<li>Network boot services (Boots)</li>
+<li>Image serving (Registry)</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Modern cloud-native bare metal environments</li>
+<li>Organizations needing customizable provisioning workflows</li>
+<li>Multi-tenant bare metal platforms</li>
+</ul>
+<p><strong>Get started:</strong></p>
+<pre><code class="language-shell">clusterctl init --infrastructure tinkerbell
+</code></pre>
+<p><strong>Links:</strong></p>
+<ul>
+<li><a href="https://github.com/tinkerbell/cluster-api-provider-tinkerbell">https://github.com/tinkerbell/cluster-api-provider-tinkerbell</a></li>
+<li><a href="https://tinkerbell.org/">https://tinkerbell.org/</a></li>
+</ul>
+<h3 id="sidero-community-maintained">Sidero (Community Maintained)<a class="headerlink" href="#sidero-community-maintained" title="Anchor link to this section for reference">&para;</a></h3>
+<blockquote>
+<p><strong>Note:</strong> Sidero Labs is no longer actively developing Sidero Metal. The project is now community-maintained. For new deployments, Sidero Labs recommends using <strong>Omni</strong> as the alternative.</p>
+</blockquote>
+<p>A bare metal provider built specifically for Talos Linux.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>Talos Linux native integration</li>
+<li>API-driven bare metal management</li>
+<li>Automatic hardware discovery</li>
+<li>Secure boot support</li>
+<li>Immutable infrastructure approach</li>
+</ul>
+<p><strong>Architecture:</strong></p>
+<ul>
+<li>Sidero Metal platform</li>
+<li>Integration with Talos Control Plane provider</li>
+<li>IPMI/Redfish for power management</li>
+</ul>
+<p><strong>Status:</strong></p>
+<ul>
+<li>No longer actively developed by Sidero Labs</li>
+<li>Community-maintained (Slack support available)</li>
+<li>Supports Kubernetes v1.34 and Talos v1.11</li>
+<li>Recommended to use Omni for new deployments</li>
+</ul>
+<p><strong>Links:</strong></p>
+<ul>
+<li><a href="https://github.com/siderolabs/sidero">https://github.com/siderolabs/sidero</a></li>
+<li><a href="https://www.sidero.dev/">https://www.sidero.dev/</a></li>
+</ul>
+<h3 id="omni-sidero-labs-alternative">Omni (Sidero Labs Alternative)<a class="headerlink" href="#omni-sidero-labs-alternative" title="Anchor link to this section for reference">&para;</a></h3>
+<p>The successor to Sidero from Sidero Labs, providing a SaaS platform for Talos Linux cluster management.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>Managed Talos Linux platform</li>
+<li>Multi-cluster management</li>
+<li>Works with bare metal, cloud, and edge</li>
+<li>Web-based UI and API</li>
+<li>Secure by default (WireGuard-based)</li>
+<li>GitOps integration</li>
+</ul>
+<p><strong>Architecture:</strong></p>
+<ul>
+<li>SaaS control plane (self-hosted option available)</li>
+<li>Lightweight agents on managed nodes</li>
+<li>No PXE boot infrastructure requirements</li>
+<li>Works with existing bare metal</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Organizations using Talos Linux</li>
+<li>Multi-environment deployments (bare metal + cloud)</li>
+<li>Simplified cluster lifecycle management</li>
+<li>Edge computing scenarios</li>
+</ul>
+<p><strong>Note:</strong> Omni is not a traditional Cluster API provider but rather a complete cluster management platform that can work alongside or instead of Cluster API.</p>
+<p><strong>Links:</strong></p>
+<ul>
+<li><a href="https://github.com/siderolabs/omni">https://github.com/siderolabs/omni</a></li>
+<li><a href="https://omni.siderolabs.com/">https://omni.siderolabs.com/</a></li>
+</ul>
+<h3 id="hivelocity">Hivelocity<a class="headerlink" href="#hivelocity" title="Anchor link to this section for reference">&para;</a></h3>
+<p>A commercial bare metal cloud provider with Cluster API integration.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>Managed bare metal infrastructure</li>
+<li>Global data center presence</li>
+<li>API-driven provisioning</li>
+<li>Network configuration management</li>
+<li>Storage options</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Organizations needing managed bare metal</li>
+<li>Multi-region bare metal deployments</li>
+<li>Hybrid cloud scenarios</li>
+</ul>
+<p><strong>Links:</strong></p>
+<ul>
+<li><a href="https://github.com/hivelocity/cluster-api-provider-hivelocity">https://github.com/hivelocity/cluster-api-provider-hivelocity</a></li>
+<li><a href="https://www.hivelocity.net/">https://www.hivelocity.net/</a></li>
+</ul>
+<h2 id="flexiblehybrid-providers">Flexible/Hybrid Providers<a class="headerlink" href="#flexiblehybrid-providers" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="byoh-bring-your-own-host">BYOH (Bring Your Own Host)<a class="headerlink" href="#byoh-bring-your-own-host" title="Anchor link to this section for reference">&para;</a></h3>
+<p>The most flexible option for existing bare metal infrastructure.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>SSH-based host registration</li>
+<li>No special hardware requirements</li>
+<li>Works with any Linux distribution</li>
+<li>Agent-based approach</li>
+<li>Supports existing infrastructure</li>
+</ul>
+<p><strong>Architecture:</strong></p>
+<ul>
+<li>Lightweight host agent</li>
+<li>SSH connectivity</li>
+<li>No PXE boot required</li>
+<li>No BMC/IPMI requirements</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Legacy bare metal infrastructure</li>
+<li>Heterogeneous environments</li>
+<li>Quick proof-of-concept deployments</li>
+<li>Environments without IPMI/Redfish</li>
+</ul>
+<p><strong>Get started:</strong></p>
+<pre><code class="language-shell">clusterctl init --infrastructure byoh
+</code></pre>
+<p><strong>Links:</strong></p>
+<ul>
+<li><a href="https://github.com/kubernetes-sigs/cluster-api-provider-bringyourownhost">https://github.com/kubernetes-sigs/cluster-api-provider-bringyourownhost</a></li>
+</ul>
+<h3 id="maas-metal-as-a-service">MAAS (Metal as a Service)<a class="headerlink" href="#maas-metal-as-a-service" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Canonical's bare metal provisioning solution.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>Comprehensive hardware management</li>
+<li>Network configuration automation</li>
+<li>Storage configuration</li>
+<li>Integration with Juju</li>
+<li>Web UI and API</li>
+</ul>
+<p><strong>Architecture:</strong></p>
+<ul>
+<li>Central MAAS server</li>
+<li>Rack and region controllers</li>
+<li>PXE boot infrastructure</li>
+<li>Image management</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Ubuntu-centric environments</li>
+<li>Organizations using Canonical stack</li>
+<li>Large-scale bare metal deployments</li>
+</ul>
+<p><strong>Links:</strong></p>
+<ul>
+<li><a href="https://github.com/spectrocloud/cluster-api-provider-maas">https://github.com/spectrocloud/cluster-api-provider-maas</a></li>
+<li><a href="https://maas.io/">https://maas.io/</a></li>
+</ul>
+<h3 id="k0smotron-remotemachine">k0smotron RemoteMachine<a class="headerlink" href="#k0smotron-remotemachine" title="Anchor link to this section for reference">&para;</a></h3>
+<p>SSH-based remote machine provisioning.</p>
+<p><strong>Key Features:</strong></p>
+<ul>
+<li>SSH connectivity</li>
+<li>k0s distribution focus</li>
+<li>Simple deployment model</li>
+<li>No agent required on target</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>k0s Kubernetes distributions</li>
+<li>Simple bare metal scenarios</li>
+<li>Remote server provisioning</li>
+</ul>
+<p><strong>Links:</strong></p>
+<ul>
+<li><a href="https://github.com/k0sproject/k0smotron">https://github.com/k0sproject/k0smotron</a></li>
+</ul>
+<h2 id="provider-comparison">Provider Comparison<a class="headerlink" href="#provider-comparison" title="Anchor link to this section for reference">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Provider</th>
+<th>Maturity</th>
+<th>Complexity</th>
+<th>Hardware Discovery</th>
+<th>Boot Method</th>
+<th>Special Requirements</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Metal3</td>
+<td>High</td>
+<td>Medium-High</td>
+<td>Yes</td>
+<td>PXE/iPXE</td>
+<td>IPMI/Redfish</td>
+</tr>
+<tr>
+<td>Tinkerbell</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Yes</td>
+<td>PXE</td>
+<td>DHCP/TFTP infrastructure</td>
+</tr>
+<tr>
+<td>Sidero</td>
+<td>Medium (Community)</td>
+<td>Medium</td>
+<td>Yes</td>
+<td>PXE</td>
+<td>Talos Linux (not actively developed)</td>
+</tr>
+<tr>
+<td>Omni</td>
+<td>Medium</td>
+<td>Low</td>
+<td>No</td>
+<td>Agent-based</td>
+<td>Talos Linux, Omni account</td>
+</tr>
+<tr>
+<td>Hivelocity</td>
+<td>Medium</td>
+<td>Low</td>
+<td>N/A</td>
+<td>Managed</td>
+<td>Hivelocity account</td>
+</tr>
+<tr>
+<td>BYOH</td>
+<td>Medium</td>
+<td>Low</td>
+<td>No</td>
+<td>N/A</td>
+<td>SSH access</td>
+</tr>
+<tr>
+<td>MAAS</td>
+<td>High</td>
+<td>Medium-High</td>
+<td>Yes</td>
+<td>PXE</td>
+<td>MAAS server</td>
+</tr>
+<tr>
+<td>k0smotron</td>
+<td>Low-Medium</td>
+<td>Low</td>
+<td>No</td>
+<td>N/A</td>
+<td>SSH access</td>
+</tr>
+</tbody>
+</table>
+<h2 id="choosing-a-provider">Choosing a Provider<a class="headerlink" href="#choosing-a-provider" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="when-to-use-metal3">When to use Metal3<a class="headerlink" href="#when-to-use-metal3" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>Standard bare metal with IPMI/Redfish</li>
+<li>Need hardware introspection</li>
+<li>Want mature, community-supported solution</li>
+<li>OpenStack Ironic familiarity</li>
+</ul>
+<h3 id="when-to-use-tinkerbell">When to use Tinkerbell<a class="headerlink" href="#when-to-use-tinkerbell" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>Need flexible, workflow-based provisioning</li>
+<li>Modern microservices architecture preference</li>
+<li>Custom provisioning requirements</li>
+<li>Building bare metal platform</li>
+</ul>
+<h3 id="when-to-use-omni">When to use Omni<a class="headerlink" href="#when-to-use-omni" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>Standardizing on Talos Linux</li>
+<li>Want managed cluster lifecycle</li>
+<li>Multi-cluster, multi-environment deployments</li>
+<li>Prefer SaaS or simplified operations</li>
+<li>Security is primary concern</li>
+<li>Need GitOps integration</li>
+</ul>
+<h3 id="when-to-use-sidero">When to use Sidero<a class="headerlink" href="#when-to-use-sidero" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>Existing Sidero deployments (migration not required)</li>
+<li>Community support is acceptable</li>
+<li>Cannot use Omni (on-premises only, no SaaS)</li>
+<li><strong>For new deployments:</strong> Consider Omni, Metal3, or BYOH instead</li>
+</ul>
+<h3 id="when-to-use-byoh">When to use BYOH<a class="headerlink" href="#when-to-use-byoh" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>Working with existing infrastructure</li>
+<li>No IPMI/Redfish available</li>
+<li>Quick testing/POC</li>
+<li>Heterogeneous hardware</li>
+<li>SSH access only</li>
+</ul>
+<h3 id="when-to-use-maas">When to use MAAS<a class="headerlink" href="#when-to-use-maas" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>Ubuntu environment</li>
+<li>Need comprehensive hardware lifecycle</li>
+<li>Want integrated networking/storage</li>
+<li>Canonical ecosystem</li>
+</ul>
+<h2 id="getting-provider-information">Getting Provider Information<a class="headerlink" href="#getting-provider-information" title="Anchor link to this section for reference">&para;</a></h2>
+<p>List all available infrastructure providers:</p>
+<pre><code class="language-shell">clusterctl config repositories | grep InfrastructureProvider
+</code></pre>
+<p>Get specific provider versions:</p>
+<pre><code class="language-shell">clusterctl config repositories | grep InfrastructureProvider | grep metal3
+</code></pre>
+<h2 id="common-requirements">Common Requirements<a class="headerlink" href="#common-requirements" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Most bare metal providers share these requirements:</p>
+<ol>
+<li><strong>Network Infrastructure</strong></li>
+<li>DHCP server (for PXE-based providers)</li>
+<li>TFTP server (for network boot)</li>
+<li>DNS resolution</li>
+<li>
+<p>Network connectivity to BMC interfaces</p>
+</li>
+<li>
+<p><strong>Management Network</strong></p>
+</li>
+<li>Separate management network for BMC/IPMI</li>
+<li>Out-of-band management access</li>
+<li>
+<p>Network segmentation</p>
+</li>
+<li>
+<p><strong>Storage</strong></p>
+</li>
+<li>Boot images repository</li>
+<li>OS image storage</li>
+<li>
+<p>Container registry access</p>
+</li>
+<li>
+<p><strong>Credentials</strong></p>
+</li>
+<li>BMC/IPMI credentials</li>
+<li>SSH keys</li>
+<li>API tokens (for cloud bare metal)</li>
+</ol>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Anchor link to this section for reference">&para;</a></h2>
+<ol>
+<li><strong>Start Simple</strong>: Begin with BYOH for testing, migrate to full-featured providers for production</li>
+<li><strong>Network Planning</strong>: Design network topology before deployment</li>
+<li><strong>Credential Management</strong>: Use secrets management for BMC credentials</li>
+<li><strong>Image Management</strong>: Maintain updated OS images</li>
+<li><strong>Monitoring</strong>: Implement hardware monitoring (temperature, power, etc.)</li>
+<li><strong>Documentation</strong>: Document hardware inventory and network topology</li>
+</ol>
+<h2 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li><a href="https://cluster-api.sigs.k8s.io/reference/providers">Cluster API Providers Reference</a></li>
+<li><a href="https://cluster-api.sigs.k8s.io/">Cluster API Book</a></li>
+<li><a href="https://book.metal3.io/">Metal3 Documentation</a></li>
+<li><a href="https://docs.tinkerbell.org/">Tinkerbell Documentation</a></li>
+<li><a href="https://omni.siderolabs.com/docs/">Omni Documentation</a></li>
+<li><a href="https://www.talos.dev/">Talos Linux Documentation</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../99-links/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Links">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Links
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../concepts/" class="md-footer__link md-footer__link--next" aria-label="Next: Concepts">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Concepts
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://linkedin.com/in/jorge-p-275960300" target="_blank" rel="noopener" title="LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../assets/javascripts/workers/search.973d3a69.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.f55a23d4.min.js"></script>
+      
+    
+  </body>
+</html>
