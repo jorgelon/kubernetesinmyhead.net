@@ -37,7 +37,8 @@ Here we have a have a lot of implementations with different ways to be deployed.
 
 ## Gateway Api Controller CDRs
 
-The Gateway Api controller usually need to deploy its own CRDs. Read the documentation when deploying the controller
+The Gateway Api controller usually need to deploy its own CRDs. Read the documentation when deploying the controller.
+This CRDs permits to configure different aspects of the controller, sometime directly related with exclusive settings of its implementation.
 
 ## Notes
 
