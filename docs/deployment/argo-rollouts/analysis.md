@@ -146,3 +146,15 @@ pending
 - Kargo Analysis Templates Reference
 
 <https://docs.kargo.io/user-guide/reference-docs/analysis-templates/>
+
+AnalysisTemplate
+
+An AnalysisTemplate is a template spec which defines how to perform a canary analysis, such as the metrics which it should perform, its frequency, and the values which are considered successful or failed. AnalysisTemplates may be parameterized with inputs values.
+
+ClusterAnalysisTemplate
+A ClusterAnalysisTemplate is like an AnalysisTemplate, but it is not limited to its namespace. It can be used by any Rollout throughout the cluster.
+
+AnalysisRun
+An AnalysisRun is an instantiation of an AnalysisTemplate. AnalysisRuns are like Jobs in that they eventually complete. Completed runs are considered Successful, Failed, or Inconclusive, and the result of the run affect if the Rollout's update will continue, abort, or pause, respectively.
+
+<https://argo-rollouts.readthedocs.io/en/stable/features/analysis/>
