@@ -51,7 +51,7 @@ Agent Skills are modular capabilities that extend Claude's functionality for dom
 - Pre-configured dependencies
 - Sandboxed execution environment
 
-## LInks
+## Links
 
 - Agent Skills
 

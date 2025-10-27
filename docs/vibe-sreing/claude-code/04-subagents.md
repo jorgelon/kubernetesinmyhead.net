@@ -8,3 +8,5 @@ Subagents allow you to:
 - Create reusable task-specific workflows
 - Maintain consistency in how certain tasks are performed
 - Scale complex operations across multiple focused agents
+
+Use /agents to create context-efficient experts for specific tasks. Eg. Code Reviewer, Software Architect, Data Scientist
