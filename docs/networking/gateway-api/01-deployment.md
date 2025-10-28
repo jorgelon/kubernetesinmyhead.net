@@ -50,11 +50,13 @@ This CRDs permits to configure different aspects of the controller, sometime dir
 
 ### Multi-Controller Coordination
 
-When using a gateway api implementation with a provider load balancer controller, there can be overlapping configuration options, because the provider some mechanisms via CRDs to do the same things.
+When using a gateway api implementation with a provider load balancer controller,  we must choose who will configure the load balancer
 
-Example: EnvoyProxy and AWS Load Balancer Controller
+For example: Envoy Gateway and AWS Load Balancer Controller
 
-- Envoy Gateway's `EnvoyProxy` CRD provides Service annotations that configure the AWS NLB/ALB
-- AWS Load Balancer Controller provides its own CRDs (`LoadBalancerConfiguration`, `TargetGroupConfiguration`, `ListenerRuleConfiguration`) for customization
+- We can expose Envoy Gateway via service annottation using a CRD called `EnvoyProxy` (spec.provider.envoyService.annotations)
+This will make the aws load balancer controller to create the load balancer
 
-> A good practice can be to use AWS Load Balancer Controller CRDs for infrastructure configuration (NLB attributes, target groups, health checks) and keep `EnvoyProxy` focused on Envoy deployment settings only
+- AWS Load Balancer Controller with gateway api features enabled, provides its own CRDs (`LoadBalancerConfiguration`, `TargetGroupConfiguration`, `ListenerRuleConfiguration`) to configure the load balancer itself, ignoring envoy gateway.
+
+> We must choose what option do we prefer
