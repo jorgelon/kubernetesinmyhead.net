@@ -19,3 +19,7 @@
 - Gateway API
 
 <https://gateway-api.sigs.k8s.io/>
+
+- Gateway API implementation
+
+<https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/gateway/gateway/>
