@@ -42,7 +42,7 @@ They are based on standard images. Include Barman Cloud binaries for backup oper
 
 All the current provided ClusterImageCatalogs located are here:
 
-<https://github.com/cloudnative-pg/artifacts/tree/main/image-catalogs>
+<https://github.com/cloudnative-pg/artifacts>
 
 They include the standard, minimal and system images
 
