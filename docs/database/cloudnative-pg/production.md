@@ -10,6 +10,7 @@
 
 - Use odd replicas (3, 5, ...)
 - Leave spec.enablePDB enabled (default)
+- Start using the official clusterimagecatalogs
 - Configure the primaryUpdateStrategy
 - Configure the affinity section to distribute the instances in nodes
 - Consider to use dedicated and/or performance nodes in the the postgresql instances
