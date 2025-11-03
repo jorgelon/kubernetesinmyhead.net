@@ -1,22 +1,26 @@
 # CNPG in production
 
-## Deployment
+## Deployment and observability
 
 - Use gitops tools (argocd, flux,...) to control the deployment
 - Use gitops tools like external-secrets operator to control the credentials
 - You can enable the spec.monitoring.enablePodMonitor setting and setup a monitoring and alerting system
 
-## Configuration
+## Kubernetes Deployment
 
-- Always setup a backup section in our clusters and review the status of the backups
-- Try not to enable spec.enableSuperuserAccess. You can create additional roles with the needed permissions.
-- Configure the primaryUpdateStrategy
-- Define the resources (requests and limits in the cluster)
-- Give the postgresql pods a higher priority class
-- Leave spec.enablePDB enabled (default)
 - Use odd replicas (3, 5, ...)
+- Leave spec.enablePDB enabled (default)
+- Configure the primaryUpdateStrategy
 - Configure the affinity section to distribute the instances in nodes
 - Consider to use dedicated and/or performance nodes in the the postgresql instances
+- Give the postgresql pods a higher priority class
+
+## Configuration
+
+- Define the resources (requests and limits in the cluster)
+- Try not to enable superuser access (spec.enableSuperuserAccess). You can create additional roles with the needed permissions.
+- Always configure backup using the backup plugin
+- Review backups status
 
 ## Karpenter and cluster autoescaler
 
