@@ -12,12 +12,6 @@
 
 <https://github.com/kubernetes-sigs/cluster-api/>
 
-## Cluster Api Provider Vsphere
+- Cluster API Operator
 
-- <https://github.com/kubernetes-sigs/cluster-api-provider-vsphere/>
-
-- <https://github.com/kubernetes-sigs/cluster-api-provider-vsphere/blob/main/docs/getting_started.md>
-
-- <https://github.com/kubernetes-sigs/cluster-api-provider-vsphere/releases/>
-
-Also includes ovas
+<https://cluster-api-operator.sigs.k8s.io/>
