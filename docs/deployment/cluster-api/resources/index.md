@@ -51,6 +51,8 @@ When deploying other providers than the Core Provider, every provider installs i
 | Addon          | addons.cluster.x-k8s.io         |
 | Runtime        | runtime.cluster.x-k8s.io        |
 
+> To see all installed provider CRDs filtered by provider type we can do a **kubectl api-resources  | grep API_GROUP** command
+
 The provider CRDs permits to configure the different cluster api resources deployed by the core provider.
 
 > This tables exclude IPAM, addon and IPAM resources
