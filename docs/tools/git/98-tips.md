@@ -1,13 +1,5 @@
 # Tips
 
-## Pull all remote branches
-
-```shell
-git branch -r | grep -v '\->' | while read remote; do git branch --track "${remote#origin/}" "$remote"; done
-git fetch --all
-git pull --all
-```
-
 ## How to delete the git history
 
 Checkout/create orphan branch (this branch won't show in git branch command):
