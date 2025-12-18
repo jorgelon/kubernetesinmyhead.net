@@ -73,369 +73,217 @@ nginx.ingress.kubernetes.io/auth-response-headers: X-Auth-Request-User,X-Auth-Re
 - `X-Auth-Request-Access-Token` - OAuth2 access token
 - `X-Auth-Request-Preferred-Username` - Preferred username from OIDC
 
----
-
-## Complete NGINX Example
-
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: protected-app
-  annotations:
-    nginx.ingress.kubernetes.io/auth-url: "http://oauth2-proxy.auth-system.svc.cluster.local/oauth2/auth"
-    nginx.ingress.kubernetes.io/auth-signin: "https://auth.example.com/oauth2/start?rd=$escaped_request_uri"
-    nginx.ingress.kubernetes.io/auth-response-headers: "X-Auth-Request-User,X-Auth-Request-Email,X-Auth-Request-Groups"
-spec:
-  rules:
-  - host: app.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: my-app
-            port:
-              number: 80
-```
-
----
-
 ## Gateway API Migration
 
 In Gateway API, external authentication is achieved using implementation-specific policies. The exact approach varies by Gateway implementation:
 
-### Envoy Gateway
+### Envoy Gateway (Recommended)
 
-Envoy Gateway provides native OIDC support through **SecurityPolicy** and can forward headers via **BackendTrafficPolicy**:
+Envoy Gateway provides native OIDC authentication through **SecurityPolicy**, eliminating the need for external authentication proxies.
+
+#### Key Concepts
+
+- Uses **SecurityPolicy** resource for OIDC configuration
+- Supports OIDC providers: Google, Azure AD, Keycloak, Auth0, etc.
+- Can target HTTPRoute or Gateway resources
+- Cookie-based session management
+- Automatic token refresh
+
+#### Basic Configuration
 
 ```yaml
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: oauth2-policy
-  namespace: default
+  name: oidc-auth
 spec:
   targetRefs:
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: protected-route
+    - kind: HTTPRoute
+      name: myapp
   oidc:
     provider:
-      issuer: "https://auth.example.com"
-      authorizationEndpoint: "https://auth.example.com/oauth2/authorize"
-      tokenEndpoint: "https://auth.example.com/oauth2/token"
-    clientID: "my-client-id"
+      issuer: "https://accounts.google.com"
+    clientID: "your-client-id"
     clientSecret:
-      name: oauth2-client-secret
-    redirectURL: "https://app.example.com/oauth2/callback"
+      name: "client-secret"
+    redirectURL: "https://myapp.example.com/oauth2/callback"
     logoutPath: "/oauth2/logout"
-    scopes:
-    - openid
-    - email
-    - profile
----
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: BackendTrafficPolicy
-metadata:
-  name: add-auth-headers
-  namespace: default
-spec:
-  targetRefs:
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: protected-route
-  requestHeaders:
-    set:
-    - name: X-User-Email
-      value: "%REQ(X-Auth-Request-Email)%"
-    - name: X-User-Name
-      value: "%REQ(X-Auth-Request-User)%"
-    - name: X-User-Groups
-      value: "%REQ(X-Auth-Request-Groups)%"
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: protected-route
-  namespace: default
-spec:
-  parentRefs:
-  - name: my-gateway
-  hostnames:
-  - "app.example.com"
-  rules:
-  - backendRefs:
-    - name: my-app
-      port: 80
+    scopes: [openid, email, profile]
 ```
 
-**For external auth service (not native OIDC)**:
+#### Advanced Features
 
-```yaml
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: SecurityPolicy
-metadata:
-  name: external-auth
-spec:
-  targetRefs:
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: protected-route
-  extAuth:
-    http:
-      backendRef:
-        name: oauth2-proxy
-        namespace: auth-system
-        port: 4180
-      path: /oauth2/auth
-      headersToBackend:
-      - X-Auth-Request-User
-      - X-Auth-Request-Email
-      - X-Auth-Request-Groups
-```
+- **Gateway-wide auth**: Target Gateway resource to protect all routes
+- **Cookie domains**: Use `cookieDomain` for subdomain sharing
+- **Header forwarding**: Use BackendTrafficPolicy to forward claims
+
+See [Envoy Gateway OIDC docs](https://gateway.envoyproxy.io/docs/tasks/security/oidc) for complete examples.
 
 ---
 
 ### Istio
 
-Istio uses **RequestAuthentication** and **AuthorizationPolicy** for JWT-based authentication:
+Istio does **not** have native OIDC authentication. Instead, it focuses on **JWT validation** and requires external services for OIDC flows.
+
+#### Approach 1: JWT Validation (Recommended)
+
+Use **RequestAuthentication** and **AuthorizationPolicy** for JWT validation:
 
 ```yaml
 apiVersion: security.istio.io/v1
 kind: RequestAuthentication
 metadata:
   name: jwt-auth
-  namespace: default
 spec:
   selector:
     matchLabels:
-      app: my-app
+      app: myapp
   jwtRules:
-  - issuer: "https://auth.example.com"
-    jwksUri: "https://auth.example.com/.well-known/jwks.json"
-    forwardOriginalToken: true
-    outputPayloadToHeader: X-JWT-Payload
+    - issuer: "https://accounts.google.com"
+      jwksUri: "https://www.googleapis.com/.well-known/jwks.json"
+      audiences: ["myapp.example.com"]
+      outputClaimToHeaders:
+        - header: x-auth-request-email
+          claim: email
 ---
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
   name: require-jwt
-  namespace: default
 spec:
   selector:
     matchLabels:
-      app: my-app
+      app: myapp
   action: ALLOW
   rules:
-  - from:
-    - source:
-        requestPrincipals: ["*"]
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: protected-route
-  namespace: default
-spec:
-  parentRefs:
-  - name: my-gateway
-  hostnames:
-  - "app.example.com"
-  rules:
-  - filters:
-    - type: RequestHeaderModifier
-      requestHeaderModifier:
-        add:
-        - name: X-User-Email
-          value: "%JWT_CLAIM(email)%"
-        - name: X-User-Name
-          value: "%JWT_CLAIM(name)%"
-        - name: X-User-Groups
-          value: "%JWT_CLAIM(groups)%"
-    backendRefs:
-    - name: my-app
-      port: 80
+    - from:
+        - source:
+            requestPrincipals: ["*"]  # Require valid JWT
 ```
 
-**For external OAuth2 Proxy integration**:
+**Features**:
 
-```yaml
-apiVersion: security.istio.io/v1
-kind: AuthorizationPolicy
-metadata:
-  name: ext-authz
-  namespace: default
-spec:
-  selector:
-    matchLabels:
-      app: my-app
-  action: CUSTOM
-  provider:
-    name: oauth2-proxy
-  rules:
-  - to:
-    - operation:
-        paths: ["/*"]
-```
+- Validates JWT tokens from Authorization header
+- Can forward claims to backend via headers
+- Supports claim-based authorization rules
+- High-performance native validation
+
+#### Approach 2: Full OIDC with OAuth2-Proxy
+
+For complete OIDC flow (login/logout), deploy OAuth2-Proxy and configure via **EnvoyFilter**:
+
+- Deploy OAuth2-Proxy service
+- Create EnvoyFilter with ExtAuthz configuration
+- Point ExtAuthz to OAuth2-Proxy endpoint
+
+#### Approach 3: Authservice (Istio Ecosystem)
+
+Use [istio-ecosystem/authservice](https://github.com/istio-ecosystem/authservice) for OIDC within the mesh:
+
+- Provides transparent OIDC login/logout
+- Token acquisition and refresh
+- Session management
+
+**Key Points**:
+
+- No native OIDC: Requires external services
+- Best for: JWT validation scenarios
+- Complex setup: Multiple components needed for full OIDC
+
+See [Istio RequestAuthentication docs](https://istio.io/latest/docs/reference/config/security/request_authentication/) for details.
 
 ---
 
 ### Kgateway
 
-Kgateway uses **ExtAuthPolicy** with detailed configuration:
+Kgateway (from Solo.io) provides OIDC authentication through **ExtAuthPolicy** with advanced features.
+
+#### Key Concepts
+
+- Uses **ExtAuthPolicy** resource (API: `security.policy.gloo.solo.io/v2`)
+- Requires ext-auth-server component (included with Kgateway)
+- Supports OIDC providers: Google, Azure AD, Keycloak, Okta, Auth0
+- Apply to routes via label selectors
+- Session storage: Cookie-based or Redis
+
+#### Basic OIDC Configuration
 
 ```yaml
-apiVersion: gateway.kgateway.dev/v1alpha1
+apiVersion: security.policy.gloo.solo.io/v2
 kind: ExtAuthPolicy
 metadata:
-  name: oauth2-auth
-  namespace: default
+  name: oidc-auth
 spec:
-  targetRefs:
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: protected-route
+  applyToRoutes:
+    - route:
+        labels:
+          oauth: "true"
   config:
     server:
-      name: oauth2-proxy
-      namespace: auth-system
-      port: 4180
-    requestPath: /oauth2/auth
-    failureMode: deny
-    requestTimeout: 5s
-    headerOptions:
-      headersToForward:
-      - X-Auth-Request-User
-      - X-Auth-Request-Email
-      - X-Auth-Request-Groups
-      - X-Auth-Request-Access-Token
-    redirectOptions:
-      redirectUrl: "https://auth.example.com/oauth2/start"
-      redirectParameters:
-        rd: "$request_uri"
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: protected-route
-  namespace: default
-spec:
-  parentRefs:
-  - name: my-gateway
-  hostnames:
-  - "app.example.com"
-  rules:
-  - backendRefs:
-    - name: my-app
-      port: 80
+      name: ext-auth-server
+      namespace: gloo-system
+    glooAuth:
+      configs:
+        - oauth2:
+            oidcAuthorizationCode:
+              appUrl: "https://myapp.example.com"
+              callbackPath: /oauth2/callback
+              clientId: "your-client-id"
+              clientSecretRef:
+                name: oauth-secret
+              issuerUrl: "https://accounts.google.com"
+              scopes: [openid, email, profile]
+              headers:
+                idTokenHeader: jwt
+              logoutPath: /logout
 ```
 
----
+#### Advanced Features
 
-## Migration Mapping Table
-
-| NGINX Annotation        | Gateway API Equivalent                                                   | Implementation          |
-|-------------------------|--------------------------------------------------------------------------|-------------------------|
-| `auth-url`              | SecurityPolicy/ExtAuthPolicy `backendRef` or `server`                    | Implementation-specific |
-| `auth-signin`           | SecurityPolicy/ExtAuthPolicy `redirectURL` or `signInPath`               | Implementation-specific |
-| `auth-response-headers` | SecurityPolicy/ExtAuthPolicy `headersToBackend` or `authResponseHeaders` | Implementation-specific |
-
----
-
-## Common Use Cases
-
-### Use Case 1: OAuth2 Proxy with Google Auth
-
-**NGINX Ingress**:
+**Redis Session Storage** (production):
 
 ```yaml
-annotations:
-  nginx.ingress.kubernetes.io/auth-url: "http://oauth2-proxy.auth.svc.cluster.local/oauth2/auth"
-  nginx.ingress.kubernetes.io/auth-signin: "https://auth.example.com/oauth2/start?rd=$escaped_request_uri"
-  nginx.ingress.kubernetes.io/auth-response-headers: "X-Auth-Request-User,X-Auth-Request-Email"
+session:
+  failOnFetchFailure: true
+  redis:
+    cookieName: oidc-session
+    options:
+      host: redis.gloo-system.svc.cluster.local:6379
 ```
 
-**Envoy Gateway**:
+**JWT Validation**:
 
 ```yaml
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: SecurityPolicy
-spec:
-  oidc:
-    provider:
-      issuer: "https://accounts.google.com"
-    clientID: "your-client-id"
-    scopes: ["openid", "email", "profile"]
+glooAuth:
+  configs:
+    - oauth2:
+        accessTokenValidation:
+          jwt:
+            remoteJwks:
+              url: https://www.googleapis.com/.well-known/jwks.json
+              refreshInterval: 60s
 ```
 
----
-
-### Use Case 2: Authelia for SSO
-
-**NGINX Ingress**:
+**Combined Auth** (OIDC OR JWT):
 
 ```yaml
-annotations:
-  nginx.ingress.kubernetes.io/auth-url: "http://authelia.auth.svc.cluster.local/api/verify"
-  nginx.ingress.kubernetes.io/auth-signin: "https://auth.example.com/?rd=$escaped_request_uri"
-  nginx.ingress.kubernetes.io/auth-response-headers: "Remote-User,Remote-Groups,Remote-Email"
+glooAuth:
+  configs:
+    - oauth2:
+        oidcAuthorizationCode: {...}
+    - oauth2:
+        accessTokenValidation: {...}
+  booleanExpr: "configs[0] || configs[1]"  # Either succeeds
 ```
 
-**Kgateway**:
+**Key Points**:
 
-```yaml
-apiVersion: gateway.kgateway.dev/v1alpha1
-kind: ExtAuthPolicy
-metadata:
-  name: authelia-auth
-spec:
-  targetRefs:
-  - group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: protected-route
-  config:
-    server:
-      name: authelia
-      namespace: auth
-      port: 9091
-    requestPath: /api/verify
-    failureMode: deny
-    headerOptions:
-      headersToForward:
-      - Remote-User
-      - Remote-Groups
-      - Remote-Email
-    redirectOptions:
-      redirectUrl: "https://auth.example.com/"
-      redirectParameters:
-        rd: "$request_uri"
-```
+- Most feature-rich OIDC implementation
+- Commercial support available (Solo.io Enterprise)
+- Requires ext-auth-server deployment
+- Best for: Complex auth scenarios, multi-method auth
 
----
-
-### Use Case 3: Custom Auth Service with JWT
-
-**NGINX Ingress**:
-
-```yaml
-annotations:
-  nginx.ingress.kubernetes.io/auth-url: "http://custom-auth.auth.svc.cluster.local/validate"
-  nginx.ingress.kubernetes.io/auth-signin: "https://login.example.com/login?redirect=$scheme://$host$request_uri"
-  nginx.ingress.kubernetes.io/auth-response-headers: "X-User-ID,X-User-Roles,X-Session-ID"
-```
-
-**Istio**:
-
-```yaml
-apiVersion: security.istio.io/v1
-kind: RequestAuthentication
-spec:
-  jwtRules:
-  - issuer: "https://auth.example.com"
-    jwksUri: "https://auth.example.com/.well-known/jwks.json"
-```
+See [Solo.io ExtAuthPolicy docs](https://docs.solo.io/gloo-mesh-gateway/latest/security/external-auth/oauth/examples/) for complete examples.
 
 ---
 
@@ -457,10 +305,24 @@ spec:
 
 ### Gateway Implementation Differences
 
-- **Native OIDC**: Envoy Gateway has built-in OIDC support
-- **JWT-Only**: Istio focuses on JWT-based authentication
-- **External Auth**: Kgateway supports external auth services
-- **Standardization**: GEP-2994 is working on standardizing external auth in Gateway API
+| Feature                   | Envoy Gateway               | Istio                               | Kgateway                             |
+|---------------------------|-----------------------------|-------------------------------------|--------------------------------------|
+| **Native OIDC**           | ✅ Built-in (SecurityPolicy) | ❌ Requires OAuth2-Proxy/Authservice | ✅ Built-in (ExtAuthPolicy)           |
+| **JWT Validation**        | ✅ Via SecurityPolicy        | ✅ Native (RequestAuthentication)    | ✅ Via ExtAuthPolicy                  |
+| **Session Management**    | ✅ Cookie-based              | ⚠️ Via external proxy               | ✅ Cookie or Redis                    |
+| **External Proxy Needed** | ❌ No                        | ✅ Yes (for OIDC flow)               | ❌ No                                 |
+| **Complexity**            | 🟢 Low (single resource)    | 🔴 High (multiple components)       | 🟡 Medium (requires ext-auth server) |
+| **Production Maturity**   | 🟡 Growing                  | 🟢 Very mature                      | 🟢 Mature (Solo.io)                  |
+| **Combined Auth Methods** | ⚠️ Limited                  | ✅ Flexible (EnvoyFilter)            | ✅ Boolean expressions                |
+| **Commercial Support**    | ❌ Community only            | ✅ Available                         | ✅ Solo.io Enterprise                 |
+
+**Recommendations:**
+
+- **Choose Envoy Gateway** if: You want native OIDC with minimal complexity and are okay with a newer project
+- **Choose Istio** if: You only need JWT validation, already use Istio mesh, or need maximum production maturity
+- **Choose Kgateway** if: You need advanced auth features, commercial support, or complex auth scenarios (multi-method, API gateway use cases)
+
+**Future:** GEP-2994 is working on standardizing external auth in Gateway API
 
 ### Testing
 
@@ -476,9 +338,29 @@ Test your migration thoroughly:
 
 ## References
 
+### Gateway API
+
 - [Gateway API GEP-2994: External Authorization](https://gateway-api.sigs.k8s.io/geps/gep-2994/)
-- [Envoy Gateway Security Policy](https://gateway.envoyproxy.io/docs/api/extension_types/#securitypolicy)
-- [Istio Request Authentication](https://istio.io/latest/docs/reference/config/security/request_authentication/)
+
+### Envoy Gateway
+
+- [Envoy Gateway SecurityPolicy API](https://gateway.envoyproxy.io/docs/api/extension_types/#securitypolicy)
+- [Envoy Gateway OIDC Authentication](https://gateway.envoyproxy.io/docs/tasks/security/oidc)
+
+### Istio
+
+- [Istio RequestAuthentication](https://istio.io/latest/docs/reference/config/security/request_authentication/)
+- [Istio AuthorizationPolicy](https://istio.io/latest/docs/reference/config/security/authorization-policy/)
+- [Istio Authservice (OIDC for Istio)](https://github.com/istio-ecosystem/authservice)
+
+### Kgateway
+
+- [Kgateway API Reference](https://kgateway.dev/docs/main/reference/api/)
+- [Solo.io ExtAuthPolicy Documentation](https://docs.solo.io/gloo-mesh-gateway/latest/security/external-auth/oauth/examples/)
+- [Kgateway OAuth with Keycloak](https://docs.solo.io/gloo-mesh-gateway/latest/security/external-auth/oauth/keycloak/)
+
+### External Auth Tools
+
 - [NGINX Ingress External Authentication](https://kubernetes.github.io/ingress-nginx/examples/auth/external-auth/)
 - [OAuth2 Proxy Documentation](https://oauth2-proxy.github.io/oauth2-proxy/)
 - [Authelia Documentation](https://www.authelia.com/integration/kubernetes/nginx-ingress/)
