@@ -2,10 +2,6 @@
 
 This recipe creates the Authorization header using the username and password
 
-```txt
- -H 'Authorization: THIS_WILL_BE_CREATED'
-```
-
 > The spec.data section changes depending of the secret store provider
 
 ```yaml
