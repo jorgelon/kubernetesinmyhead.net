@@ -1,4 +1,4 @@
-# Perlas
+# Tips
 
 ## Pod identity agent
 
@@ -14,7 +14,7 @@ Para poder usarlo es posible que necesites una version mas reciente de cert-mana
 
 ## http: TLS handshake error from XXXX EOF
 
-Borrar a mano cert-manager-webhook-ca y cert-manager-webhook-tls si existen
+Let cert manager to manage the certificates. Other ways can cause argocd sync and webhook certificates fail
 
 ## Auto clean secrets
 
