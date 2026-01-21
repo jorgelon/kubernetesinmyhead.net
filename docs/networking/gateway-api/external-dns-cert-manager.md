@@ -70,6 +70,12 @@ The spec.dnsNames field in the generated certificate is taken from the hostname 
 
 > It must have a tls section in Terminate mode and certificateRefs must be a secret in the same namespace as the gateway
 
+### Migration
+
+- Creating a gateway with DNS challenge will create a temporary TXT record with challenge token until the secret is created. It must not offer conflicts with existing ingress certificates / DNS entries.
+
+- For creating a gateway with HTTP-01 challenge the links section below
+
 ## Links
 
 - External DNS: Gateway API Route Sources
