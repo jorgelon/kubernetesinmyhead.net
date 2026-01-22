@@ -1,5 +1,59 @@
-# AWS
+# AWS provider via capi operator
 
-Github
+We will deploy the aws capi infraestructure provider using capi operator, in the capa-system namespace
 
-- <https://github.com/kubernetes-sigs/cluster-api-provider-aws>
+## Get the credentials spec.configSecret
+
+The controller deployment needs baseline AWS authentication in order to be deployed. They act as default credentials. Later, it is typical to use identityRef as per cluster credentials (spec.identityRef in an AWSCluster resource).
+
+That credentials must be stored in the secret configured under spec.configSecreta and it can be generated this way in any aws account.
+
+In order to generate them, we need the clusterawsadm binary
+
+Firzt create a CloudFormation stack cluster-api-provider-aws-sigs-k8s-io in your AWS account with the correct IAM resources.
+
+```shell
+clusterawsadm bootstrap iam create-cloudformation-stack # this 
+```
+
+Create the credentials and store them in a secret as value for the AWS_B64ENCODED_CREDENTIALS key
+
+```shell
+export AWS_B64ENCODED_CREDENTIALS=$(clusterawsadm bootstrap credentials encode-as-profile)
+kubectl create secret generic aws-bootstrap --from-literal=AWS_B64ENCODED_CREDENTIALS="${AWS_B64ENCODED_CREDENTIALS}" --namespace capa-system
+```
+
+```shell
+clusterawsadm bootstrap credentials encode-as-profile
+```
+
+See more here about credentials and multi tenancy
+
+- <https://cluster-api-aws.sigs.k8s.io/topics/using-clusterawsadm-to-fulfill-prerequisites>
+- <https://cluster-api-aws.sigs.k8s.io/topics/full-multitenancy-implementation>
+
+## Deploy using Capi Operator
+
+We can deploy the aws infraestructure provider this way
+
+```yaml
+apiVersion: operator.cluster.x-k8s.io/v1alpha2
+kind: InfrastructureProvider
+metadata:
+  name: aws
+  namespace: capa-system
+spec:
+  version: v2.10.0
+  configSecret:
+    name: aws-bootstrap
+```
+
+## Links
+
+- Github
+
+<https://github.com/kubernetes-sigs/cluster-api-provider-aws>
+
+- Book
+
+<https://cluster-api-aws.sigs.k8s.io/>
