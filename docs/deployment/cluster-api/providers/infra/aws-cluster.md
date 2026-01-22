@@ -16,9 +16,9 @@ This table shows the aws provider resources that can be called here
 
 ## Control plane definition (spec.controlPlaneRef)
 
-In EKS we must use a AWSManagedControlPlane resource. Its template is AWSManagedControlPlaneTemplate
+- In EKS we must use a **AWSManagedControlPlane** resource. Its template is **AWSManagedControlPlaneTemplate**
 
-When we want a a self managed control plane, the resource will depend of the chosen controlplane provider, for example, a KubeadmControlPlane resource if using kubeadm provider.
+- When we want a a **self managed control plane**, the resource will depend of the chosen controlplane provider, for example, a KubeadmControlPlane resource if using kubeadm provider.
 
 This is a more complex resource that permits to configure:
 
