@@ -2,6 +2,8 @@
 
 We will deploy the aws capi infraestructure provider using capi operator, in the capa-system namespace
 
+<https://jicowan.medium.com/provisioning-an-eks-cluster-with-capi-df3502e5f2b4>
+
 ## Get the credentials spec.configSecret
 
 The controller deployment needs baseline AWS authentication in order to be deployed. They act as default credentials. Later, it is typical to use identityRef as per cluster credentials (spec.identityRef in an AWSCluster resource).
@@ -31,6 +33,7 @@ See more here about credentials and multi tenancy
 
 - <https://cluster-api-aws.sigs.k8s.io/topics/using-clusterawsadm-to-fulfill-prerequisites>
 - <https://cluster-api-aws.sigs.k8s.io/topics/full-multitenancy-implementation>
+- <https://cluster-api-aws.sigs.k8s.io/topics/specify-management-iam-role>
 
 ## Deploy using Capi Operator
 
@@ -47,13 +50,3 @@ spec:
   configSecret:
     name: aws-bootstrap
 ```
-
-## Links
-
-- Github
-
-<https://github.com/kubernetes-sigs/cluster-api-provider-aws>
-
-- Book
-
-<https://cluster-api-aws.sigs.k8s.io/>
