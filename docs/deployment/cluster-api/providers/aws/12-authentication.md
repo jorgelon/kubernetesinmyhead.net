@@ -19,7 +19,7 @@ More info here
 
 <https://cluster-api-aws.sigs.k8s.io/topics/using-clusterawsadm-to-fulfill-prerequisites>
 
-## Capa Controller credentials
+## CAPA Controller credentials
 
 We need to give credentials to the CAPA controller in order to manage aws resources. It can be a good practice to create an specific user/role different from the user that created the Cloudformation Stack.
 
@@ -53,7 +53,9 @@ See this for other controller authentication like IRSA, Kiam and kube2iam
 
 <https://cluster-api-aws.sigs.k8s.io/topics/specify-management-iam-role.html>
 
-## Separate EKS roles
+- [See this for AWSManagedControlPlane credentials](21-awsmanagedcontrolplane.md) and multitenancy
+
+## Separate EKS roles per cluster
 
 When deploying EKS clusters, by default they share the same IAM roles. If we want different roles per cluster, we must permit the EKS controller to create IAM roles per EKS cluster
 

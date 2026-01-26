@@ -59,6 +59,7 @@ More settings and info
 Now we can create the CloudFormation stack with our AWSIAMConfiguration file
 
 ```shell
+aws cloudformation list-stacks
 clusterawsadm bootstrap iam create-cloudformation-stack --config bootstrap.yaml 
 ```
 
@@ -85,7 +86,8 @@ Then we must translate this credentials to the kubernetes cluster where we will 
 
 ```shell
 export AWS_PROFILE=bootstrap-capa
-export AWS_B64ENCODED_CREDENTIALS=$(clusterawsadm bootstrap credentials encode-as-profile)
+export AWS_B64ENCODED_CREDENTIALS=$(clusterawsadm bootstrap credentials encode-as-profile) # need to pass region?
+echo $AWS_B64ENCODED_CREDENTIALS | base64 -d # check the data. 
 kubectl create secret generic aws-bootstrap --from-literal=AWS_B64ENCODED_CREDENTIALS="${AWS_B64ENCODED_CREDENTIALS}" --namespace capa-system
 ```
 
