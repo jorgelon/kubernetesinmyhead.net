@@ -41,6 +41,17 @@ We must translate the credentials for this user/role to the CAPA controller. For
 
 - Create an access key for the user and load in an aws profile
 - Load the aws profile and create a secret in the kubernetes cluster where the controller will be deployed.
+- Configure the provider to use that secret
+
+See this for other controller authentication like IRSA, Kiam and kube2iam
+
+- IAM roles to deploy management clusters instead of AWS credentials
+
+<https://cluster-api-aws.sigs.k8s.io/topics/using-iam-roles-in-mgmt-cluster>.
+
+- Specifying the IAM Role to use for Management Components
+
+<https://cluster-api-aws.sigs.k8s.io/topics/specify-management-iam-role.html>
 
 ## Separate EKS roles
 
