@@ -34,4 +34,4 @@ Is it mature?
 
 ## Auth with empty clusters
 
-It is neccesary to configure authentication in when no kubernetes clusters are deployed yet
+It is neccesary to configure authentication in the controller when no kubernetes clusters are deployed yet

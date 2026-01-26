@@ -28,19 +28,26 @@ Then we can configure clusterawsadm with a AWSIAMConfiguration file.
 
 Some of the settings are:
 
-- Name and tags for the Cloudformation stack
-- The region to create it (if not priovided via environment variable or cli parameter)
-- Dedicated IAM user (spec.bootstrapUser)
+- **Name and tags** for the Cloudformation stack
+- The **region** to create it (if not priovided via environment variable or cli parameter)
+- **Dedicated IAM user** (spec.bootstrapUser)
 
-It creates a dedicated IAM user and group with proper permissions for bootstrapping and managing Cluster API AWS Provider resources. This avoid using personal AWS credentials and permit multitenancy scenarios
+It creates a dedicated IAM user and group with proper permissions for bootstrapping and managing Cluster API AWS Provider resources. This avoid using personal AWS credentials and permit multitenancy scenarios.
 
 > Later we can generate access keys for this user and use them when running **clusterawsadm bootstrap credentials encode-as-profile**
 
-- EKS settings (spec.eks)
+We can also add prefixes or suffixes to the roles, users and policies that will be created
+
+```txt
+Final IAM User Name: {namePrefix}{userName}{nameSuffix}
+Final IAM Group Name: {namePrefix}{groupName}{nameSuffix}
+```
+
+> The default created user and group is **bootstrapper.cluster-api-provider-aws.sigs.k8s.io user**
+
+- **EKS settings** (spec.eks)
 
 Eks is enabled by default, but here we can enable separate roles per EKS cluster (iamRoleCreation), enable support for machinepool resources or fargate profiles so on
-
-- Adding prefixes or suffixes to the roles, users and policies that will be created
 
 More settings and info
 
@@ -57,7 +64,7 @@ clusterawsadm bootstrap iam create-cloudformation-stack --config bootstrap.yaml
 
 This generates resources:
 
-- The bootstrapper.cluster-api-provider-aws.sigs.k8s.io user and group (by default)
+- The bootstrap user and group
 - Intance profiles (control-plane, controllers and nodes)
 - Some ManagedPolicies
 - Other Roles
@@ -68,9 +75,7 @@ This generates resources:
 
 The controller deployment needs baseline AWS authentication to the CAPA controller in order to be deployed.
 
-> By default, unless using bootstrapUser, the user and group created is **bootstrapper.cluster-api-provider-aws.sigs.k8s.io user**
-
-The we must **create an Access key and save the to an aws profile** locally
+If we have created a bootstrapUser, we must **create an Access key and save the to an aws profile** for it
 
 ```shell
 aws configure --profile=bootstrap-capa

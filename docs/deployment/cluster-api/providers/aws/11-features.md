@@ -2,30 +2,7 @@
 
 ## Enable separate roles per EKS cluster
 
-By default, all the EKS cluster share the same IAM roles. If we want to have separate roles per EKS cluster, we must:
-
-- Enable automatic creation of IAM roles in the AWSIAMConfiguration file
-
-```yaml
-apiVersion: bootstrap.aws.infrastructure.cluster.x-k8s.io/v1beta1
-kind: AWSIAMConfiguration
-spec:
-  eks:
-    iamRoleCreation: true
-```
-
-- enable EKSEnableIAM feature when deploying the aws provider
-
-```yaml
-apiVersion: operator.cluster.x-k8s.io/v1alpha2
-kind: InfrastructureProvider
-metadata:
-  name: aws
-spec:
-  manager:
-    featureGates:
-      EKSEnableIAM: true # required to enable IAM roles for EKS nodes
-```
+By default, all the EKS cluster share the same IAM roles. [See this if we want to have separate roles per EKS cluster](12-authentication.md)
 
 ## Enable MachinePool support
 
