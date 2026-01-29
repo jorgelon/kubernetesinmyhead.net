@@ -8,6 +8,15 @@ It is possible to use the Aws Load Balancer Controller as gateway api implementa
 - The Aws Load Balancer Controller gateway api crds
 - Enabling it via feature gates (NLBGatewayAPI and ALBGatewayAPI)
 
+via helm chart
+
+```yaml
+controllerConfig:
+  featureGates:
+    NLBGatewayAPI: true
+    ALBGatewayAPI: true
+```
+
 ## Choose NLB or ALB
 
 The L4 loadbalacing is done via AWS NLB and the L7 via AWS ALB. Choose what balancer to use is done when creating the gateway class:
