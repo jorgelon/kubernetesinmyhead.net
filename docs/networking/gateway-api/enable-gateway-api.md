@@ -42,15 +42,16 @@ controllerConfig:
 
 ## External DNS
 
-We need a recent version of the external-dns helm chart and enable the desired route as extraArgs in the values file
+We need a recent version of the external-dns helm chart and add the desired routes as sources in the values file
 
 ```yaml
-extraArgs:
-  - "--source=gateway-tcproute"
-  - "--source=gateway-udproute"
-  - "--source=gateway-httproute"
-  - "--source=gateway-tlsroute"
-  - "--source=gateway-grpcroute"
+sources:
+  <...>
+  - gateway-httproute
+  - gateway-tcproute
+  - gateway-udproute
+  - gateway-tlsroute
+  - gateway-grpcroute
 ```
 
 ## Cert-Manager
