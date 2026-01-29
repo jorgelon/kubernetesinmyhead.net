@@ -1,0 +1,4229 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kubernetesinmyhead.net/networking/gateway-api/envoy-gateway/crds/securitypolicy/">
+      
+      
+        <link rel="prev" href="../httproutefilter/">
+      
+      
+        <link rel="next" href="../../../kgateway/gateway-classes/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>SecurityPolicy - Kubernetes in my head</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#securitypolicy" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="Kubernetes in my head" class="md-header__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kubernetes in my head
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              SecurityPolicy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="Kubernetes in my head" class="md-nav__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kubernetes in my head
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kubernetesinmyhead.net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../CI-CD/argo-events/filtering/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI CD
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../database/cloudnative-pg/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../deployment/resource-templating/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../git/detached-head/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../gitops/get-raw-yaml/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gitops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../kubernetes/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../languages/comment-comment-out/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Languages
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../misc/android/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../network-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../onpremise-loadbalancers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    On premise load balancers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../aws-load-balancer-controller/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aws load balancer controller
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../cilium/99-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cilium
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../contour/deployment/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contour
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gateway api
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Gateway api
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../98-tips/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tips
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contour-to-envoy-gateway-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contour to Envoy Gateway Migration Path
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../enable-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enable Gateway API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../external-dns-cert-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    External DNS and cert manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../gateway-api-implementations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gateway API Implementations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../linking-apps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linking Apps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../listeners/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listeners
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../merging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merging from class
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../aws%20lbc/gateway-api/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aws lbc
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10_6_10" id="__nav_10_6_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Envoy gateway
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_10_6_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10_6_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Envoy gateway
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backend-selfsigned-tls/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend routing to self signed
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6_10_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10_6_10_2" id="__nav_10_6_10_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crds
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_10_6_10_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10_6_10_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Crds
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Envoy Gateway Custom Resource Definitions (CRDs)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backendtrafficpolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BackendTrafficPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clienttrafficpolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ClientTrafficPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../envoyextensionpolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EnvoyExtensionPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../envoypatchpolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EnvoyPatchPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../envoyproxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EnvoyProxy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../httproutefilter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTPRouteFilter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SecurityPolicy
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SecurityPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cors-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CORS Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CORS Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simple-cors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simple CORS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wildcard-cors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wildcard CORS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-based-cors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern-Based CORS
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jwt-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT Authentication
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="JWT Authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-jwt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic JWT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jwt-with-multiple-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT with Multiple Providers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jwt-with-custom-claims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT with Custom Claims
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oidc-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OIDC Authentication
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OIDC Authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-oidc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic OIDC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oidc-with-keycloak" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OIDC with Keycloak
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authorization-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authorization Policies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Authorization Policies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#path-based-authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Path-Based Authorization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-based-authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method-Based Authorization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate Limiting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rate Limiting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-ip-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-IP Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#header-based-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Header-Based Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ip-allowdeny-lists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP Allow/Deny Lists
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="IP Allow/Deny Lists">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ip-allowlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP Allowlist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ip-denylist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP Denylist
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#public-api-with-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public API with Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secure-spa-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Secure SPA Application
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admin-panel-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin Panel Protection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-tenant-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Tenant API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#internal-service-with-mtls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Internal Service with mTLS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#progressive-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Progressive Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#policy-precedence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy Precedence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cors-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CORS Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jwt-authentication-failures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT Authentication Failures
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rate-limiting-not-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate Limiting Not Working
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ip-allowlist-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP Allowlist Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Considerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../kgateway/gateway-classes/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kgateway
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../migration-from-nginx-controller/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migration from nginx controller
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../routes/00-routes/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Routes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../metallb/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metallb
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../observability/architecture/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../operating-systems/too-many-open-files/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../platforms/aws/cli/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platforms
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../queues/nats/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queues
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../security/cert-manager/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../services/external-dns/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../storage/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../tools/Buildkit/output/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../vibe-sreing/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vibe sreing
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cors-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CORS Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CORS Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#simple-cors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Simple CORS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wildcard-cors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wildcard CORS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-based-cors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern-Based CORS
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jwt-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT Authentication
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="JWT Authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-jwt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic JWT
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jwt-with-multiple-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT with Multiple Providers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jwt-with-custom-claims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT with Custom Claims
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#oidc-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OIDC Authentication
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="OIDC Authentication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-oidc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic OIDC
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oidc-with-keycloak" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        OIDC with Keycloak
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Authentication
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authorization-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authorization Policies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Authorization Policies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#path-based-authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Path-Based Authorization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#method-based-authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Method-Based Authorization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate Limiting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rate Limiting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-ip-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-IP Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#header-based-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Header-Based Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#global-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ip-allowdeny-lists" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP Allow/Deny Lists
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="IP Allow/Deny Lists">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ip-allowlist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP Allowlist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ip-denylist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP Denylist
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#public-api-with-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public API with Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secure-spa-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Secure SPA Application
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#admin-panel-protection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin Panel Protection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-tenant-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Tenant API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#internal-service-with-mtls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Internal Service with mTLS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#progressive-rate-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Progressive Rate Limiting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#policy-precedence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Policy Precedence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cors-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CORS Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jwt-authentication-failures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JWT Authentication Failures
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rate-limiting-not-working" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate Limiting Not Working
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ip-allowlist-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        IP Allowlist Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Considerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../../../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    kubernetesinmyhead.net
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../../../network-policies/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Networking
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../../98-tips/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Gateway api
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../backend-selfsigned-tls/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Envoy gateway
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Crds
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="securitypolicy">SecurityPolicy<a class="headerlink" href="#securitypolicy" title="Anchor link to this section for reference">&para;</a></h1>
+<p>SecurityPolicy provides security controls for routes including CORS, authentication (JWT, OIDC, Basic Auth), authorization, and rate limiting. It implements defense-in-depth security patterns at the gateway level.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li><strong>API Group</strong>: <code>gateway.envoyproxy.io/v1alpha1</code></li>
+<li><strong>Kind</strong>: <code>SecurityPolicy</code></li>
+<li><strong>Attachment</strong>: Gateway or HTTPRoute via <code>targetRef</code></li>
+<li><strong>Purpose</strong>: Implement security controls and policies</li>
+</ul>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li>CORS (Cross-Origin Resource Sharing)</li>
+<li>JWT authentication</li>
+<li>OIDC (OpenID Connect) authentication</li>
+<li>Basic authentication</li>
+<li>Authorization policies</li>
+<li>Rate limiting (local and global)</li>
+<li>IP allow/deny lists</li>
+</ul>
+<h2 id="basic-example">Basic Example<a class="headerlink" href="#basic-example" title="Anchor link to this section for reference">&para;</a></h2>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: api-security
+  namespace: default
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: api-route
+  cors:
+    allowOrigins:
+      - &quot;https://example.com&quot;
+    allowMethods:
+      - GET
+      - POST
+    allowHeaders:
+      - Content-Type
+      - Authorization
+</code></pre>
+<h2 id="cors-configuration">CORS Configuration<a class="headerlink" href="#cors-configuration" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="simple-cors">Simple CORS<a class="headerlink" href="#simple-cors" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: cors-policy
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: my-route
+  cors:
+    allowOrigins:
+      - &quot;https://app.example.com&quot;
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    allowHeaders:
+      - Content-Type
+      - Authorization
+    maxAge: 86400
+</code></pre>
+<h3 id="wildcard-cors">Wildcard CORS<a class="headerlink" href="#wildcard-cors" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  cors:
+    allowOrigins:
+      - &quot;*&quot;
+    allowMethods:
+      - GET
+      - POST
+    allowHeaders:
+      - &quot;*&quot;
+    exposeHeaders:
+      - X-Custom-Header
+    allowCredentials: true
+    maxAge: 3600
+</code></pre>
+<h3 id="pattern-based-cors">Pattern-Based CORS<a class="headerlink" href="#pattern-based-cors" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  cors:
+    allowOrigins:
+      - &quot;https://*.example.com&quot;
+      - &quot;https://app.*.com&quot;
+    allowMethods:
+      - GET
+      - POST
+    allowHeaders:
+      - Content-Type
+      - Authorization
+      - X-API-Key
+</code></pre>
+<h2 id="jwt-authentication">JWT Authentication<a class="headerlink" href="#jwt-authentication" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="basic-jwt">Basic JWT<a class="headerlink" href="#basic-jwt" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: jwt-auth
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: api-route
+  jwt:
+    providers:
+      - name: auth0
+        issuer: https://example.auth0.com/
+        audiences:
+          - my-api
+        remoteJWKS:
+          uri: https://example.auth0.com/.well-known/jwks.json
+</code></pre>
+<h3 id="jwt-with-multiple-providers">JWT with Multiple Providers<a class="headerlink" href="#jwt-with-multiple-providers" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  jwt:
+    providers:
+      - name: auth0
+        issuer: https://example.auth0.com/
+        audiences:
+          - my-api
+        remoteJWKS:
+          uri: https://example.auth0.com/.well-known/jwks.json
+      - name: okta
+        issuer: https://example.okta.com
+        audiences:
+          - api://default
+        remoteJWKS:
+          uri: https://example.okta.com/oauth2/default/v1/keys
+</code></pre>
+<h3 id="jwt-with-custom-claims">JWT with Custom Claims<a class="headerlink" href="#jwt-with-custom-claims" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  jwt:
+    providers:
+      - name: custom-auth
+        issuer: https://auth.example.com
+        audiences:
+          - my-service
+        remoteJWKS:
+          uri: https://auth.example.com/.well-known/jwks.json
+        claimToHeaders:
+          - claim: sub
+            header: X-User-ID
+          - claim: email
+            header: X-User-Email
+          - claim: roles
+            header: X-User-Roles
+</code></pre>
+<h2 id="oidc-authentication">OIDC Authentication<a class="headerlink" href="#oidc-authentication" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="basic-oidc">Basic OIDC<a class="headerlink" href="#basic-oidc" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: oidc-auth
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: app-route
+  oidc:
+    provider:
+      issuer: https://accounts.google.com
+    clientID: my-client-id
+    clientSecret:
+      name: oidc-client-secret
+      key: client-secret
+    redirectURL: https://app.example.com/oauth2/callback
+    scopes:
+      - openid
+      - email
+      - profile
+</code></pre>
+<h3 id="oidc-with-keycloak">OIDC with Keycloak<a class="headerlink" href="#oidc-with-keycloak" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  oidc:
+    provider:
+      issuer: https://keycloak.example.com/realms/myrealm
+      authorizationEndpoint: https://keycloak.example.com/realms/myrealm/protocol/openid-connect/auth
+      tokenEndpoint: https://keycloak.example.com/realms/myrealm/protocol/openid-connect/token
+    clientID: my-app
+    clientSecret:
+      name: keycloak-secret
+      key: secret
+    redirectURL: https://app.example.com/callback
+    scopes:
+      - openid
+      - email
+      - profile
+      - roles
+</code></pre>
+<h2 id="basic-authentication">Basic Authentication<a class="headerlink" href="#basic-authentication" title="Anchor link to this section for reference">&para;</a></h2>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: basic-auth
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: admin-route
+  basicAuth:
+    users:
+      name: basic-auth-users
+      key: .htpasswd
+</code></pre>
+<p>Create the secret:</p>
+<pre><code class="language-bash"># Generate password hash
+htpasswd -nbB admin secretpassword &gt; .htpasswd
+
+# Create secret
+kubectl create secret generic basic-auth-users \
+  --from-file=.htpasswd=.htpasswd
+</code></pre>
+<h2 id="authorization-policies">Authorization Policies<a class="headerlink" href="#authorization-policies" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="path-based-authorization">Path-Based Authorization<a class="headerlink" href="#path-based-authorization" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: authz-policy
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: api-route
+  authorization:
+    rules:
+      - name: admin-only
+        action: Allow
+        principal:
+          jwt:
+            claims:
+              - name: roles
+                values:
+                  - admin
+</code></pre>
+<h3 id="method-based-authorization">Method-Based Authorization<a class="headerlink" href="#method-based-authorization" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  authorization:
+    defaultAction: Deny
+    rules:
+      - name: read-access
+        action: Allow
+        principal:
+          jwt:
+            claims:
+              - name: roles
+                values:
+                  - reader
+                  - admin
+        when:
+          - key: request.method
+            values:
+              - GET
+      - name: write-access
+        action: Allow
+        principal:
+          jwt:
+            claims:
+              - name: roles
+                values:
+                  - admin
+        when:
+          - key: request.method
+            values:
+              - POST
+              - PUT
+              - DELETE
+</code></pre>
+<h2 id="rate-limiting">Rate Limiting<a class="headerlink" href="#rate-limiting" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="local-rate-limiting">Local Rate Limiting<a class="headerlink" href="#local-rate-limiting" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: rate-limit
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: api-route
+  rateLimit:
+    type: Local
+    local:
+      rules:
+        - limit:
+            requests: 100
+            unit: Minute
+</code></pre>
+<h3 id="per-ip-rate-limiting">Per-IP Rate Limiting<a class="headerlink" href="#per-ip-rate-limiting" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  rateLimit:
+    type: Local
+    local:
+      rules:
+        - clientSelectors:
+            - sourceIP: true
+          limit:
+            requests: 100
+            unit: Minute
+</code></pre>
+<h3 id="header-based-rate-limiting">Header-Based Rate Limiting<a class="headerlink" href="#header-based-rate-limiting" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  rateLimit:
+    type: Local
+    local:
+      rules:
+        - clientSelectors:
+            - headers:
+                - name: X-API-Key
+                  type: Distinct
+          limit:
+            requests: 1000
+            unit: Hour
+</code></pre>
+<h3 id="global-rate-limiting">Global Rate Limiting<a class="headerlink" href="#global-rate-limiting" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  rateLimit:
+    type: Global
+    global:
+      rules:
+        - clientSelectors:
+            - sourceIP: true
+          limit:
+            requests: 10000
+            unit: Hour
+      rateLimitService:
+        backendRef:
+          name: ratelimit-service
+          port: 8081
+</code></pre>
+<h2 id="ip-allowdeny-lists">IP Allow/Deny Lists<a class="headerlink" href="#ip-allowdeny-lists" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="ip-allowlist">IP Allowlist<a class="headerlink" href="#ip-allowlist" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: ip-allowlist
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: admin-route
+  ipAllowList:
+    - 10.0.0.0/8
+    - 192.168.1.0/24
+    - 172.16.0.100/32
+</code></pre>
+<h3 id="ip-denylist">IP Denylist<a class="headerlink" href="#ip-denylist" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  ipDenyList:
+    - 203.0.113.0/24
+    - 198.51.100.10/32
+</code></pre>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="public-api-with-rate-limiting">Public API with Rate Limiting<a class="headerlink" href="#public-api-with-rate-limiting" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: public-api-security
+  namespace: default
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: public-api
+  cors:
+    allowOrigins:
+      - &quot;*&quot;
+    allowMethods:
+      - GET
+      - POST
+    allowHeaders:
+      - Content-Type
+      - X-API-Key
+  rateLimit:
+    type: Local
+    local:
+      rules:
+        - clientSelectors:
+            - headers:
+                - name: X-API-Key
+                  type: Distinct
+          limit:
+            requests: 1000
+            unit: Hour
+        - clientSelectors:
+            - sourceIP: true
+          limit:
+            requests: 100
+            unit: Hour
+</code></pre>
+<h3 id="secure-spa-application">Secure SPA Application<a class="headerlink" href="#secure-spa-application" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: spa-security
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: spa-route
+  cors:
+    allowOrigins:
+      - &quot;https://app.example.com&quot;
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+    allowHeaders:
+      - Content-Type
+      - Authorization
+    allowCredentials: true
+  jwt:
+    providers:
+      - name: auth0
+        issuer: https://example.auth0.com/
+        audiences:
+          - my-spa-api
+        remoteJWKS:
+          uri: https://example.auth0.com/.well-known/jwks.json
+</code></pre>
+<h3 id="admin-panel-protection">Admin Panel Protection<a class="headerlink" href="#admin-panel-protection" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: admin-security
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: admin-route
+  ipAllowList:
+    - 10.0.0.0/8  # Internal network only
+  basicAuth:
+    users:
+      name: admin-users
+      key: .htpasswd
+  rateLimit:
+    type: Local
+    local:
+      rules:
+        - limit:
+            requests: 100
+            unit: Minute
+</code></pre>
+<h3 id="multi-tenant-api">Multi-Tenant API<a class="headerlink" href="#multi-tenant-api" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: multi-tenant-api
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: tenant-api
+  jwt:
+    providers:
+      - name: tenant-auth
+        issuer: https://auth.example.com
+        audiences:
+          - tenant-api
+        remoteJWKS:
+          uri: https://auth.example.com/.well-known/jwks.json
+        claimToHeaders:
+          - claim: tenant_id
+            header: X-Tenant-ID
+          - claim: roles
+            header: X-User-Roles
+  authorization:
+    defaultAction: Deny
+    rules:
+      - name: tenant-access
+        action: Allow
+        principal:
+          jwt:
+            claims:
+              - name: tenant_id
+                values: [&quot;*&quot;]
+  rateLimit:
+    type: Local
+    local:
+      rules:
+        - clientSelectors:
+            - headers:
+                - name: X-Tenant-ID
+                  type: Distinct
+          limit:
+            requests: 10000
+            unit: Hour
+</code></pre>
+<h3 id="internal-service-with-mtls">Internal Service with mTLS<a class="headerlink" href="#internal-service-with-mtls" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: internal-mtls
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: internal-gateway
+  ipAllowList:
+    - 10.0.0.0/8
+  clientCertificateAuth:
+    caCertificateRefs:
+      - name: internal-ca
+        kind: Secret
+</code></pre>
+<h3 id="progressive-rate-limiting">Progressive Rate Limiting<a class="headerlink" href="#progressive-rate-limiting" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: progressive-rate-limit
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: api-route
+  rateLimit:
+    type: Local
+    local:
+      rules:
+        # Free tier - 10 requests per minute
+        - clientSelectors:
+            - headers:
+                - name: X-API-Tier
+                  value: free
+          limit:
+            requests: 10
+            unit: Minute
+        # Pro tier - 100 requests per minute
+        - clientSelectors:
+            - headers:
+                - name: X-API-Tier
+                  value: pro
+          limit:
+            requests: 100
+            unit: Minute
+        # Enterprise tier - 1000 requests per minute
+        - clientSelectors:
+            - headers:
+                - name: X-API-Tier
+                  value: enterprise
+          limit:
+            requests: 1000
+            unit: Minute
+        # Default - 50 requests per minute
+        - limit:
+            requests: 50
+            unit: Minute
+</code></pre>
+<h2 id="policy-precedence">Policy Precedence<a class="headerlink" href="#policy-precedence" title="Anchor link to this section for reference">&para;</a></h2>
+<ol>
+<li>HTTPRoute-level policies override Gateway-level policies</li>
+<li>More specific targetRef takes precedence</li>
+<li>Multiple SecurityPolicies on same target are merged</li>
+<li>Rate limit rules are evaluated in order</li>
+</ol>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Anchor link to this section for reference">&para;</a></h2>
+<ol>
+<li><strong>Start with deny-by-default</strong> - Explicitly allow what's needed</li>
+<li><strong>Use JWT over Basic Auth</strong> - Better security and scalability</li>
+<li><strong>Implement rate limiting</strong> - Prevent abuse and DoS</li>
+<li><strong>Restrict CORS</strong> - Don't use wildcard in production</li>
+<li><strong>Combine multiple controls</strong> - Defense in depth</li>
+<li><strong>Monitor auth failures</strong> - Track 401/403 responses</li>
+<li><strong>Rotate secrets regularly</strong> - JWT signing keys, client secrets</li>
+<li><strong>Use IP allowlists carefully</strong> - Consider NAT and proxies</li>
+<li><strong>Test authorization rules</strong> - Verify intended access patterns</li>
+<li><strong>Log security events</strong> - Audit authentication and authorization</li>
+</ol>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="cors-issues">CORS Issues<a class="headerlink" href="#cors-issues" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Check browser console for CORS errors and verify:
+- <code>allowOrigins</code> includes the request origin
+- <code>allowMethods</code> includes the request method
+- <code>allowHeaders</code> includes all request headers
+- <code>allowCredentials</code> set correctly</p>
+<h3 id="jwt-authentication-failures">JWT Authentication Failures<a class="headerlink" href="#jwt-authentication-failures" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Common issues:
+- Incorrect issuer URL
+- Audience mismatch
+- Expired tokens
+- JWKS endpoint unreachable
+- Clock skew</p>
+<p>Check Envoy logs:</p>
+<pre><code class="language-bash">kubectl logs -n envoy-gateway-system \
+  -l gateway.envoyproxy.io/owning-gateway-name=my-gateway | grep -i jwt
+</code></pre>
+<h3 id="rate-limiting-not-working">Rate Limiting Not Working<a class="headerlink" href="#rate-limiting-not-working" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Verify:
+- Client selectors match traffic
+- Limits are not too high
+- Rate limit service (for global) is running
+- Time units are correct</p>
+<h3 id="ip-allowlist-issues">IP Allowlist Issues<a class="headerlink" href="#ip-allowlist-issues" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Consider:
+- Traffic through proxies/load balancers
+- X-Forwarded-For configuration
+- CIDR notation correctness
+- IPv4 vs IPv6</p>
+<h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li><strong>Never log secrets</strong> - Avoid logging JWTs, API keys</li>
+<li><strong>Use HTTPS</strong> - Always encrypt in production</li>
+<li><strong>Validate JWT claims</strong> - Check issuer, audience, expiry</li>
+<li><strong>Rate limit authentication</strong> - Prevent brute force</li>
+<li><strong>Monitor anomalies</strong> - Unusual traffic patterns</li>
+<li><strong>Keep dependencies updated</strong> - Security patches</li>
+<li><strong>Use strong secrets</strong> - High entropy passwords/keys</li>
+<li><strong>Implement timeout</strong> - For authentication checks</li>
+</ul>
+<h2 id="related-resources">Related Resources<a class="headerlink" href="#related-resources" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li><a href="../clienttrafficpolicy/">ClientTrafficPolicy</a> - Client connection settings</li>
+<li><a href="../envoyextensionpolicy/">EnvoyExtensionPolicy</a> - External authentication</li>
+<li><a href="../httproutefilter/">HTTPRouteFilter</a> - Request/response modification</li>
+<li><a href="https://openid.net/connect/">OIDC Specification</a> - OpenID Connect</li>
+<li><a href="https://jwt.io/">JWT Specification</a> - JSON Web Tokens</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../httproutefilter/" class="md-footer__link md-footer__link--prev" aria-label="Previous: HTTPRouteFilter">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                HTTPRouteFilter
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../../kgateway/gateway-classes/" class="md-footer__link md-footer__link--next" aria-label="Next: Gateway Classes">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Gateway Classes
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://linkedin.com/in/jorge-p-275960300" target="_blank" rel="noopener" title="LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

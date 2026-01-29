@@ -1,0 +1,3862 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kubernetesinmyhead.net/networking/gateway-api/envoy-gateway/crds/clienttrafficpolicy/">
+      
+      
+        <link rel="prev" href="../backendtrafficpolicy/">
+      
+      
+        <link rel="next" href="../envoyextensionpolicy/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>ClientTrafficPolicy - Kubernetes in my head</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#clienttrafficpolicy" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../../.." title="Kubernetes in my head" class="md-header__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kubernetes in my head
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ClientTrafficPolicy
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="Kubernetes in my head" class="md-nav__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kubernetes in my head
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kubernetesinmyhead.net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../CI-CD/argo-events/filtering/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI CD
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../database/cloudnative-pg/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../deployment/resource-templating/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../git/detached-head/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../gitops/get-raw-yaml/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gitops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../kubernetes/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../languages/comment-comment-out/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Languages
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../misc/android/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../network-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../onpremise-loadbalancers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    On premise load balancers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../aws-load-balancer-controller/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aws load balancer controller
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../cilium/99-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cilium
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../contour/deployment/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contour
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gateway api
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Gateway api
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../98-tips/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tips
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../contour-to-envoy-gateway-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contour to Envoy Gateway Migration Path
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../enable-gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Enable Gateway API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../external-dns-cert-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    External DNS and cert manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../gateway-api-implementations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gateway API Implementations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../linking-apps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linking Apps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../listeners/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listeners
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../merging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merging from class
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../aws%20lbc/gateway-api/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aws lbc
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10_6_10" id="__nav_10_6_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Envoy gateway
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_10_6_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10_6_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Envoy gateway
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backend-selfsigned-tls/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend routing to self signed
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6_10_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_10_6_10_2" id="__nav_10_6_10_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crds
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="4" aria-labelledby="__nav_10_6_10_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10_6_10_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Crds
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Envoy Gateway Custom Resource Definitions (CRDs)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backendtrafficpolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BackendTrafficPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ClientTrafficPolicy
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ClientTrafficPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tcp-keep-alive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TCP Keep-Alive
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connection-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Settings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#connection-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timeouts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-protocol-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP Protocol Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="HTTP Protocol Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#http11-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP/1.1 Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http2-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP/2 Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http3-quic-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP/3 (QUIC) Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client-ip-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client IP Detection
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Client IP Detection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#x-forwarded-for-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        X-Forwarded-For Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Header
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tls-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TLS Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TLS Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minimum-tls-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum TLS Version
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cipher-suites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cipher Suites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alpn-protocols" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ALPN Protocols
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-certificate-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client Certificate Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#path-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Path Normalization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Headers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Headers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Headers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#production-gateway-with-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Production Gateway with Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http2-optimized-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP/2 Optimized Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#websocket-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebSocket Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cdn-behind-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CDN Behind Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mutual-tls-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mutual TLS Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#api-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#public-web-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Web Application
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#internal-service-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Internal Service Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#connection-timeouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Timeouts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#websocket-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebSocket Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-ip-detection_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client IP Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http2-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP/2 Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../envoyextensionpolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EnvoyExtensionPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../envoypatchpolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EnvoyPatchPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../envoyproxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EnvoyProxy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../httproutefilter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTPRouteFilter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../securitypolicy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SecurityPolicy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../kgateway/gateway-classes/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kgateway
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../migration-from-nginx-controller/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migration from nginx controller
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../routes/00-routes/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Routes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../metallb/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metallb
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../observability/architecture/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../operating-systems/too-many-open-files/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../platforms/aws/cli/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platforms
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../queues/nats/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queues
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../security/cert-manager/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../services/external-dns/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../storage/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../../tools/Buildkit/output/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../../vibe-sreing/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vibe sreing
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Example
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tcp-keep-alive" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TCP Keep-Alive
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#connection-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Settings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Connection Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#connection-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#timeouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Timeouts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-protocol-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP Protocol Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="HTTP Protocol Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#http11-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP/1.1 Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http2-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP/2 Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http3-quic-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP/3 (QUIC) Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client-ip-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client IP Detection
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Client IP Detection">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#x-forwarded-for-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        X-Forwarded-For Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-header" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Header
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tls-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TLS Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TLS Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minimum-tls-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Minimum TLS Version
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cipher-suites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cipher Suites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#alpn-protocols" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ALPN Protocols
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-certificate-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client Certificate Validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#path-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Path Normalization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Headers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Headers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-headers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Headers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#production-gateway-with-security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Production Gateway with Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http2-optimized-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP/2 Optimized Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#websocket-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebSocket Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cdn-behind-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CDN Behind Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mutual-tls-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mutual TLS Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#api-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#public-web-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Web Application
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#internal-service-gateway" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Internal Service Gateway
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#connection-timeouts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Timeouts
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#websocket-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WebSocket Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#client-ip-detection_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client IP Detection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#http2-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP/2 Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../../../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    kubernetesinmyhead.net
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../../../network-policies/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Networking
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../../98-tips/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Gateway api
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../backend-selfsigned-tls/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Envoy gateway
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Crds
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="clienttrafficpolicy">ClientTrafficPolicy<a class="headerlink" href="#clienttrafficpolicy" title="Anchor link to this section for reference">&para;</a></h1>
+<p>ClientTrafficPolicy configures how Envoy Gateway handles incoming client connections. It controls client-facing behavior such as TCP settings, HTTP protocol versions, TLS, client IP detection, and connection management.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li><strong>API Group</strong>: <code>gateway.envoyproxy.io/v1alpha1</code></li>
+<li><strong>Kind</strong>: <code>ClientTrafficPolicy</code></li>
+<li><strong>Attachment</strong>: Gateway via <code>targetRef</code></li>
+</ul>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li>TCP keep-alive configuration</li>
+<li>Connection timeouts and limits</li>
+<li>HTTP/1.1, HTTP/2, and HTTP/3 settings</li>
+<li>Client IP detection (X-Forwarded-For, X-Real-IP)</li>
+<li>TLS configuration</li>
+<li>Connection buffer limits</li>
+<li>Path normalization</li>
+</ul>
+<h2 id="basic-example">Basic Example<a class="headerlink" href="#basic-example" title="Anchor link to this section for reference">&para;</a></h2>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: client-policy
+  namespace: default
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: my-gateway
+  tcpKeepalive:
+    idleTime: 300s
+    interval: 60s
+    probes: 3
+  timeout:
+    http:
+      requestReceivedTimeout: 30s
+</code></pre>
+<h2 id="tcp-keep-alive">TCP Keep-Alive<a class="headerlink" href="#tcp-keep-alive" title="Anchor link to this section for reference">&para;</a></h2>
+<pre><code class="language-yaml">spec:
+  tcpKeepalive:
+    probes: 3          # Number of keep-alive probes
+    idleTime: 300s     # Time before sending keep-alive probes
+    interval: 60s      # Interval between keep-alive probes
+</code></pre>
+<h2 id="connection-settings">Connection Settings<a class="headerlink" href="#connection-settings" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="connection-limits">Connection Limits<a class="headerlink" href="#connection-limits" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  connection:
+    bufferLimit: 32768  # 32KB buffer per connection
+    connectionLimit:
+      value: 10000      # Max concurrent connections
+      closeDelay: 5s    # Delay before closing excess connections
+</code></pre>
+<h3 id="timeouts">Timeouts<a class="headerlink" href="#timeouts" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  timeout:
+    http:
+      requestReceivedTimeout: 30s     # Max time to receive full request
+      requestTimeout: 60s              # Max time for complete request/response
+      idleTimeout: 300s                # Connection idle timeout
+      connectionIdleTimeout: 300s      # HTTP/1.1 connection reuse timeout
+      maxConnectionDuration: 3600s     # Max connection lifetime
+</code></pre>
+<h2 id="http-protocol-configuration">HTTP Protocol Configuration<a class="headerlink" href="#http-protocol-configuration" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="http11-settings">HTTP/1.1 Settings<a class="headerlink" href="#http11-settings" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  http1:
+    enableTrailers: true
+    preserveHeaderCase: true
+    http10Disabled: false
+</code></pre>
+<h3 id="http2-settings">HTTP/2 Settings<a class="headerlink" href="#http2-settings" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  http2:
+    initialStreamWindowSize: 65536        # 64KB
+    initialConnectionWindowSize: 1048576  # 1MB
+    maxConcurrentStreams: 100
+</code></pre>
+<h3 id="http3-quic-settings">HTTP/3 (QUIC) Settings<a class="headerlink" href="#http3-quic-settings" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  http3:
+    enabled: true
+</code></pre>
+<h2 id="client-ip-detection">Client IP Detection<a class="headerlink" href="#client-ip-detection" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="x-forwarded-for-configuration">X-Forwarded-For Configuration<a class="headerlink" href="#x-forwarded-for-configuration" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  clientIPDetection:
+    xForwardedFor:
+      numTrustedHops: 1  # Number of trusted proxy hops
+</code></pre>
+<h3 id="custom-header">Custom Header<a class="headerlink" href="#custom-header" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  clientIPDetection:
+    customHeader:
+      name: X-Real-IP
+      failClosed: true  # Reject if header missing
+</code></pre>
+<h2 id="tls-configuration">TLS Configuration<a class="headerlink" href="#tls-configuration" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="minimum-tls-version">Minimum TLS Version<a class="headerlink" href="#minimum-tls-version" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  tls:
+    minVersion: &quot;1.2&quot;  # 1.0, 1.1, 1.2, 1.3
+    maxVersion: &quot;1.3&quot;
+</code></pre>
+<h3 id="cipher-suites">Cipher Suites<a class="headerlink" href="#cipher-suites" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  tls:
+    ciphers:
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+</code></pre>
+<h3 id="alpn-protocols">ALPN Protocols<a class="headerlink" href="#alpn-protocols" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  tls:
+    alpnProtocols:
+      - h2
+      - http/1.1
+</code></pre>
+<h3 id="client-certificate-validation">Client Certificate Validation<a class="headerlink" href="#client-certificate-validation" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  tls:
+    clientValidation:
+      caCertificateRefs:
+        - name: client-ca-secret
+          kind: Secret
+      optional: false  # Require client certificate
+</code></pre>
+<h2 id="path-normalization">Path Normalization<a class="headerlink" href="#path-normalization" title="Anchor link to this section for reference">&para;</a></h2>
+<pre><code class="language-yaml">spec:
+  path:
+    disableMergeSlashes: false       # Merge consecutive slashes
+    escapedSlashesAction: KeepUnchanged  # KeepUnchanged, RejectRequest, UnescapeAndRedirect, UnescapeAndForward
+</code></pre>
+<h2 id="headers">Headers<a class="headerlink" href="#headers" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="custom-headers">Custom Headers<a class="headerlink" href="#custom-headers" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  headers:
+    enableEnvoyHeaders: true  # Add X-Envoy-* headers
+</code></pre>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="production-gateway-with-security">Production Gateway with Security<a class="headerlink" href="#production-gateway-with-security" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: production-gateway
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: prod-gateway
+  tcpKeepalive:
+    probes: 3
+    idleTime: 300s
+    interval: 60s
+  timeout:
+    http:
+      requestReceivedTimeout: 30s
+      requestTimeout: 60s
+      idleTimeout: 300s
+  tls:
+    minVersion: &quot;1.2&quot;
+    ciphers:
+      - ECDHE-RSA-AES128-GCM-SHA256
+      - ECDHE-RSA-AES256-GCM-SHA384
+      - ECDHE-ECDSA-AES128-GCM-SHA256
+      - ECDHE-ECDSA-AES256-GCM-SHA384
+  clientIPDetection:
+    xForwardedFor:
+      numTrustedHops: 1
+  connection:
+    connectionLimit:
+      value: 10000
+</code></pre>
+<h3 id="http2-optimized-gateway">HTTP/2 Optimized Gateway<a class="headerlink" href="#http2-optimized-gateway" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: http2-gateway
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: api-gateway
+  http2:
+    initialStreamWindowSize: 262144      # 256KB
+    initialConnectionWindowSize: 1048576 # 1MB
+    maxConcurrentStreams: 200
+  timeout:
+    http:
+      idleTimeout: 600s
+      maxConnectionDuration: 3600s
+</code></pre>
+<h3 id="websocket-gateway">WebSocket Gateway<a class="headerlink" href="#websocket-gateway" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: websocket-gateway
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: ws-gateway
+  timeout:
+    http:
+      requestTimeout: 0s  # Disable for WebSocket
+      idleTimeout: 3600s
+      connectionIdleTimeout: 3600s
+  tcpKeepalive:
+    probes: 3
+    idleTime: 300s
+    interval: 60s
+</code></pre>
+<h3 id="cdn-behind-gateway">CDN Behind Gateway<a class="headerlink" href="#cdn-behind-gateway" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: cdn-gateway
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: edge-gateway
+  clientIPDetection:
+    xForwardedFor:
+      numTrustedHops: 2  # CDN + Load Balancer
+  headers:
+    enableEnvoyHeaders: false  # Don't expose internal headers
+  http1:
+    preserveHeaderCase: true
+</code></pre>
+<h3 id="mutual-tls-gateway">Mutual TLS Gateway<a class="headerlink" href="#mutual-tls-gateway" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: mtls-gateway
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: secure-gateway
+  tls:
+    minVersion: &quot;1.3&quot;
+    clientValidation:
+      caCertificateRefs:
+        - name: client-ca-bundle
+          kind: Secret
+      optional: false
+    alpnProtocols:
+      - h2
+      - http/1.1
+</code></pre>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Anchor link to this section for reference">&para;</a></h2>
+<ol>
+<li><strong>Always enable TCP keep-alive</strong> for long-lived connections</li>
+<li><strong>Set appropriate timeouts</strong> based on application requirements</li>
+<li><strong>Use TLS 1.2 or higher</strong> for production environments</li>
+<li><strong>Configure connection limits</strong> to prevent resource exhaustion</li>
+<li><strong>Properly configure X-Forwarded-For</strong> when behind load balancers</li>
+<li><strong>Enable HTTP/2</strong> for better performance with modern clients</li>
+<li><strong>Monitor connection metrics</strong> to tune buffer and limit settings</li>
+<li><strong>Use strong cipher suites</strong> for TLS connections</li>
+</ol>
+<h2 id="common-patterns">Common Patterns<a class="headerlink" href="#common-patterns" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="api-gateway">API Gateway<a class="headerlink" href="#api-gateway" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  timeout:
+    http:
+      requestReceivedTimeout: 10s
+      requestTimeout: 30s
+      idleTimeout: 300s
+  http2:
+    maxConcurrentStreams: 100
+  clientIPDetection:
+    xForwardedFor:
+      numTrustedHops: 1
+</code></pre>
+<h3 id="public-web-application">Public Web Application<a class="headerlink" href="#public-web-application" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  timeout:
+    http:
+      requestReceivedTimeout: 30s
+      idleTimeout: 300s
+  tls:
+    minVersion: &quot;1.2&quot;
+  connection:
+    connectionLimit:
+      value: 50000
+</code></pre>
+<h3 id="internal-service-gateway">Internal Service Gateway<a class="headerlink" href="#internal-service-gateway" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">spec:
+  timeout:
+    http:
+      idleTimeout: 600s
+      maxConnectionDuration: 3600s
+  tcpKeepalive:
+    idleTime: 300s
+    interval: 60s
+  http2:
+    maxConcurrentStreams: 200
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="connection-timeouts">Connection Timeouts<a class="headerlink" href="#connection-timeouts" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Check <code>requestReceivedTimeout</code> and <code>idleTimeout</code> settings if clients experience timeouts.</p>
+<h3 id="websocket-issues">WebSocket Issues<a class="headerlink" href="#websocket-issues" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Set <code>requestTimeout: 0s</code> and increase <code>idleTimeout</code> for WebSocket connections.</p>
+<h3 id="client-ip-detection_1">Client IP Detection<a class="headerlink" href="#client-ip-detection_1" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Verify <code>numTrustedHops</code> matches your infrastructure (load balancers, CDN, etc.).</p>
+<h3 id="http2-performance">HTTP/2 Performance<a class="headerlink" href="#http2-performance" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Tune <code>initialStreamWindowSize</code> and <code>maxConcurrentStreams</code> based on traffic patterns.</p>
+<h2 id="related-resources">Related Resources<a class="headerlink" href="#related-resources" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li><a href="../backendtrafficpolicy/">BackendTrafficPolicy</a> - Backend traffic policies</li>
+<li><a href="../securitypolicy/">SecurityPolicy</a> - Security controls</li>
+<li><a href="../envoyproxy/">EnvoyProxy</a> - Proxy infrastructure configuration</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../backendtrafficpolicy/" class="md-footer__link md-footer__link--prev" aria-label="Previous: BackendTrafficPolicy">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                BackendTrafficPolicy
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../envoyextensionpolicy/" class="md-footer__link md-footer__link--next" aria-label="Next: EnvoyExtensionPolicy">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                EnvoyExtensionPolicy
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://linkedin.com/in/jorge-p-275960300" target="_blank" rel="noopener" title="LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
