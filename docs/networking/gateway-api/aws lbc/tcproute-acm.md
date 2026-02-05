@@ -34,7 +34,7 @@ spec:
 
 ## Gateway
 
-Then we must deploy the gateway using our gateway class. The listener:
+Then we must deploy the gateway using our gateway class. The gateway api listener:
 
 - must have TLS as protocol
 - the hostname must MUST match the SNI
@@ -69,7 +69,8 @@ spec:
 
 ### LoadBalancerConfiguration (gateway)
 
-We can configure the gateway with the loadbalancer name and a listener with the protocol, port, and default certificate
+The creation of the Gateway only deploys the load balancer
+We can configure the gateway with the loadbalancer name and the configuration that the aws listeners will inherit when creating routes.
 
 ```yaml
 apiVersion: gateway.k8s.aws/v1beta1
