@@ -1,38 +1,19 @@
 # Tips
 
-## AWS listener and Gateway API listener
+## Gateway Listener vs AWS Load Balancer Listener
 
-There is a name conflict here because they are different things
-
-- An AWS listener is defined in the AWS load balancer. They are created when a route is created
-- A Gateway API listener is defined in the Gateway resource but does not creates an AWS listener in the load balancer
-
-## Gatewayclass and Gateway settings
-
-Both the Gatewayclass and Gateway resources can use a LoadBalancerConfiguration resource as settings. When creating a Gateway with its LoadBalancerConfiguration under a gatewayclass with is LoadBalancerConfiguration, both settings are merged
-
-> The merge behaviour can be configured under spec.mergingMode in the LoadBalancerConfiguration that the Gatewayclass have
-
-## Gateway creation an aws listener settings
-
-The creation of a Gateway resource creates the aws loadbalancer only
-
-- It will be a NLB if the gateway class has gateway.k8s.aws/nlb as spec.controllerName
-- It will be an ALB if the gateway class has gateway.k8s.aws/alb as spec.controllerName
-
-This does not create listeners, they will be created when deploying routes under the gateway, the but we can configure the settings that the listeners will have via a LoadBalancerConfiguration resource.
-
-This settings are located under spec.listenerConfigurations in the LoadBalancerConfiguration resource and for every listener defined here we can find things like:
-
-- protocol + port combination (protocolPort)
-- default ssl certificate (defaultCertificate)
-- a list of certificates to add (certificates)
-- target group stickiness (targetGroupStickiness)
-- ALPN policy (alpnPolicy)
-- mutual authentication (mutualAuthentication)
-- enable quic protocol for udp (quicEnabled)
-- other listener attributes (listenerAttributes)
+See [gateway-vs-aws-listeners.md](gateway-vs-aws-listeners.md) for detailed information about the difference between Gateway API listeners and AWS Load Balancer listeners, including lifecycle, configuration, and settings management.
 
 ## TLS section ignore
 
 AWS load balancer controller seems to ignore the tls section in the listeners because the certificates are discovered in ACM via hostname matching
+
+## TLSroute, SNI Routing in NLB
+
+AWS Network Load Balancer does not support SNI routing because TLSRoute resources here are not conformant to the Gateway API spec (select traffic to target groups per hostname matching). The recommendation is to use TCPRoute resources.
+
+<https://github.com/kubernetes-sigs/aws-load-balancer-controller/issues/4561>
+
+## Protocols in Network Load Balancer
+
+See [protocols.md](protocols.md) for detailed information about Gateway API and AWS NLB protocol concepts, mappings, and common scenarios.
