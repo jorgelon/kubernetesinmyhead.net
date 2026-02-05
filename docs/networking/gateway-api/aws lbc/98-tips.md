@@ -11,6 +11,8 @@ There is a name conflict here because they are different things
 
 Both the Gatewayclass and Gateway resources can use a LoadBalancerConfiguration resource as settings. When creating a Gateway with its LoadBalancerConfiguration under a gatewayclass with is LoadBalancerConfiguration, both settings are merged
 
+> The merge behaviour can be configured under spec.mergingMode in the LoadBalancerConfiguration that the Gatewayclass have
+
 ## Gateway creation an aws listener settings
 
 The creation of a Gateway resource creates the aws loadbalancer only
