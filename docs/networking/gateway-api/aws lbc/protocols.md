@@ -55,12 +55,12 @@ Gateway listener with `TCP` protocol + LoadBalancerConfiguration with `TCP:5432`
 
 ## Protocol Mapping Table
 
-| Gateway Listener Protocol | LoadBalancerConfiguration protocolPort | AWS NLB Listener Protocol | Behavior |
-|---------------------------|----------------------------------------|---------------------------|----------|
-| `TLS` (Terminate) | `TLS:443` | `TLS` | NLB terminates TLS, sends plain TCP to backends |
-| `TLS` (Passthrough) | `TCP:443` | `TCP` | NLB passes encrypted traffic through to backends |
-| `TCP` | `TCP:port` | `TCP` | Plain TCP forwarding |
-| `UDP` | `UDP:port` | `UDP` | Plain UDP forwarding |
+| Gateway Listener Protocol | LoadBalancerConfiguration protocolPort | AWS NLB Listener Protocol | Behavior                                         |
+|---------------------------|----------------------------------------|---------------------------|--------------------------------------------------|
+| `TLS` (Terminate)         | `TLS:443`                              | `TLS`                     | NLB terminates TLS, sends plain TCP to backends  |
+| `TLS` (Passthrough)       | `TCP:443`                              | `TCP`                     | NLB passes encrypted traffic through to backends |
+| `TCP`                     | `TCP:port`                             | `TCP`                     | Plain TCP forwarding                             |
+| `UDP`                     | `UDP:port`                             | `UDP`                     | Plain UDP forwarding                             |
 
 ## Key Takeaways
 
