@@ -38,16 +38,13 @@ AWS CDK for Kubernetes. Define manifests using
 TypeScript, Python, Go, or Java. Useful if you
 prefer general-purpose languages over YAML.
 
-### CUE
+### CUE / Timoni
 
-A data validation and configuration language that can
-generate, validate, and constrain Kubernetes manifests
-with strong type checking.
-
-### Timoni
-
-CUE-based package manager for Kubernetes from the Flux
-ecosystem. Similar to Helm but uses CUE instead of Go
+CUE is a data validation and configuration language
+that can generate, validate, and constrain Kubernetes
+manifests with strong type checking. Timoni builds on
+CUE as a package manager for Kubernetes from the Flux
+ecosystem, similar to Helm but with CUE instead of Go
 templates.
 
 ### KCL
