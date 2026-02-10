@@ -77,12 +77,15 @@ If we expect raw TCP connections or UDP traffic
 
 ## Table
 
+This table shows the relation between the protocol, routes supported, if hostname matching is available and TLS section
+
 | Protocol | hostname match              | TLS section   | Routes                                 |
 |----------|-----------------------------|---------------|----------------------------------------|
 | HTTP     | Must: hostname header       | Not supported | HTTPRoute                              |
 | HTTPS    | Should: SNI and host header | Terminate     | HTTPRoute                              |
 | TLS      | Must: SNI                   | Passthrough   | TLSRoute                               |
-| TLS      | Must: SNI                   | Terminate     | TCPRoute (supported by implementation) |
+| TLS      | Must: SNI                   | Terminate     | TLSRoute (supported by implementation) |
+| TLS      | Must: SNI                   | Terminate     | TCPRoute                               |
 | TCP      | Ignored                     | Not supported | TCPRoute                               |
 | UDP      | Ignored                     | Not supported | UDPRoute                               |
 | GRPC     |                             |               | GRPCRoute                              |
