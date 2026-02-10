@@ -62,6 +62,14 @@ Defines backend service references with additional capabilities:
 - Service discovery integration
 - Fallback configurations
 
+### [Backend Security Risks](backend-risks.md)
+
+Security analysis of the Backend CRD:
+
+- Risk assessment per feature (ReferenceGrant bypass, DynamicResolver, localhost exposure)
+- Mitigation strategies (RBAC, policy engines, network policies)
+- When to use and when to avoid Backend resources
+
 ## Infrastructure Configuration
 
 ### [EnvoyProxy](envoyproxy.md)
