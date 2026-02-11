@@ -48,3 +48,13 @@ AWS Labs provides MCP servers organized into the following categories:
 - Best practices guidance for AWS architectures
 
 These servers enable AI assistants to provide intelligent, context-aware support for AWS-related tasks, improving development velocity and code quality.
+
+## Add at user scope in claude code
+
+```shell
+claude mcp add --transport stdio --scope user awsdoc -e AWS_DOCUMENTATION_PARTITION=aws -- uvx awslabs.aws-documentation-mcp-server@latest
+```
+
+```shell
+claude mcp add --transport stdio --scope user awseks -- uvx awslabs.eks-mcp-server@latest --allow-sensitive-data-access
+```
