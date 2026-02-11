@@ -77,18 +77,23 @@ If we expect raw TCP connections or UDP traffic
 
 ## Table
 
-This table shows the relation between the protocol, routes supported, if hostname matching is available and TLS section
+This table shows all the protocols available in listeners and:
 
-| Protocol | hostname match              | TLS section   | Routes                                 |
-|----------|-----------------------------|---------------|----------------------------------------|
-| HTTP     | Must: hostname header       | Not supported | HTTPRoute                              |
-| HTTPS    | Should: SNI and host header | Terminate     | HTTPRoute                              |
-| TLS      | Must: SNI                   | Passthrough   | TLSRoute                               |
-| TLS      | Must: SNI                   | Terminate     | TLSRoute (supported by implementation) |
-| TLS      | Must: SNI                   | Terminate     | TCPRoute                               |
-| TCP      | Ignored                     | Not supported | TCPRoute                               |
-| UDP      | Ignored                     | Not supported | UDPRoute                               |
-| GRPC     |                             |               | GRPCRoute                              |
+- the supported routes per protocol
+- if the hostname field can be used and how
+- if the TLS section can be used and how
+
+| Protocol | Route Supported | hostname match              | TLS section   | Note                     |
+|----------|-----------------|-----------------------------|---------------|--------------------------|
+| HTTP     | HTTPRoute       | Must: hostname header       | Not supported |                          |
+| HTTP     | GRPCRoute       | ??                          | Not supported |                          |
+| HTTPS    | HTTPRoute       | Should: SNI and host header | Terminate     |                          |
+| HTTPS    | GRPCRoute       | ??                          | ??            |                          |
+| TLS      | TLSRoute        | Must: SNI                   | Passthrough   |                          |
+| TLS      | TLSRoute        | Must: SNI                   | Terminate     | Implementation dependant |
+| TLS      | TCPRoute        | Must: SNI                   | Terminate     |                          |
+| TCP      | TCPRoute        | Ignored                     | Not supported |                          |
+| UDP      | UDPRoute        | Ignored                     | Not supported |                          |
 
 ## Listener status
 
