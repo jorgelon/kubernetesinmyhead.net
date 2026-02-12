@@ -6,15 +6,18 @@ This document explains how to use gateway api with external-dns and cert-manager
 
 ## external-dns
 
-We assume external-dns is well configured to work with the provider. Then we need to enable gateway api features in cert-manager. If we deployed it using the helm chart, must must add extraArgs for every route type we need to manage via external-dns
+We assume external-dns is well configured to work with the provider. Then we need to enable gateway api features in cert-manager. If we deployed it using the helm chart, we must add the sources
 
 ```yaml
-extraArgs:
-  - "--source=gateway-httproute" # Enables Gateway API HTTPRoute source
-  - "--source=gateway-grpcroute" # Enables Gateway API GRPCRoute source
-  - "--source=gateway-tlsroute" # Enables Gateway API TLSRoute source
-  - "--source=gateway-tcproute" # Enables Gateway API TCPRoute source
-  - "--source=gateway-udproute" # Enables Gateway API UDPRoute source
+sources:
+  - service
+  - ingress
+  - gateway-httproute
+  - gateway-tcproute
+  - gateway-tlsroute
+  - gateway-grpcroute 
+  - gateway-udproute
+  - crd # Enable creation of individual DNSRecords
 ```
 
 > It is possible to filter what routes are being watched for every external dns instance
