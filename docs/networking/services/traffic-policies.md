@@ -76,7 +76,7 @@ When a pod calls an ExternalIP, the request doesn't actually travel out to the P
 - kube-proxy sees the destination is an ExternalIP that it "owns."
 - It immediately applies the routing rules defined by your externalTrafficPolicy right there on the source node.
 
-**With externalTrafficPolicy local if there are not pods in the same node where the call is done, the traffic is dropped**. A best practice here is to use the internal service: `my-service.namespace.svc.cluster.local`
+**With externalTrafficPolicy local if there are not pods in the same node where the call is done, the traffic is dropped**. Solutions here can be using the internal service: `my-service.namespace.svc.cluster.local`, a daemonset or other mechanisms to ensure the pods doing the calls have endpoints it the same node
 
 The behaviour tries to avoid
 
