@@ -68,6 +68,21 @@ Routes internal traffic to all ready endpoints in the cluster evenly. Pods can r
 
 Routes traffic only to node-local endpoints. Reduces cross-node traffic and improves latency for latency-sensitive applications. Requires at least one endpoint per node for reliability. Works with ClusterIP, NodePort, and LoadBalancer services.
 
+## Internal Cluster Access to External IP
+
+When a pod calls an ExternalIP, the request doesn't actually travel out to the Physical Load Balancer and back in.
+
+- The Linux networking stack (via kube-proxy) intercepts the packet as soon as it leaves the pod.
+- kube-proxy sees the destination is an ExternalIP that it "owns."
+- It immediately applies the routing rules defined by your externalTrafficPolicy right there on the source node.
+
+**With externalTrafficPolicy local if there are not pods in the same node where the call is done, the traffic is dropped**. A best practice here is to use the internal service: `my-service.namespace.svc.cluster.local`
+
+The behaviour tries to avoid
+
+- routing loops: If the node sent the packet out to the Load Balancer, and the Load Balancer sent it right back to the same node (which can happen), you would create an infinite loop
+- hairpinning: Most Cloud Provider Load Balancers are not designed to handle "hairpin" traffic (traffic originating from one of its own targets and coming back to itself).
+
 ## Load Balancer Responsibilities
 
 ### Cluster Mode
