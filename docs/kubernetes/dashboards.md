@@ -15,6 +15,25 @@ The official [Kubernetes Dashboard](https://github.com/kubernetes-retired/dashbo
 
 All projects listed are **Apache 2.0** licensed.
 
+## Project Maturity
+
+Based on GitHub activity, release frequency, and community engagement:
+
+**🟢 Highly Active** - Recommended for production:
+
+- **Meshery** (9.9k stars, 315 contributors, v0.8.205 Feb 2026)
+- **Headlamp** (5.7k stars, 170 contributors, v0.40.1 Feb 2026)
+- **Devtron** (5.4k stars, 101 contributors, v2.0.0 Dec 2025)
+
+**🟡 Moderately Active** - Suitable but slower release cycle:
+
+- **Cyclops** (3.3k stars, last commit Jan 2026)
+- **Karpor** (1.7k stars, last commit Dec 2025)
+
+**🔴 Stale** - Use with caution:
+
+- **Skooner** (1.4k stars, last commit Jun 2024 - 19 months ago)
+
 ## Headlamp
 
 - **Repository**: [kubernetes-sigs/headlamp](https://github.com/kubernetes-sigs/headlamp)
@@ -75,13 +94,13 @@ All projects listed are **Apache 2.0** licensed.
 
 ## Migration from Kubernetes Dashboard
 
-When migrating from the archived Kubernetes Dashboard:
+When migrating from the archived Kubernetes Dashboard, prioritize actively maintained projects:
 
-1. **Headlamp** is the closest replacement in terms of UX and feature parity
-2. For multi-cluster management: Headlamp, Meshery, Karpor, or Devtron
-3. For CI/CD + dashboard: **Devtron** is a full platform
-4. For developer portals: **Cyclops** as a Helm-based self-service layer
-5. For lightweight dashboards only: **Skooner** has the smallest footprint
+1. **Best match** (production-ready): **Headlamp** — closest UX parity with official dashboard
+2. **Multi-cluster focus**: Meshery (full platform), Headlamp, or Devtron
+3. **CI/CD integration**: **Devtron** combines dashboard with pipelines
+4. **Developer platforms**: **Cyclops** for Helm-based self-service
+5. **⚠️ Avoid for production**: Skooner is unmaintained (last commit Jun 2024)
 
 ## Links
 
