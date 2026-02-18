@@ -1,14 +1,5 @@
 # Tips
 
-## Ultrathink
-
-If writing a prompt you can use the "think" words to trigger an more powerful thinking mode, where ultrathink is the highest:
-
-- think
-- think hard
-- think harder
-- ultrathink
-
 ## Use claude code to setup claude code
 
 You can use claude code itself to manage thinks like:
@@ -17,3 +8,19 @@ You can use claude code itself to manage thinks like:
 - agents
 - custom slash commands
 - agent skills
+
+## Clear context
+
+Use the /clear command frequently between tasks and conversations to reset the context window.
+
+## Share context
+
+Share CLAUDE.md context pushing them to the git repository
+
+## VS code problems
+
+Use mcp__ide__getDiagnostics to fix problems detected in VScode problems tab
+
+## Use commands
+
+Use commands for common tasks

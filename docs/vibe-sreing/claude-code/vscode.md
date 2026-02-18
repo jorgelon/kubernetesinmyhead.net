@@ -1,4 +1,3 @@
-
 # Visual Studio Code
 
 There is an official Claude Code VSCode extension available in the marketplace.
