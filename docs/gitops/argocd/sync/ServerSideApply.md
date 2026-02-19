@@ -72,6 +72,23 @@ Enables the server side diff feature at the application controller level. Diff c
 
 - At application level
 
+## Apply ServerSideApply to CRDs only using kustomize
+
+This you are deploying some manifests that include CRDs and you have the 262144 limit error, this patch make the crds be applied using ServerSideApply, but the other application resources will use client side. This avoids adding the annotation at application level.
+
+```yaml
+patches:
+  - patch: |-
+      apiVersion: apiextensions.k8s.io/v1
+      kind: CustomResourceDefinition
+      metadata:
+        name: placeholder
+        annotations:
+          argocd.argoproj.io/sync-options: ServerSideApply=true
+    target:
+      kind: CustomResourceDefinition
+```
+
 ## Links
 
 - Server-Side Apply
