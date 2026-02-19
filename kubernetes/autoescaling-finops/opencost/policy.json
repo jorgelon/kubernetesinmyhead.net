@@ -1,0 +1,29 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "athena:StartQueryExecution",
+                "athena:GetQueryExecution",
+                "athena:GetQueryResults",
+                "athena:StopQueryExecution",
+                "glue:GetTable",
+                "glue:GetTables",
+                "glue:GetDatabase",
+                "glue:GetDatabases",
+                "glue:GetPartitions",
+                "s3:ListBucket",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:ListAllMyBuckets"
+            ],
+            "Resource": [
+                "arn:aws:athena:*:*:*",
+                "arn:aws:glue:*:*:*",
+                "arn:aws:s3:::*-*"
+            ]
+        }
+    ]
+}
