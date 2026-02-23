@@ -1,12 +1,12 @@
-# External DNS and cert manager
+# External dns and cert manager
 
-This document explains how to use gateway api with external-dns and cert-manager. It assumes a gateway api implementation and the gateway api crds and are installed
+This is how external dns and cert manager works with gateway api
 
-> The document is based on external-dns v0.20.0 and 1.19 cert-manager releases
+## External DNS
 
-## external-dns
+> Based on external-dns v0.20.0
 
-We assume external-dns is well configured to work with the provider. Then we need to enable gateway api features in cert-manager. If we deployed it using the helm chart, we must add the sources
+We assume external-dns is well configured to work with the provider. Then we need to enable gateway api sources. If we deployed it using the helm chart, we must add the desired routes as sources in the values file
 
 ```yaml
 sources:
@@ -15,14 +15,14 @@ sources:
   - gateway-httproute
   - gateway-tcproute
   - gateway-tlsroute
-  - gateway-grpcroute 
+  - gateway-grpcroute
   - gateway-udproute
   - crd # Enable creation of individual DNSRecords
 ```
 
 > It is possible to filter what routes are being watched for every external dns instance
 
-The we can start using external-dns with gateway api.
+> **Future: ListenerSet support** — [GEP-1713](https://gateway-api.sigs.k8s.io/geps/gep-1713) introduces `ListenerSet` (currently experimental as `XListenerSet`, `gateway.networking.x-k8s.io/v1alpha1`), which allows attaching multiple sets of listeners to a parent Gateway. External-dns does not yet support `XListenerSet` as a source. Once the resource graduates from experimental to stable and is renamed to `ListenerSet`, a dedicated source entry is expected to be added alongside the existing route sources.
 
 ### Annotations
 
@@ -45,9 +45,11 @@ external-dns.alpha.kubernetes.io/annotation
 
 > Provider specific annotations can be cloudflare-*, aws-*, scw-*
 
-## cert-manager
+## Cert-Manager
 
-We need to enable gateway api features in cert-manager. If we deployed it using the helm chart, we need
+> Based on cert-manager 1.19
+
+We need a recent version of cert-manager and enable gateway api in the values file
 
 ```yaml
 config:
@@ -56,7 +58,7 @@ config:
   enableGatewayAPI: true
 ```
 
-In order to get a certificates we need to:
+In order to get a certificate we need to:
 
 - Annotate a Gateway resource with an issuer or cluster issuer
 
@@ -73,11 +75,13 @@ The spec.dnsNames field in the generated certificate is taken from the hostname 
 
 > It must have a tls section in Terminate mode and certificateRefs must be a secret in the same namespace as the gateway
 
+> **Future: ListenerSet support** — [GEP-1713](https://gateway-api.sigs.k8s.io/geps/gep-1713) defines `ListenerSet` (currently `XListenerSet`, experimental) to allow independent teams to attach their own listeners with separate certificates to a shared parent Gateway. Cert-manager does not yet support annotating `XListenerSet` resources directly. When the resource graduates to stable, cert-manager support will likely extend to reading issuer annotations from `ListenerSet` objects, enabling per-team certificate provisioning without granting write access to the parent Gateway.
+
 ### Migration
 
 - Creating a gateway with DNS challenge will create a temporary TXT record with challenge token until the secret is created. It must not offer conflicts with existing ingress certificates / DNS entries.
 
-- For creating a gateway with HTTP-01 challenge the links section below
+- For creating a gateway with HTTP-01 challenge see the links section below
 
 ## Links
 
