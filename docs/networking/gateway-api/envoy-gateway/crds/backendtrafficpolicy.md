@@ -1,6 +1,6 @@
 # BackendTrafficPolicy
 
-BackendTrafficPolicy configures how Envoy Gateway handles traffic to backend services. It allows fine-tuning of connection behavior, load balancing, health checks, circuit breaking, and resilience patterns.
+BackendTrafficPolicy configures how Envoy Gateway handles traffic to backend services, including load balancing, timeouts, circuit breaking, health checks, and retry policies.
 
 ## Overview
 
@@ -10,14 +10,15 @@ BackendTrafficPolicy configures how Envoy Gateway handles traffic to backend ser
 
 ## Key Features
 
-- Load balancing algorithms
-- Connection limits and timeouts
-- Circuit breaking
-- Health checks (active and passive)
-- Retry policies
-- Timeout configurations
+- Load balancing algorithms (RoundRobin, LeastRequest, Random, Maglev, ConsistentHash)
+- Circuit breaking (connection/request/retry limits)
+- Active and passive health checks
+- Retry policies with backoff
+- Connection and request timeouts
 - TCP keep-alive settings
 - HTTP/2 configuration
+- Proxy protocol
+- DNS refresh settings
 
 ## Basic Example
 
@@ -33,321 +34,10 @@ spec:
     kind: HTTPRoute
     name: my-route
   loadBalancer:
-    type: RoundRobin
-  timeout:
-    tcp:
-      connectTimeout: 10s
-    http:
-      requestTimeout: 30s
-```
-
-## Load Balancing
-
-### Available Algorithms
-
-```yaml
-spec:
-  loadBalancer:
-    type: RoundRobin  # RoundRobin, LeastRequest, Random, Maglev, ConsistentHash
-```
-
-### Consistent Hash Example
-
-```yaml
-spec:
-  loadBalancer:
-    type: ConsistentHash
-    consistentHash:
-      type: SourceIP  # SourceIP, Header, Cookie
-```
-
-### Least Request Load Balancing
-
-```yaml
-spec:
-  loadBalancer:
-    type: LeastRequest
-    slowStart:
-      window: 30s
-```
-
-## Circuit Breaking
-
-```yaml
-spec:
-  circuitBreaker:
-    maxConnections: 1024
-    maxPendingRequests: 1024
-    maxRequests: 1024
-    maxRetries: 3
-    maxConnectionPools: 512
-```
-
-## Health Checks
-
-### Active Health Checks
-
-```yaml
-spec:
-  healthCheck:
-    active:
-      timeout: 1s
-      interval: 5s
-      unhealthyThreshold: 3
-      healthyThreshold: 2
-      http:
-        path: /healthz
-        expectedStatuses:
-          - 200
-          - 204
-        expectedResponse:
-          text: "ok"
-```
-
-### Passive Health Check (Outlier Detection)
-
-```yaml
-spec:
-  healthCheck:
-    passive:
-      consecutive5xxErrors: 5
-      interval: 10s
-      baseEjectionTime: 30s
-      maxEjectionPercent: 50
-      splitExternalLocalOriginErrors: true
-```
-
-## Connection Settings
-
-### TCP Settings
-
-```yaml
-spec:
-  tcpKeepalive:
-    probes: 3
-    idleTime: 300s
-    interval: 60s
-  connection:
-    bufferLimit: 32768  # 32KB
-    connectionLimit:
-      value: 100
-      closeDelay: 5s
-```
-
-### HTTP/2 Settings
-
-```yaml
-spec:
-  http2:
-    initialStreamWindowSize: 65536
-    initialConnectionWindowSize: 1048576
-    maxConcurrentStreams: 100
-```
-
-## Retry Policy
-
-```yaml
-spec:
-  retry:
-    numRetries: 3
-    retryOn:
-      triggers:
-        - 5xx
-        - reset
-        - connect-failure
-        - retriable-4xx
-    perRetryTimeout: 5s
-    backoff:
-      baseInterval: 100ms
-      maxInterval: 10s
-```
-
-## Timeout Configuration
-
-```yaml
-spec:
-  timeout:
-    tcp:
-      connectTimeout: 10s
-    http:
-      requestTimeout: 30s
-      connectionIdleTimeout: 300s
-      maxConnectionDuration: 3600s
-      streamIdleTimeout: 300s
-```
-
-## Proxy Protocol
-
-Enable PROXY protocol for backend connections:
-
-```yaml
-spec:
-  proxyProtocol:
-    version: V1  # V1 or V2
-```
-
-## DNS Configuration
-
-```yaml
-spec:
-  dns:
-    dnsRefreshRate: 30s
-    respectDnsTtl: true
-```
-
-## Use Cases
-
-### High-Availability Backend
-
-```yaml
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: BackendTrafficPolicy
-metadata:
-  name: ha-backend
-spec:
-  targetRef:
-    group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: api-route
-  loadBalancer:
-    type: LeastRequest
-  circuitBreaker:
-    maxConnections: 2048
-    maxPendingRequests: 1024
-    maxRequests: 2048
-  healthCheck:
-    active:
-      interval: 5s
-      timeout: 2s
-      unhealthyThreshold: 2
-      healthyThreshold: 2
-      http:
-        path: /health
-        expectedStatuses: [200]
-    passive:
-      consecutive5xxErrors: 5
-      baseEjectionTime: 30s
-      maxEjectionPercent: 50
-  retry:
-    numRetries: 3
-    retryOn:
-      triggers:
-        - 5xx
-        - reset
-        - connect-failure
-    perRetryTimeout: 3s
-```
-
-### Session Affinity with Consistent Hashing
-
-```yaml
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: BackendTrafficPolicy
-metadata:
-  name: session-affinity
-spec:
-  targetRef:
-    group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: webapp-route
-  loadBalancer:
-    type: ConsistentHash
-    consistentHash:
-      type: Cookie
-      cookie:
-        name: session-cookie
-        ttl: 3600s
-        path: /
-```
-
-### Long-Lived Connections
-
-```yaml
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: BackendTrafficPolicy
-metadata:
-  name: websocket-backend
-spec:
-  targetRef:
-    group: gateway.networking.k8s.io
-    kind: HTTPRoute
-    name: websocket-route
-  timeout:
-    http:
-      requestTimeout: 0s  # Disable timeout
-      connectionIdleTimeout: 3600s
-      streamIdleTimeout: 3600s
-  tcpKeepalive:
-    probes: 3
-    idleTime: 300s
-    interval: 60s
-```
-
-## Policy Precedence
-
-1. HTTPRoute-level policies override Gateway-level policies
-2. More specific targetRef takes precedence
-3. Conflicting policies: most specific wins
-
-## Best Practices
-
-1. **Always enable health checks** for production backends
-2. **Set appropriate timeouts** based on application requirements
-3. **Use circuit breakers** to prevent cascading failures
-4. **Configure retries carefully** to avoid amplification
-5. **Monitor backend connection metrics** to tune settings
-6. **Use consistent hashing** for stateful applications
-7. **Enable passive health checks** for faster failure detection
-8. **Set connection limits** to protect backends
-
-## Common Patterns
-
-### API Gateway Backend
-
-```yaml
-spec:
-  loadBalancer:
     type: LeastRequest
   timeout:
     http:
       requestTimeout: 30s
-  retry:
-    numRetries: 2
-    retryOn:
-      triggers: [5xx, reset]
-  healthCheck:
-    active:
-      interval: 10s
-      http:
-        path: /health
-```
-
-### Database Proxy Backend
-
-```yaml
-spec:
-  loadBalancer:
-    type: ConsistentHash
-    consistentHash:
-      type: SourceIP
-  connection:
-    connectionLimit:
-      value: 50
-  timeout:
-    tcp:
-      connectTimeout: 5s
-  tcpKeepalive:
-    probes: 3
-    idleTime: 600s
-    interval: 75s
-```
-
-### Microservice Backend
-
-```yaml
-spec:
-  loadBalancer:
-    type: RoundRobin
   circuitBreaker:
     maxConnections: 1024
     maxRequests: 1024
@@ -355,12 +45,58 @@ spec:
     numRetries: 3
     retryOn:
       triggers: [5xx, reset, connect-failure]
-    perRetryTimeout: 2s
+    perRetryTimeout: 5s
   healthCheck:
+    active:
+      interval: 5s
+      timeout: 2s
+      unhealthyThreshold: 2
+      http:
+        path: /health
+        expectedStatuses: [200]
     passive:
       consecutive5xxErrors: 5
-      interval: 30s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 50
 ```
+
+## Key Configuration Sections
+
+| Section                       | Purpose                                                               |
+|-------------------------------|-----------------------------------------------------------------------|
+| `loadBalancer`                | Algorithm selection; ConsistentHash supports SourceIP, Header, Cookie |
+| `circuitBreaker`              | Max connections, pending requests, retries, and connection pools      |
+| `healthCheck.active`          | Periodic HTTP/TCP probe with thresholds                               |
+| `healthCheck.passive`         | Outlier detection based on consecutive errors                         |
+| `retry`                       | Retry triggers, count, per-retry timeout, and backoff interval        |
+| `timeout.tcp.connectTimeout`  | Max time to establish upstream connection                             |
+| `timeout.http.requestTimeout` | Max time for a complete request/response cycle                        |
+| `tcpKeepalive`                | Keep-alive probes, idle time, and interval                            |
+| `proxyProtocol`               | PROXY protocol version V1 or V2 for upstream connections              |
+| `dns`                         | DNS refresh rate and TTL respect                                      |
+
+## Policy Precedence
+
+HTTPRoute-level policies override Gateway-level policies. The most specific `targetRef` wins.
+
+## Official Documentation
+
+- [Circuit Breakers](https://gateway.envoyproxy.io/docs/tasks/traffic/circuit-breaker/)
+- [Load Balancing](https://gateway.envoyproxy.io/docs/tasks/traffic/load-balancing/)
+- [HTTP Timeouts](https://gateway.envoyproxy.io/docs/tasks/traffic/http-timeouts/)
+- [Retry](https://gateway.envoyproxy.io/docs/tasks/traffic/retry/)
+- [Connection Limit](https://gateway.envoyproxy.io/docs/tasks/traffic/connection-limit/)
+- [Local Rate Limit](https://gateway.envoyproxy.io/docs/tasks/traffic/local-rate-limit/)
+- [Global Rate Limit](https://gateway.envoyproxy.io/docs/tasks/traffic/global-rate-limit/)
+- [Session Persistence](https://gateway.envoyproxy.io/docs/tasks/traffic/session-persistence/)
+- [Response Compression](https://gateway.envoyproxy.io/docs/tasks/traffic/response-compression/)
+- [Request Buffering](https://gateway.envoyproxy.io/docs/tasks/traffic/request-buffering/)
+- [Zone Aware Routing](https://gateway.envoyproxy.io/docs/tasks/traffic/zone-aware-routing/)
+- [Response Override](https://gateway.envoyproxy.io/docs/tasks/traffic/response-override/)
+- [Direct Response](https://gateway.envoyproxy.io/docs/tasks/traffic/direct-response/)
+- [Backend TLS: Gateway to Backend](https://gateway.envoyproxy.io/docs/tasks/security/backend-tls/)
+- [Backend Mutual TLS: Gateway to Backend](https://gateway.envoyproxy.io/docs/tasks/security/backend-mtls/)
+- [Backend TLS: Skip TLS Verification](https://gateway.envoyproxy.io/docs/tasks/security/backend-skip-tls-verification/)
 
 ## Related Resources
 

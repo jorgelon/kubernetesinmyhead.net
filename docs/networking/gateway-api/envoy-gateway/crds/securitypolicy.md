@@ -54,6 +54,21 @@ Policies attach to either:
 
 HTTPRoute policies override Gateway policies.
 
+## Official Documentation
+
+- [JWT Authentication](https://gateway.envoyproxy.io/docs/tasks/security/jwt-authentication/)
+- [JWT Claim-Based Authorization](https://gateway.envoyproxy.io/docs/tasks/security/jwt-claim-authorization/)
+- [OIDC Authentication](https://gateway.envoyproxy.io/docs/tasks/security/oidc/)
+- [Basic Authentication](https://gateway.envoyproxy.io/docs/tasks/security/basic-auth/)
+- [API Key Authentication](https://gateway.envoyproxy.io/docs/tasks/security/apikey-auth/)
+- [CORS](https://gateway.envoyproxy.io/docs/tasks/security/cors/)
+- [IP Allowlist/Denylist](https://gateway.envoyproxy.io/docs/tasks/security/restrict-ip-access/)
+- [External Authorization](https://gateway.envoyproxy.io/docs/tasks/security/ext-auth/)
+- [HTTP Header and Method Based Authorization](https://gateway.envoyproxy.io/docs/tasks/security/http-header-method-auth/)
+- [Credential Injection](https://gateway.envoyproxy.io/docs/tasks/security/credential-injection/)
+- [Local Rate Limit](https://gateway.envoyproxy.io/docs/tasks/traffic/local-rate-limit/)
+- [Global Rate Limit](https://gateway.envoyproxy.io/docs/tasks/traffic/global-rate-limit/)
+
 ## Related Resources
 
 - [ClientTrafficPolicy](clienttrafficpolicy.md) - Connection management
