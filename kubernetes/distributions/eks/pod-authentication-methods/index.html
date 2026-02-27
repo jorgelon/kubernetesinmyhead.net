@@ -1,0 +1,3066 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kubernetesinmyhead.net/kubernetes/distributions/eks/pod-authentication-methods/">
+      
+      
+        <link rel="prev" href="../eks-pod-identity-agent/">
+      
+      
+        <link rel="next" href="../../kubeadm/98-tips/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>Pod Authentication Methods for AWS API - Kubernetes in my head</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pod-authentication-methods-for-aws-api" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Kubernetes in my head" class="md-header__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kubernetes in my head
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Pod Authentication Methods for AWS API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Kubernetes in my head" class="md-nav__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kubernetes in my head
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kubernetesinmyhead.net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../CI-CD/argo-events/filtering/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI CD
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../database/cloudnative-pg/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../deployment/resource-templating/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../git/detached-head/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../gitops/get-raw-yaml/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gitops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../k8s-resource-handling/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    K8s resource handling
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../98-tips/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tips
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../99-links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../compat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes compatibilities and requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes Dashboard Alternatives
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../hack-dns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hack dns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../autoescaling-finops/autoescaling-nodes/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autoescaling finops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8_7" id="__nav_8_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Distributions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_8_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Distributions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8_7_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_8_7_1" id="__nav_8_7_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_8_7_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_8_7_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Eks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EKS Authentication Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auto Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../eks-pod-identity-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eks Pod identity agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pod Authentication Methods for AWS API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pod Authentication Methods for AWS API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Methods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Authentication Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-irsa-iam-roles-for-service-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. IRSA (IAM Roles for Service Accounts)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-eks-pod-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. EKS Pod Identity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-node-iam-role-ec2-instance-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Node IAM Role (EC2 Instance Profile)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-static-iam-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Static IAM Credentials
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-external-secrets-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. External Secrets Operator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-aws-secrets-and-configuration-provider-ascp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. AWS Secrets and Configuration Provider (ASCP)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-assumed-roles-via-aws-sts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Assumed Roles via AWS STS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-legacy-solutions-kube2iam-kiam" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Legacy Solutions (kube2iam, KIAM)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-ranking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Ranking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision Guide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-eks-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For EKS Clusters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-non-eks-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Non-EKS Clusters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-multi-account-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Multi-Account Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-production-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Production Environments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-development-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Development Environments
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../kubeadm/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubeadm
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../kubectl/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubectl
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../storage/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../tuning/cpu-requests-limits/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tuning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../workloads/cronjob/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workloads
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../languages/comment-comment-out/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Languages
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../misc/android/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../networking/filtering-with-nodeport/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../observability/architecture/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../operating-systems/too-many-open-files/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../platforms/aws/cli/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platforms
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../queues/nats/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queues
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../security/cert-manager/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../services/external-dns/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../storage/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../tools/Buildkit/output/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../vibe-sreing/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vibe sreing
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Methods
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Authentication Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-irsa-iam-roles-for-service-accounts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. IRSA (IAM Roles for Service Accounts)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-eks-pod-identity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. EKS Pod Identity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-node-iam-role-ec2-instance-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Node IAM Role (EC2 Instance Profile)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-static-iam-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Static IAM Credentials
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-external-secrets-operator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. External Secrets Operator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-aws-secrets-and-configuration-provider-ascp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. AWS Secrets and Configuration Provider (ASCP)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-assumed-roles-via-aws-sts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Assumed Roles via AWS STS
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-legacy-solutions-kube2iam-kiam" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Legacy Solutions (kube2iam, KIAM)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-ranking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Ranking
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision-guide" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision Guide
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Decision Guide">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#for-eks-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For EKS Clusters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-non-eks-clusters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Non-EKS Clusters
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-multi-account-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Multi-Account Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General Recommendations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-production-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Production Environments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#for-development-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        For Development Environments
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Path
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    kubernetesinmyhead.net
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../../98-tips/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Kubernetes
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../authentication-mode/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Distributions
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../authentication-mode/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Eks
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="pod-authentication-methods-for-aws-api">Pod Authentication Methods for AWS API<a class="headerlink" href="#pod-authentication-methods-for-aws-api" title="Anchor link to this section for reference">&para;</a></h1>
+<p>This document describes the various methods available to authenticate Kubernetes pods against AWS APIs.</p>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Anchor link to this section for reference">&para;</a></h2>
+<p>When running applications in Kubernetes that need to interact with AWS services, you must provide AWS credentials. The method you choose impacts security, complexity, and operational overhead.</p>
+<h2 id="authentication-methods">Authentication Methods<a class="headerlink" href="#authentication-methods" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="1-irsa-iam-roles-for-service-accounts">1. IRSA (IAM Roles for Service Accounts)<a class="headerlink" href="#1-irsa-iam-roles-for-service-accounts" title="Anchor link to this section for reference">&para;</a></h3>
+<p>IRSA uses an OIDC identity provider to establish trust between Kubernetes ServiceAccounts and AWS IAM roles. The pod receives a JWT token that AWS STS exchanges for temporary AWS credentials.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>Cluster OIDC provider is registered with AWS IAM</li>
+<li>ServiceAccount is annotated with IAM role ARN</li>
+<li>AWS SDK automatically retrieves credentials via environment variables and mounted tokens</li>
+<li>No interception or DaemonSet required</li>
+</ul>
+<p><strong>Security characteristics:</strong></p>
+<ul>
+<li>Fine-grained permissions per ServiceAccount</li>
+<li>Short-lived credentials with automatic rotation</li>
+<li>No privileged containers needed</li>
+<li>Excellent audit trail via CloudTrail</li>
+</ul>
+<p><strong>Operational considerations:</strong></p>
+<ul>
+<li>Configuration lives in Kubernetes manifests (GitOps friendly)</li>
+<li>Requires OIDC provider setup per cluster</li>
+<li>Cross-account access requires additional trust policy configuration</li>
+</ul>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Standard choice for EKS workloads</li>
+<li>GitOps-centric workflows</li>
+<li>When you need configuration in version control</li>
+</ul>
+<p>See <a href="./irsa.md">IRSA documentation</a> for implementation details.</p>
+<h3 id="2-eks-pod-identity">2. EKS Pod Identity<a class="headerlink" href="#2-eks-pod-identity" title="Anchor link to this section for reference">&para;</a></h3>
+<p>EKS Pod Identity is AWS's newest solution that simplifies IAM role assignment without requiring OIDC provider configuration. An AWS-managed agent handles credential distribution.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>EKS add-on installs an agent DaemonSet</li>
+<li>Pod Identity associations are created via AWS API</li>
+<li>Agent intercepts SDK calls and provides credentials</li>
+<li>ServiceAccounts require no annotations</li>
+</ul>
+<p><strong>Security characteristics:</strong></p>
+<ul>
+<li>Pod-specific permissions</li>
+<li>Temporary credentials</li>
+<li>Managed by AWS</li>
+<li>Simplified cross-account access</li>
+</ul>
+<p><strong>Operational considerations:</strong></p>
+<ul>
+<li>Simpler initial setup than IRSA</li>
+<li>Associations managed outside Kubernetes manifests</li>
+<li>Less GitOps-friendly (external API configuration)</li>
+<li>Requires newer AWS SDK versions</li>
+</ul>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>New EKS clusters</li>
+<li>When centralized IAM management is preferred</li>
+<li>Cross-account access patterns</li>
+<li>Infrastructure-as-Code managed associations</li>
+</ul>
+<p>See <a href="../eks-pod-identity-agent/">EKS Pod Identity Agent documentation</a> for implementation details.</p>
+<h3 id="3-node-iam-role-ec2-instance-profile">3. Node IAM Role (EC2 Instance Profile)<a class="headerlink" href="#3-node-iam-role-ec2-instance-profile" title="Anchor link to this section for reference">&para;</a></h3>
+<p>EC2 instances running Kubernetes nodes have IAM roles attached via instance profiles. All pods on a node inherit the node's IAM permissions.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>IAM role is attached to EC2 instances</li>
+<li>AWS metadata service provides credentials</li>
+<li>All pods automatically use node credentials</li>
+<li>No pod-specific configuration needed</li>
+</ul>
+<p><strong>Security characteristics:</strong></p>
+<ul>
+<li>Coarse-grained permissions (all pods share access)</li>
+<li>Automatic credential rotation</li>
+<li>Follows principle of least privilege poorly</li>
+</ul>
+<p><strong>Operational considerations:</strong></p>
+<ul>
+<li>Zero configuration in pod manifests</li>
+<li>Simple to implement</li>
+<li>Works on any Kubernetes distribution with EC2 nodes</li>
+</ul>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Single-tenant clusters with uniform permissions</li>
+<li>Quick prototypes</li>
+<li>When fine-grained access control isn't required</li>
+</ul>
+<h3 id="4-static-iam-credentials">4. Static IAM Credentials<a class="headerlink" href="#4-static-iam-credentials" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Long-lived AWS access keys stored as Kubernetes Secrets and exposed to pods via environment variables.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>IAM user access keys created in AWS</li>
+<li>Keys stored in Kubernetes Secrets</li>
+<li>Environment variables injected into pods</li>
+</ul>
+<p><strong>Security characteristics:</strong></p>
+<ul>
+<li>Long-lived credentials</li>
+<li>Manual rotation required</li>
+<li>Risk of credential leakage</li>
+<li>No automatic expiry</li>
+</ul>
+<p><strong>Operational considerations:</strong></p>
+<ul>
+<li>Works in any environment (not EKS-specific)</li>
+<li>Simple to understand</li>
+<li>Rotation is operationally intensive</li>
+</ul>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Development and testing environments only</li>
+<li>Non-EKS clusters without better alternatives</li>
+<li>Last resort when other methods aren't available</li>
+</ul>
+<h3 id="5-external-secrets-operator">5. External Secrets Operator<a class="headerlink" href="#5-external-secrets-operator" title="Anchor link to this section for reference">&para;</a></h3>
+<p>External Secrets Operator synchronizes secrets from external secret management systems (AWS Secrets Manager, Parameter Store) into Kubernetes Secrets.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>Operator runs in cluster with IRSA or Pod Identity</li>
+<li>Fetches secrets from AWS Secrets Manager or Parameter Store</li>
+<li>Creates and updates Kubernetes Secrets automatically</li>
+<li>Applications consume standard Kubernetes Secrets</li>
+</ul>
+<p><strong>Security characteristics:</strong></p>
+<ul>
+<li>Centralized secret management</li>
+<li>Automatic synchronization</li>
+<li>Audit trail in AWS</li>
+<li>Still distributes static credentials (but managed)</li>
+</ul>
+<p><strong>Operational considerations:</strong></p>
+<ul>
+<li>Additional operator to maintain</li>
+<li>Requires IRSA/Pod Identity for operator authentication</li>
+<li>Supports automatic secret rotation</li>
+</ul>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Managing static credentials from external AWS accounts</li>
+<li>Centralized secret lifecycle management</li>
+<li>When secrets need to be shared across multiple applications</li>
+</ul>
+<h3 id="6-aws-secrets-and-configuration-provider-ascp">6. AWS Secrets and Configuration Provider (ASCP)<a class="headerlink" href="#6-aws-secrets-and-configuration-provider-ascp" title="Anchor link to this section for reference">&para;</a></h3>
+<p>ASCP uses the Secrets Store CSI driver to mount secrets from AWS Secrets Manager or Parameter Store as volumes in pods.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>CSI driver retrieves secrets at pod start</li>
+<li>Secrets mounted as files in pod filesystem</li>
+<li>Uses IRSA or Pod Identity for authentication</li>
+</ul>
+<p><strong>Security characteristics:</strong></p>
+<ul>
+<li>Secrets not exposed as environment variables</li>
+<li>Automatic rotation support</li>
+<li>Secrets fetched only when pod starts</li>
+</ul>
+<p><strong>Operational considerations:</strong></p>
+<ul>
+<li>Requires CSI driver installation</li>
+<li>Secrets only refreshed on pod restart by default</li>
+<li>More complex than environment variables</li>
+</ul>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>When secrets must be files rather than environment variables</li>
+<li>Applications that watch filesystem for secret changes</li>
+<li>Enhanced security posture over environment variables</li>
+</ul>
+<h3 id="7-assumed-roles-via-aws-sts">7. Assumed Roles via AWS STS<a class="headerlink" href="#7-assumed-roles-via-aws-sts" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Applications explicitly assume additional IAM roles using AWS STS AssumeRole API after initial authentication via IRSA or Pod Identity.</p>
+<p><strong>How it works:</strong></p>
+<ul>
+<li>Pod authenticates with IRSA or Pod Identity initially</li>
+<li>Application code calls STS AssumeRole for additional roles</li>
+<li>Returns temporary credentials for assumed role</li>
+</ul>
+<p><strong>Security characteristics:</strong></p>
+<ul>
+<li>Dynamic role assumption</li>
+<li>Short-lived credentials</li>
+<li>Chain of trust</li>
+<li>Fine-grained access control</li>
+</ul>
+<p><strong>Operational considerations:</strong></p>
+<ul>
+<li>Application must implement assume-role logic</li>
+<li>Requires trust relationships between roles</li>
+<li>Enables complex permission scenarios</li>
+</ul>
+<p><strong>Use cases:</strong></p>
+<ul>
+<li>Multi-account access patterns</li>
+<li>Dynamic permission escalation</li>
+<li>Service-to-service authentication across accounts</li>
+</ul>
+<h3 id="8-legacy-solutions-kube2iam-kiam">8. Legacy Solutions (kube2iam, KIAM)<a class="headerlink" href="#8-legacy-solutions-kube2iam-kiam" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Both kube2iam and KIAM intercept AWS metadata service calls to provide pod-specific IAM roles.</p>
+<p><strong>How they work:</strong></p>
+<ul>
+<li>DaemonSet runs on each node</li>
+<li>iptables rules redirect metadata requests</li>
+<li>Pod annotations specify desired IAM role</li>
+</ul>
+<p><strong>Status:</strong></p>
+<ul>
+<li><strong>kube2iam</strong>: Still maintained but no longer recommended by AWS. AWS officially recommends using IRSA for EKS clusters</li>
+<li><strong>KIAM</strong>: Archived on March 5, 2024 and no longer maintained</li>
+<li>Both have security concerns with privileged DaemonSets</li>
+<li>Both superseded by IRSA and EKS Pod Identity</li>
+</ul>
+<p><strong>Do not use for new deployments.</strong></p>
+<h2 id="comparison-matrix">Comparison Matrix<a class="headerlink" href="#comparison-matrix" title="Anchor link to this section for reference">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Security</th>
+<th>Complexity</th>
+<th>EKS-Specific</th>
+<th>GitOps Friendly</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IRSA</td>
+<td>Excellent</td>
+<td>Medium</td>
+<td>Yes</td>
+<td>Very</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>EKS Pod Identity</td>
+<td>Excellent</td>
+<td>Low</td>
+<td>Yes</td>
+<td>Moderate</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>Node IAM Role</td>
+<td>Poor</td>
+<td>Low</td>
+<td>No</td>
+<td>Yes</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>Static Credentials</td>
+<td>Poor</td>
+<td>Low</td>
+<td>No</td>
+<td>Yes</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>External Secrets</td>
+<td>Good</td>
+<td>Medium</td>
+<td>No</td>
+<td>Moderate</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>ASCP</td>
+<td>Good</td>
+<td>Medium</td>
+<td>No</td>
+<td>Moderate</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>Assumed Roles</td>
+<td>Excellent</td>
+<td>High</td>
+<td>No</td>
+<td>Yes</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>kube2iam/KIAM</td>
+<td>Poor</td>
+<td>Medium</td>
+<td>No</td>
+<td>Yes</td>
+<td>Deprecated</td>
+</tr>
+</tbody>
+</table>
+<h2 id="security-ranking">Security Ranking<a class="headerlink" href="#security-ranking" title="Anchor link to this section for reference">&para;</a></h2>
+<p>From most to least secure:</p>
+<ol>
+<li>IRSA / EKS Pod Identity - Pod-specific, short-lived credentials</li>
+<li>Assumed Roles via STS - Dynamic, temporary credentials</li>
+<li>ASCP / External Secrets - Managed static credentials</li>
+<li>Node IAM Role - Shared permissions, automatic rotation</li>
+<li>Static Credentials - Manual management required</li>
+<li>Hardcoded Credentials - Never use</li>
+</ol>
+<h2 id="decision-guide">Decision Guide<a class="headerlink" href="#decision-guide" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="for-eks-clusters">For EKS Clusters<a class="headerlink" href="#for-eks-clusters" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>When you need per-pod IAM permissions:</strong></p>
+<ul>
+<li>Use IRSA if you prefer GitOps workflows and manifest-based configuration</li>
+<li>Use EKS Pod Identity if you prefer infrastructure-as-code for IAM associations</li>
+</ul>
+<p><strong>When all pods need the same permissions:</strong></p>
+<ul>
+<li>Use Node IAM Role for simplicity</li>
+</ul>
+<p><strong>When you need static credentials from external accounts:</strong></p>
+<ul>
+<li>Use External Secrets Operator with IRSA or Pod Identity</li>
+</ul>
+<h3 id="for-non-eks-clusters">For Non-EKS Clusters<a class="headerlink" href="#for-non-eks-clusters" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>With EC2 nodes:</strong></p>
+<ul>
+<li>Use Node IAM Role if shared permissions are acceptable</li>
+<li>Use Static Credentials as last resort</li>
+</ul>
+<p><strong>Without EC2 nodes (on-premises, other clouds):</strong></p>
+<ul>
+<li>Use Static Credentials with robust rotation practices</li>
+<li>Consider External Secrets Operator for centralized management</li>
+</ul>
+<h3 id="for-multi-account-scenarios">For Multi-Account Scenarios<a class="headerlink" href="#for-multi-account-scenarios" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Complex cross-account access:</strong></p>
+<ul>
+<li>Use IRSA or Pod Identity with Assumed Roles via STS</li>
+<li>Configure trust relationships between accounts</li>
+</ul>
+<p><strong>Simple cross-account secrets:</strong></p>
+<ul>
+<li>Use External Secrets Operator</li>
+</ul>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="general-recommendations">General Recommendations<a class="headerlink" href="#general-recommendations" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>Avoid static credentials whenever possible</li>
+<li>Use short-lived credentials with automatic rotation</li>
+<li>Follow principle of least privilege per pod</li>
+<li>Implement proper IAM role trust policies</li>
+<li>Monitor credential usage via CloudTrail</li>
+<li>Never commit credentials to version control</li>
+</ul>
+<h3 id="for-production-environments">For Production Environments<a class="headerlink" href="#for-production-environments" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>Use IRSA or EKS Pod Identity as default choice</li>
+<li>Implement pod security policies to prevent credential access</li>
+<li>Regular audit of IAM role assignments</li>
+<li>Automated detection of credential leakage</li>
+<li>Rotate static credentials regularly if they must be used</li>
+</ul>
+<h3 id="for-development-environments">For Development Environments<a class="headerlink" href="#for-development-environments" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>Still prefer IRSA/Pod Identity when possible</li>
+<li>Static credentials acceptable for local development</li>
+<li>Use separate AWS accounts for development</li>
+<li>Implement credential cleanup automation</li>
+</ul>
+<h2 id="migration-path">Migration Path<a class="headerlink" href="#migration-path" title="Anchor link to this section for reference">&para;</a></h2>
+<p>From legacy solutions to modern approaches:</p>
+<ol>
+<li><strong>From kube2iam/KIAM:</strong> Migrate to IRSA or EKS Pod Identity</li>
+<li><strong>From Static Credentials:</strong> Migrate to IRSA or EKS Pod Identity</li>
+<li><strong>From Node IAM Role:</strong> Migrate to IRSA or EKS Pod Identity for fine-grained control</li>
+<li><strong>Between IRSA and Pod Identity:</strong> Both are valid, choose based on operational preferences</li>
+</ol>
+<h2 id="links">Links<a class="headerlink" href="#links" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts.html">AWS EKS IAM Roles for Service Accounts</a></li>
+<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html">AWS EKS Pod Identities</a></li>
+<li><a href="https://external-secrets.io/">External Secrets Operator</a></li>
+<li><a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/integrating_csi_driver.html">AWS Secrets and Configuration Provider</a></li>
+<li><a href="https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html">AWS STS AssumeRole</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../eks-pod-identity-agent/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Eks Pod identity agent">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Eks Pod identity agent
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../kubeadm/98-tips/" class="md-footer__link md-footer__link--next" aria-label="Next: Kubeadm tips">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Kubeadm tips
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://linkedin.com/in/jorge-p-275960300" target="_blank" rel="noopener" title="LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

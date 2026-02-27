@@ -1,0 +1,21 @@
+target:
+  template:
+    data:
+      cloud-integration.json: |
+        {
+          "aws": {
+            "athena": [
+              {
+                "bucket": "{{ .athena_bucket }}",
+                "region": "{{ .athena_region }}",
+                "database": "{{ .athena_database }}",
+                "table": "{{ .athena_table }}",
+                "workgroup": "{{ .athena_workgroup }}",
+                "account": "{{ .aws_account }}",
+                "authorizer": {
+                  "authorizerType": "AWSServiceAccount"
+                }
+              }
+            ]
+          }
+        }

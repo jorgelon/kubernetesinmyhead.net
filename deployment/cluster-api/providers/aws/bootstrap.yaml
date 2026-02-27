@@ -1,0 +1,12 @@
+apiVersion: bootstrap.aws.infrastructure.cluster.x-k8s.io/v1beta1
+kind: AWSIAMConfiguration
+spec:
+  stackName: demo-capi-stack
+  eks:
+    iamRoleCreation: true # different roles per cluster
+    managedMachinePool: # enable machine pools
+      disable: false
+  bootstrapUser: # dedicated bootstrap user
+    enable: true
+    userName: demo-capi-user
+    groupName: demo-capi-group

@@ -1,0 +1,3880 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kubernetesinmyhead.net/observability/prometheus/prometheus-long-term-storage/">
+      
+      
+        <link rel="prev" href="../operator-prometheus/">
+      
+      
+        <link rel="next" href="../promql/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>Prometheus Long-Term Storage - Kubernetes in my head</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#prometheus-long-term-storage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Kubernetes in my head" class="md-header__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kubernetes in my head
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Prometheus Long-Term Storage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Kubernetes in my head" class="md-nav__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kubernetes in my head
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kubernetesinmyhead.net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../CI-CD/argo-events/filtering/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI CD
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../database/cloudnative-pg/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../deployment/resource-templating/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../git/detached-head/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../gitops/get-raw-yaml/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gitops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../k8s-resource-handling/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    K8s resource handling
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../kubernetes/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../languages/comment-comment-out/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Languages
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../misc/android/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../networking/filtering-with-nodeport/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_12" id="__nav_12_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Observability
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observatility Tool
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../alertmanager/amc-beta/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Alertmanager
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../grafana/azure-ad-auth/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Grafana
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../kubernetes/0-metrics-api/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../loki/perlas/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Loki
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../opentelemetry/0-index/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Opentelemetry
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_12_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_12_8" id="__nav_12_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_12_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_12_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Prometheus
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ingress-certificates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics for ingress and certificates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metric-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics types
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operator-alerting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus operator and alerting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../operator-prometheus/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus operator instance
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus Long-Term Storage
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus Long-Term Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#governance-and-company-dependency-risk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Governance and Company Dependency Risk
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-architectures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution Architectures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solution Architectures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grafana-mimir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grafana Mimir
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grafana Mimir">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#architecture-benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Benefits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cortex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cortex
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cortex">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cortex-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cortex Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#architecture-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cortex-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cortex Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thanos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thanos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Thanos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#thanos-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thanos Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#architecture-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thanos-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thanos Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#victoriametrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VictoriaMetrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="VictoriaMetrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#victoriametrics-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VictoriaMetrics Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#victoriametrics-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VictoriaMetrics Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#victoriametrics-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VictoriaMetrics Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greptimedb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GreptimeDB
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GreptimeDB">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#greptimedb-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GreptimeDB Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greptimedb-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GreptimeDB Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greptimedb-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GreptimeDB Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed Comparison
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed Comparison">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deployment-complexity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Complexity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scalability-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scalability &amp; Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#features-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features &amp; Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storage-retention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Storage &amp; Retention
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-case-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Case Recommendations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Case Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#choose-mimir-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose Mimir When
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-cortex-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose Cortex When
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-thanos-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose Thanos When
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-victoriametrics-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose VictoriaMetrics When
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-greptimedb-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose GreptimeDB When
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operational Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#monitoring-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring &amp; Observability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backup-disaster-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backup &amp; Disaster Recovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cost-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cost Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cost Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#infrastructure-costs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure Costs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operational-costs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Costs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../promql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus Query Language
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../servicemonitor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Service monitor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../time-series-selectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Time series selectors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../functions/increase/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Functions
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../labels/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Labels
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../prometheus-adapter/0-intro-configuration/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prometheus adapter
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../operating-systems/too-many-open-files/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../platforms/aws/cli/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platforms
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../queues/nats/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queues
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../security/cert-manager/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../services/external-dns/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../storage/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../tools/Buildkit/output/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../vibe-sreing/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vibe sreing
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#governance-and-company-dependency-risk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Governance and Company Dependency Risk
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution-architectures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution Architectures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Solution Architectures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#grafana-mimir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Grafana Mimir
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Grafana Mimir">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#architecture-benefits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Benefits
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cortex" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cortex
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cortex">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cortex-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cortex Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#architecture-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cortex-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cortex Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thanos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thanos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Thanos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#thanos-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thanos Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#architecture-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture Model
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#thanos-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Thanos Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#victoriametrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VictoriaMetrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="VictoriaMetrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#victoriametrics-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VictoriaMetrics Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#victoriametrics-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VictoriaMetrics Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#victoriametrics-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VictoriaMetrics Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greptimedb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GreptimeDB
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="GreptimeDB">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#greptimedb-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GreptimeDB Components
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greptimedb-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GreptimeDB Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#greptimedb-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GreptimeDB Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed Comparison
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed Comparison">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deployment-complexity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deployment Complexity
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scalability-performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scalability &amp; Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#features-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features &amp; Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storage-retention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Storage &amp; Retention
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-case-recommendations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Case Recommendations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Use Case Recommendations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#choose-mimir-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose Mimir When
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-cortex-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose Cortex When
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-thanos-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose Thanos When
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-victoriametrics-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose VictoriaMetrics When
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#choose-greptimedb-when" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choose GreptimeDB When
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operational Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#monitoring-observability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring &amp; Observability
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#backup-disaster-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Backup &amp; Disaster Recovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cost-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cost Analysis
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cost Analysis">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#infrastructure-costs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure Costs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#operational-costs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Costs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conclusion
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    kubernetesinmyhead.net
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../architecture/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Observability
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../ingress-certificates/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Prometheus
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="prometheus-long-term-storage">Prometheus Long-Term Storage<a class="headerlink" href="#prometheus-long-term-storage" title="Anchor link to this section for reference">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Prometheus, while excellent for real-time monitoring and short-term metric storage, has inherent limitations when it comes to long-term data retention and horizontal scalability. By default, Prometheus stores data locally and is designed for deployments lasting weeks to months rather than years.</p>
+<p>This document explores five major open-source solutions that extend Prometheus capabilities for long-term storage: <strong>Mimir</strong>, <strong>Cortex</strong>, <strong>Thanos</strong>, <strong>VictoriaMetrics</strong>, and <strong>GreptimeDB</strong>.</p>
+<h2 id="governance-and-company-dependency-risk">Governance and Company Dependency Risk<a class="headerlink" href="#governance-and-company-dependency-risk" title="Anchor link to this section for reference">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Solution</th>
+<th><strong>Risk Level</strong></th>
+<th><strong>Primary Controller</strong></th>
+<th><strong>Governance Model</strong></th>
+<th><strong>Community Independence</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mimir</strong></td>
+<td>🟡 <strong>Medium-High</strong></td>
+<td>Grafana Labs (single company)</td>
+<td>Corporate-controlled</td>
+<td>Limited - Grafana Labs drives roadmap</td>
+</tr>
+<tr>
+<td><strong>Cortex</strong></td>
+<td>🟢 <strong>Low</strong></td>
+<td>CNCF (vendor-neutral)</td>
+<td>Community governance</td>
+<td>High - Multi-vendor collaboration</td>
+</tr>
+<tr>
+<td><strong>Thanos</strong></td>
+<td>🟢 <strong>Low-Medium</strong></td>
+<td>CNCF (vendor-neutral)</td>
+<td>Community governance</td>
+<td>High - No single company dominance</td>
+</tr>
+<tr>
+<td><strong>VictoriaMetrics</strong></td>
+<td>🔴 <strong>High</strong></td>
+<td>VictoriaMetrics company</td>
+<td>Corporate-controlled</td>
+<td>Low - Single company development</td>
+</tr>
+<tr>
+<td><strong>GreptimeDB</strong></td>
+<td>🔴 <strong>High</strong></td>
+<td>Greptime Inc.</td>
+<td>Corporate-controlled</td>
+<td>Low - Single company development</td>
+</tr>
+</tbody>
+</table>
+<h2 id="solution-architectures">Solution Architectures<a class="headerlink" href="#solution-architectures" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="grafana-mimir">Grafana Mimir<a class="headerlink" href="#grafana-mimir" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Origin</strong>: Fork of Cortex by Grafana Labs (2022)<br />
+<strong>Architecture</strong>: Microservices-based with horizontal scaling<br />
+<strong>Repository</strong>: <a href="https://github.com/grafana/mimir">grafana/mimir</a> ⭐ 4.1k+ stars, 500+ contributors<br />
+<strong>CNCF Status</strong>: Not a CNCF project (Grafana Labs proprietary)<br />
+<strong>Key Contributors</strong>: Grafana Labs, Microsoft, Red Hat, Bloomberg, GitLab</p>
+<h4 id="key-components">Key Components<a class="headerlink" href="#key-components" title="Anchor link to this section for reference">&para;</a></h4>
+<ul>
+<li><strong>Distributor</strong>: Receives metrics and forwards to ingesters</li>
+<li><strong>Ingester</strong>: Writes metrics to storage and serves recent queries</li>
+<li><strong>Store Gateway</strong>: Queries historical data from object storage</li>
+<li><strong>Query Frontend</strong>: Optimizes and splits queries</li>
+<li><strong>Compactor</strong>: Compacts and processes blocks in object storage</li>
+<li><strong>Ruler</strong>: Evaluates recording and alerting rules</li>
+</ul>
+<h4 id="architecture-benefits">Architecture Benefits<a class="headerlink" href="#architecture-benefits" title="Anchor link to this section for reference">&para;</a></h4>
+<pre><code class="language-text">┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│ Prometheus  │───▶│ Distributor │───▶│  Ingester   │
+│   (Remote   │    │             │    │             │
+│   Write)    │    └─────────────┘    └─────────────┘
+└─────────────┘                             │
+                                            ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Grafana   │◀───│Query Frontend│◀───│Object Storage│
+│             │    │             │    │ (S3/GCS/etc)│
+└─────────────┘    └─────────────┘    └─────────────┘
+</code></pre>
+<h4 id="features">Features<a class="headerlink" href="#features" title="Anchor link to this section for reference">&para;</a></h4>
+<ul>
+<li><strong>Multi-Tenancy</strong>: Native support with tenant isolation</li>
+<li><strong>Streaming</strong>: Real-time query results streaming</li>
+<li><strong>Advanced Compaction</strong>: Intelligent block compaction strategies</li>
+<li><strong>Autoscaling</strong>: Kubernetes-native autoscaling support</li>
+<li><strong>Monitoring</strong>: Extensive built-in observability</li>
+</ul>
+<h3 id="cortex">Cortex<a class="headerlink" href="#cortex" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Origin</strong>: CNCF project originally developed by Weaveworks<br />
+<strong>Architecture</strong>: Microservices-based, highly configurable<br />
+<strong>Repository</strong>: <a href="https://github.com/cortexproject/cortex">cortexproject/cortex</a> ⭐ 5.5k+ stars, 800+ contributors<br />
+<strong>CNCF Status</strong>: Graduated project (2020)<br />
+<strong>Key Contributors</strong>: Weaveworks, Grafana Labs, Red Hat, Google, AWS, Microsoft</p>
+<h4 id="cortex-components">Cortex Components<a class="headerlink" href="#cortex-components" title="Anchor link to this section for reference">&para;</a></h4>
+<ul>
+<li><strong>Distributor</strong>: Load balances incoming metrics</li>
+<li><strong>Ingester</strong>: Stores recent metrics in memory and periodically flushes to storage</li>
+<li><strong>Querier</strong>: Handles PromQL queries</li>
+<li><strong>Query Frontend</strong>: Splits and caches queries</li>
+<li><strong>Store Gateway</strong>: Reads historical data from object storage</li>
+<li><strong>Compactor</strong>: Compacts blocks and handles retention</li>
+<li><strong>Ruler</strong>: Evaluates rules and generates alerts</li>
+</ul>
+<h4 id="architecture-pattern">Architecture Pattern<a class="headerlink" href="#architecture-pattern" title="Anchor link to this section for reference">&para;</a></h4>
+<pre><code class="language-text">┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│ Prometheus  │───▶│ Distributor │───▶│  Ingester   │
+│ (Remote     │    │             │    │ (Ring-based)│
+│  Write)     │    └─────────────┘    └─────────────┘
+└─────────────┘                             │
+                                            ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Query     │◀───│   Querier   │◀───│Object Storage│
+│  Frontend   │    │             │    │   Backend   │
+└─────────────┘    └─────────────┘    └─────────────┘
+</code></pre>
+<h4 id="cortex-features">Cortex Features<a class="headerlink" href="#cortex-features" title="Anchor link to this section for reference">&para;</a></h4>
+<ul>
+<li><strong>Flexible Deployment</strong>: Multiple deployment modes (single binary, microservices)</li>
+<li><strong>Multi-Tenancy</strong>: Comprehensive tenant isolation</li>
+<li><strong>Ring-based Architecture</strong>: Consistent hashing for load distribution</li>
+<li><strong>Configurable Storage</strong>: Multiple storage backend options</li>
+<li><strong>CNCF Graduated</strong>: Mature project with strong community support</li>
+</ul>
+<h3 id="thanos">Thanos<a class="headerlink" href="#thanos" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Origin</strong>: Developed by Improbable, now CNCF project<br />
+<strong>Architecture</strong>: Sidecar-based approach with global querying<br />
+<strong>Repository</strong>: <a href="https://github.com/thanos-io/thanos">thanos-io/thanos</a> ⭐ 13k+ stars, 1,000+ contributors<br />
+<strong>CNCF Status</strong>: Incubating project (2019)<br />
+<strong>Key Contributors</strong>: Improbable, Red Hat, Google, Polar Signals, GitLab</p>
+<h4 id="thanos-components">Thanos Components<a class="headerlink" href="#thanos-components" title="Anchor link to this section for reference">&para;</a></h4>
+<ul>
+<li><strong>Sidecar</strong>: Connects to Prometheus instances and uploads blocks</li>
+<li><strong>Store Gateway</strong>: Provides unified interface to historical data</li>
+<li><strong>Query</strong>: Global query layer across multiple Prometheus instances</li>
+<li><strong>Query Frontend</strong>: Query optimization and caching</li>
+<li><strong>Compactor</strong>: Compacts and downsamples historical data</li>
+<li><strong>Receiver</strong>: Ingests metrics via remote write (alternative to sidecar)</li>
+<li><strong>Ruler</strong>: Evaluates rules on historical data</li>
+</ul>
+<h4 id="architecture-model">Architecture Model<a class="headerlink" href="#architecture-model" title="Anchor link to this section for reference">&para;</a></h4>
+<pre><code class="language-text">┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│ Prometheus A│◀──▶│Thanos Sidecar│   │Object Storage│
+│             │    │             │──▶ │   Backend   │
+└─────────────┘    └─────────────┘    │             │
+                                      │             │
+┌─────────────┐    ┌─────────────┐    │             │
+│ Prometheus B│◀──▶│Thanos Sidecar│──▶│             │
+└─────────────┘    └─────────────┘    └─────────────┘
+                                            ▲
+┌─────────────┐    ┌─────────────┐          │
+│   Grafana   │◀───│Thanos Query │──────────┘
+│             │    │ (Global)    │
+└─────────────┘    └─────────────┘
+</code></pre>
+<h4 id="thanos-features">Thanos Features<a class="headerlink" href="#thanos-features" title="Anchor link to this section for reference">&para;</a></h4>
+<ul>
+<li><strong>Global View</strong>: Query across multiple Prometheus instances</li>
+<li><strong>Minimal Changes</strong>: Requires minimal changes to existing Prometheus setups</li>
+<li><strong>Downsampling</strong>: Automatic data downsampling for long-term storage</li>
+<li><strong>Deduplication</strong>: Automatic deduplication of metrics</li>
+<li><strong>Multi-Cloud</strong>: Works across different cloud providers and on-premises</li>
+</ul>
+<h3 id="victoriametrics">VictoriaMetrics<a class="headerlink" href="#victoriametrics" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Origin</strong>: Developed by VictoriaMetrics team, focused on performance and cost efficiency<br />
+<strong>Architecture</strong>: Single binary or cluster mode with emphasis on resource efficiency<br />
+<strong>Repository</strong>: <a href="https://github.com/VictoriaMetrics/VictoriaMetrics">VictoriaMetrics/VictoriaMetrics</a> ⭐ 12k+ stars, 400+ contributors<br />
+<strong>CNCF Status</strong>: Not a CNCF project (independent open-source)<br />
+<strong>Key Contributors</strong>: VictoriaMetrics, Individual contributors, Community-driven development</p>
+<h4 id="victoriametrics-components">VictoriaMetrics Components<a class="headerlink" href="#victoriametrics-components" title="Anchor link to this section for reference">&para;</a></h4>
+<p><strong>Single Binary Mode</strong>:</p>
+<ul>
+<li><strong>All-in-One</strong>: Complete solution in a single binary for smaller deployments</li>
+<li><strong>Embedded Storage</strong>: Built-in time series database optimized for compression</li>
+<li><strong>HTTP API</strong>: Prometheus-compatible API for seamless integration</li>
+</ul>
+<p><strong>Cluster Mode</strong>:</p>
+<ul>
+<li><strong>VMStorage</strong>: Storage nodes handling data persistence and queries</li>
+<li><strong>VMInsert</strong>: Ingestion nodes for distributing incoming metrics</li>
+<li><strong>VMSelect</strong>: Query nodes for handling PromQL queries</li>
+<li><strong>VMAgent</strong>: Lightweight agent for metrics collection and remote write</li>
+<li><strong>VMAlert</strong>: Alerting component compatible with Prometheus rules</li>
+</ul>
+<h4 id="victoriametrics-architecture">VictoriaMetrics Architecture<a class="headerlink" href="#victoriametrics-architecture" title="Anchor link to this section for reference">&para;</a></h4>
+<pre><code class="language-text">┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│ Prometheus  │───▶│  VMAgent    │───▶│  VMInsert   │
+│ (Remote     │    │(Collection) │    │ (Ingestion) │
+│  Write)     │    └─────────────┘    └─────────────┘
+└─────────────┘                             │
+                                            ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Grafana   │◀───│  VMSelect   │◀───│ VMStorage   │
+│             │    │  (Query)    │    │(Persistence)│
+└─────────────┘    └─────────────┘    └─────────────┘
+</code></pre>
+<h4 id="victoriametrics-features">VictoriaMetrics Features<a class="headerlink" href="#victoriametrics-features" title="Anchor link to this section for reference">&para;</a></h4>
+<ul>
+<li><strong>High Performance</strong>: Up to 20x better performance than Prometheus</li>
+<li><strong>Resource Efficiency</strong>: Minimal CPU and memory usage</li>
+<li><strong>Superior Compression</strong>: 10x better compression ratios than Prometheus</li>
+<li><strong>Prometheus Compatibility</strong>: Drop-in replacement with full PromQL support</li>
+<li><strong>Multi-Tenancy</strong>: Built-in tenant isolation in cluster mode</li>
+<li><strong>Downsampling</strong>: Automatic data downsampling for long-term retention</li>
+<li><strong>Backfilling</strong>: Support for importing historical data</li>
+<li><strong>Stream Aggregation</strong>: Real-time metric aggregation capabilities</li>
+</ul>
+<h3 id="greptimedb">GreptimeDB<a class="headerlink" href="#greptimedb" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Origin</strong>: Developed by Greptime team, modern cloud-native time series database<br />
+<strong>Architecture</strong>: SQL-based time series database with storage/compute separation<br />
+<strong>Repository</strong>: <a href="https://github.com/GreptimeTeam/greptimedb">GreptimeTeam/greptimedb</a> ⭐ 4.2k+ stars, 300+ contributors<br />
+<strong>CNCF Status</strong>: Not a CNCF project (independent open-source)<br />
+<strong>Key Contributors</strong>: Greptime Inc., PingCAP, TiKV contributors, Community developers</p>
+<h4 id="greptimedb-components">GreptimeDB Components<a class="headerlink" href="#greptimedb-components" title="Anchor link to this section for reference">&para;</a></h4>
+<p><strong>Core Architecture</strong>:</p>
+<ul>
+<li><strong>Frontend</strong>: SQL query layer and protocol handlers (MySQL, PostgreSQL, PromQL)</li>
+<li><strong>Datanode</strong>: Storage engine for time series data with advanced compression</li>
+<li><strong>Metanode</strong>: Cluster metadata management and coordination</li>
+<li><strong>Object Storage</strong>: S3-compatible storage backend for data persistence</li>
+</ul>
+<p><strong>Deployment Modes</strong>:</p>
+<ul>
+<li><strong>Standalone</strong>: Single binary for development and small deployments</li>
+<li><strong>Cluster</strong>: Distributed mode with separate frontend, datanode, and metanode</li>
+<li><strong>Cloud</strong>: Managed service with automatic scaling and optimization</li>
+</ul>
+<h4 id="greptimedb-architecture">GreptimeDB Architecture<a class="headerlink" href="#greptimedb-architecture" title="Anchor link to this section for reference">&para;</a></h4>
+<pre><code class="language-text">┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│ Prometheus  │───▶│  Frontend   │───▶│  Datanode   │
+│ (Remote     │    │ (PromQL)    │    │ (Storage)   │
+│  Write)     │    └─────────────┘    └─────────────┘
+└─────────────┘                             │
+                                            ▼
+┌─────────────┐    ┌─────────────┐    ┌─────────────┐
+│   Grafana   │◀───│  Frontend   │◀───│Object Storage│
+│             │    │ (Query)     │    │ (S3/GCS)    │
+└─────────────┘    └─────────────┘    └─────────────┘
+</code></pre>
+<h4 id="greptimedb-features">GreptimeDB Features<a class="headerlink" href="#greptimedb-features" title="Anchor link to this section for reference">&para;</a></h4>
+<ul>
+<li><strong>SQL + PromQL</strong>: Native SQL support with &gt;90% PromQL compatibility</li>
+<li><strong>Exceptional Performance</strong>: 5x more resource efficient than Mimir</li>
+<li><strong>Superior Compression</strong>: Advanced compression algorithms for cost optimization</li>
+<li><strong>Elastic Scaling</strong>: Independent scaling of storage and compute resources</li>
+<li><strong>Multi-Protocol</strong>: MySQL, PostgreSQL, PromQL, and InfluxDB protocols</li>
+<li><strong>Cloud-Native</strong>: Kubernetes-native with operator support</li>
+<li><strong>Time Travel</strong>: Historical data queries with SQL temporal functions</li>
+<li><strong>Real-time Analytics</strong>: Built-in stream processing capabilities</li>
+</ul>
+<h2 id="detailed-comparison">Detailed Comparison<a class="headerlink" href="#detailed-comparison" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="deployment-complexity">Deployment Complexity<a class="headerlink" href="#deployment-complexity" title="Anchor link to this section for reference">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Mimir</th>
+<th>Cortex</th>
+<th>Thanos</th>
+<th>VictoriaMetrics</th>
+<th>GreptimeDB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Setup Complexity</strong></td>
+<td>Medium</td>
+<td>High</td>
+<td>Low-Medium</td>
+<td>Low</td>
+<td>Low</td>
+</tr>
+<tr>
+<td><strong>Operational Overhead</strong></td>
+<td>Medium</td>
+<td>High</td>
+<td>Low</td>
+<td>Very Low</td>
+<td>Low</td>
+</tr>
+<tr>
+<td><strong>Prometheus Changes</strong></td>
+<td>Remote write only</td>
+<td>Remote write only</td>
+<td>Minimal (sidecar)</td>
+<td>Remote write only</td>
+<td>Remote write only</td>
+</tr>
+<tr>
+<td><strong>Learning Curve</strong></td>
+<td>Medium</td>
+<td>High</td>
+<td>Low-Medium</td>
+<td>Low</td>
+<td>Low-Medium</td>
+</tr>
+</tbody>
+</table>
+<h3 id="scalability-performance">Scalability &amp; Performance<a class="headerlink" href="#scalability-performance" title="Anchor link to this section for reference">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Mimir</th>
+<th>Cortex</th>
+<th>Thanos</th>
+<th>VictoriaMetrics</th>
+<th>GreptimeDB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Horizontal Scaling</strong></td>
+<td>Excellent</td>
+<td>Excellent</td>
+<td>Good</td>
+<td>Excellent</td>
+<td>Excellent</td>
+</tr>
+<tr>
+<td><strong>Query Performance</strong></td>
+<td>High</td>
+<td>High</td>
+<td>Medium-High</td>
+<td>Very High</td>
+<td>Very High</td>
+</tr>
+<tr>
+<td><strong>Ingestion Rate</strong></td>
+<td>Very High</td>
+<td>High</td>
+<td>Medium</td>
+<td>Exceptional</td>
+<td>Exceptional</td>
+</tr>
+<tr>
+<td><strong>Memory Efficiency</strong></td>
+<td>Optimized</td>
+<td>Good</td>
+<td>Good</td>
+<td>Exceptional</td>
+<td>Exceptional</td>
+</tr>
+<tr>
+<td><strong>Storage Efficiency</strong></td>
+<td>High</td>
+<td>High</td>
+<td>Very High (downsampling)</td>
+<td>Exceptional</td>
+<td>Exceptional</td>
+</tr>
+</tbody>
+</table>
+<h3 id="features-capabilities">Features &amp; Capabilities<a class="headerlink" href="#features-capabilities" title="Anchor link to this section for reference">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Mimir</th>
+<th>Cortex</th>
+<th>Thanos</th>
+<th>VictoriaMetrics</th>
+<th>GreptimeDB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Multi-Tenancy</strong></td>
+<td>✅ Advanced</td>
+<td>✅ Advanced</td>
+<td>✅ Basic</td>
+<td>✅ Advanced</td>
+<td>✅ Advanced</td>
+</tr>
+<tr>
+<td><strong>Global Querying</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅ Excellent</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Deduplication</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅ Advanced</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Downsampling</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅ Automatic</td>
+<td>✅ Automatic</td>
+<td>✅ Automatic</td>
+</tr>
+<tr>
+<td><strong>Rule Evaluation</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Alerting</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><strong>Stream Processing</strong></td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅ Advanced</td>
+<td>✅ Native</td>
+</tr>
+</tbody>
+</table>
+<h3 id="storage-retention">Storage &amp; Retention<a class="headerlink" href="#storage-retention" title="Anchor link to this section for reference">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Mimir</th>
+<th>Cortex</th>
+<th>Thanos</th>
+<th>VictoriaMetrics</th>
+<th>GreptimeDB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Object Storage</strong></td>
+<td>S3, GCS, Azure</td>
+<td>S3, GCS, Azure, Swift</td>
+<td>S3, GCS, Azure, Swift</td>
+<td>S3, GCS, Azure, Local</td>
+<td>S3, GCS, Azure</td>
+</tr>
+<tr>
+<td><strong>Compression</strong></td>
+<td>Excellent</td>
+<td>Good</td>
+<td>Excellent</td>
+<td>Exceptional</td>
+<td>Exceptional</td>
+</tr>
+<tr>
+<td><strong>Retention Policies</strong></td>
+<td>Flexible</td>
+<td>Flexible</td>
+<td>Flexible</td>
+<td>Very Flexible</td>
+<td>Very Flexible</td>
+</tr>
+<tr>
+<td><strong>Block Management</strong></td>
+<td>Advanced</td>
+<td>Standard</td>
+<td>Advanced</td>
+<td>Optimized</td>
+<td>Advanced</td>
+</tr>
+</tbody>
+</table>
+<h2 id="use-case-recommendations">Use Case Recommendations<a class="headerlink" href="#use-case-recommendations" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="choose-mimir-when">Choose Mimir When<a class="headerlink" href="#choose-mimir-when" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li><strong>Modern Deployments</strong>: Starting fresh or modernizing existing setups</li>
+<li><strong>High Performance Required</strong>: Need maximum query and ingestion performance</li>
+<li><strong>Grafana Ecosystem</strong>: Already using Grafana and want tight integration</li>
+<li><strong>Multi-Tenancy</strong>: Require advanced tenant isolation and management</li>
+<li><strong>Real-time Analytics</strong>: Need streaming query capabilities</li>
+</ul>
+<p><strong>Ideal For</strong>: SaaS platforms, multi-tenant environments, high-traffic applications</p>
+<h3 id="choose-cortex-when">Choose Cortex When<a class="headerlink" href="#choose-cortex-when" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li><strong>CNCF Compliance</strong>: Need a graduated CNCF project for governance</li>
+<li><strong>Flexibility Required</strong>: Need highly configurable deployment options</li>
+<li><strong>Mature Solution</strong>: Want proven technology with extensive production use</li>
+<li><strong>Community Support</strong>: Prefer established community and ecosystem</li>
+<li><strong>Hybrid Deployments</strong>: Need to support various deployment patterns</li>
+</ul>
+<p><strong>Ideal For</strong>: Enterprise environments, regulated industries, complex multi-cloud setups</p>
+<h3 id="choose-thanos-when">Choose Thanos When<a class="headerlink" href="#choose-thanos-when" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li><strong>Existing Prometheus</strong>: Want to extend current Prometheus deployments with minimal changes</li>
+<li><strong>Global Visibility</strong>: Need to query across multiple clusters/regions</li>
+<li><strong>Cost Optimization</strong>: Storage costs are a primary concern (excellent compression/downsampling)</li>
+<li><strong>Gradual Migration</strong>: Want to incrementally adopt long-term storage</li>
+<li><strong>Multi-Cloud</strong>: Operating across different cloud providers</li>
+</ul>
+<p><strong>Ideal For</strong>: Large-scale Kubernetes deployments, multi-cluster environments, cost-sensitive operations</p>
+<h3 id="choose-victoriametrics-when">Choose VictoriaMetrics When<a class="headerlink" href="#choose-victoriametrics-when" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li><strong>Resource Efficiency</strong>: Need maximum performance with minimal resource usage</li>
+<li><strong>Cost Optimization</strong>: Primary concern is reducing infrastructure costs</li>
+<li><strong>Simple Operations</strong>: Want minimal operational complexity</li>
+<li><strong>High Performance</strong>: Need exceptional ingestion and query performance</li>
+<li><strong>Prometheus Compatibility</strong>: Require seamless migration from existing Prometheus setups</li>
+<li><strong>Single Binary Deployment</strong>: Prefer simple deployment models</li>
+</ul>
+<p><strong>Ideal For</strong>: High-scale cost-conscious environments, resource-constrained deployments, performance-critical applications</p>
+<h3 id="choose-greptimedb-when">Choose GreptimeDB When<a class="headerlink" href="#choose-greptimedb-when" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li><strong>Modern Architecture</strong>: Want a cloud-native, SQL-based time series database</li>
+<li><strong>Maximum Efficiency</strong>: Need the best resource efficiency and cost optimization</li>
+<li><strong>Multi-Protocol Support</strong>: Require SQL, PromQL, and other protocol compatibility</li>
+<li><strong>Advanced Analytics</strong>: Want built-in SQL capabilities for complex queries</li>
+<li><strong>Elastic Scaling</strong>: Need independent storage and compute scaling</li>
+<li><strong>Simplified Operations</strong>: Prefer managed service options with minimal operational overhead</li>
+</ul>
+<p><strong>Ideal For</strong>: Modern cloud-native deployments, analytical workloads, cost-sensitive high-scale environments</p>
+<h2 id="operational-considerations">Operational Considerations<a class="headerlink" href="#operational-considerations" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="monitoring-observability">Monitoring &amp; Observability<a class="headerlink" href="#monitoring-observability" title="Anchor link to this section for reference">&para;</a></h3>
+<p>All solutions provide comprehensive metrics for monitoring:</p>
+<ul>
+<li><strong>Ingestion Metrics</strong>: Rate, errors, latency</li>
+<li><strong>Query Metrics</strong>: Performance, cache hit rates</li>
+<li><strong>Storage Metrics</strong>: Object storage operations, compaction status</li>
+<li><strong>Resource Metrics</strong>: CPU, memory, disk usage per component</li>
+</ul>
+<h3 id="backup-disaster-recovery">Backup &amp; Disaster Recovery<a class="headerlink" href="#backup-disaster-recovery" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li><strong>Object Storage</strong>: Primary data durability mechanism</li>
+<li><strong>Multi-Region</strong>: Configure object storage for cross-region replication</li>
+<li><strong>Metadata Backup</strong>: Backup configuration and metadata regularly</li>
+<li><strong>Testing</strong>: Regular disaster recovery testing procedures</li>
+</ul>
+<h3 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li><strong>Authentication</strong>: Integration with existing identity providers</li>
+<li><strong>Authorization</strong>: Role-based access control (RBAC)</li>
+<li><strong>Encryption</strong>: Data encryption in transit and at rest</li>
+<li><strong>Network Security</strong>: Proper network segmentation and policies</li>
+<li><strong>Secrets Management</strong>: Secure handling of storage credentials</li>
+</ul>
+<h2 id="cost-analysis">Cost Analysis<a class="headerlink" href="#cost-analysis" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="infrastructure-costs">Infrastructure Costs<a class="headerlink" href="#infrastructure-costs" title="Anchor link to this section for reference">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Mimir</th>
+<th>Cortex</th>
+<th>Thanos</th>
+<th>VictoriaMetrics</th>
+<th>GreptimeDB</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Compute</strong></td>
+<td>High (microservices)</td>
+<td>High (microservices)</td>
+<td>Medium (fewer components)</td>
+<td>Low (efficient)</td>
+<td>Very Low (optimized)</td>
+</tr>
+<tr>
+<td><strong>Storage</strong></td>
+<td>Medium (efficient compression)</td>
+<td>Medium</td>
+<td>Low (excellent compression)</td>
+<td>Very Low (superior compression)</td>
+<td>Very Low (advanced compression)</td>
+</tr>
+<tr>
+<td><strong>Network</strong></td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Low (query optimization)</td>
+<td>Low (optimized protocols)</td>
+<td>Low (efficient protocols)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="operational-costs">Operational Costs<a class="headerlink" href="#operational-costs" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li><strong>Mimir</strong>: Lower operational overhead due to better defaults</li>
+<li><strong>Cortex</strong>: Higher operational overhead due to configuration complexity</li>
+<li><strong>Thanos</strong>: Lowest operational overhead for existing Prometheus users</li>
+<li><strong>VictoriaMetrics</strong>: Minimal operational overhead with single binary option</li>
+<li><strong>GreptimeDB</strong>: Very low operational overhead with cloud-native automation</li>
+</ul>
+<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Anchor link to this section for reference">&para;</a></h2>
+<p>The choice between Mimir, Cortex, Thanos, VictoriaMetrics, and GreptimeDB depends on your specific requirements:</p>
+<ul>
+<li><strong>Mimir</strong> offers the best performance and modern features for new deployments</li>
+<li><strong>Cortex</strong> provides maximum flexibility and is ideal for complex enterprise requirements</li>
+<li><strong>Thanos</strong> offers the easiest migration path and excellent global querying for existing Prometheus users</li>
+<li><strong>VictoriaMetrics</strong> delivers exceptional resource efficiency and cost optimization with superior performance</li>
+<li><strong>GreptimeDB</strong> provides modern SQL-based architecture with maximum efficiency and cloud-native automation</li>
+</ul>
+<p>All five solutions successfully address Prometheus's long-term storage limitations, but the optimal choice depends on your organization's technical requirements, operational capabilities, performance needs, and cost constraints.</p>
+<p>Consider starting with a proof-of-concept deployment to evaluate which solution best fits your specific use case and operational constraints.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../operator-prometheus/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Prometheus operator instance">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Prometheus operator instance
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../promql/" class="md-footer__link md-footer__link--next" aria-label="Next: Prometheus Query Language">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Prometheus Query Language
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://linkedin.com/in/jorge-p-275960300" target="_blank" rel="noopener" title="LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

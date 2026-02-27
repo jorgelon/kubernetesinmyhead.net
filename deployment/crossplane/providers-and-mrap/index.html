@@ -1,0 +1,2727 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kubernetesinmyhead.net/deployment/crossplane/providers-and-mrap/">
+      
+      
+        <link rel="prev" href="../../cluster-api/resources/cluster/">
+      
+      
+        <link rel="next" href="../upgrading-to-v2/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>Crossplane Providers and Managed Resource Activation Policies - Kubernetes in my head</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#crossplane-providers-and-managed-resource-activation-policies" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Kubernetes in my head" class="md-header__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kubernetes in my head
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Crossplane Providers and Managed Resource Activation Policies
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Kubernetes in my head" class="md-nav__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kubernetes in my head
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kubernetesinmyhead.net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../CI-CD/argo-events/filtering/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI CD
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../database/cloudnative-pg/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deployment
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../resource-templating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resource templating
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../argo-rollouts/2-ways/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Argo rollouts
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../cluster-api/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cluster api
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crossplane
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Crossplane
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crossplane Providers and Managed Resource Activation Policies
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Crossplane Providers and Managed Resource Activation Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding Providers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Understanding Providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-are-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Are Providers?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provider-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provider Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing Providers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-managed-resource-activation-policies-mrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding Managed Resource Activation Policies (MRAP)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Understanding Managed Resource Activation Policies (MRAP)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-are-mraps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Are MRAPs?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-mraps-exist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why MRAPs Exist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-default-catch-all-mrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Default Catch-All MRAP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-specific-mraps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating Specific MRAPs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provider-mrap-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provider + MRAP Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Provider + MRAP Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-install-the-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Install the Provider
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-mrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Create MRAP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-configure-provider-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Configure Provider Credentials
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-create-managed-resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Create Managed Resource
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mrap-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MRAP Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MRAP Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-be-specific" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Be Specific
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-include-both-v1-and-v2-during-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Include Both v1 and v2 During Migration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-organize-by-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Organize by Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-document-your-activation-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Document Your Activation Policies
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managing-multiple-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managing Multiple Providers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resources-not-reconciling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources Not Reconciling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mrap-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MRAP Not Found
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#too-many-resources-activated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Too Many Resources Activated
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-active-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking Active Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Considerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../upgrading-to-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Upgrading Crossplane from v1 to v2
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../git/detached-head/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../gitops/get-raw-yaml/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gitops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../k8s-resource-handling/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    K8s resource handling
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../kubernetes/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../languages/comment-comment-out/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Languages
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../misc/android/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../networking/filtering-with-nodeport/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../observability/architecture/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../operating-systems/too-many-open-files/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../platforms/aws/cli/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platforms
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../queues/nats/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queues
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../security/cert-manager/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../services/external-dns/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../storage/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../tools/Buildkit/output/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../vibe-sreing/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vibe sreing
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding Providers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Understanding Providers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-are-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Are Providers?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#provider-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provider Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing Providers
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-managed-resource-activation-policies-mrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understanding Managed Resource Activation Policies (MRAP)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Understanding Managed Resource Activation Policies (MRAP)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-are-mraps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Are MRAPs?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#why-mraps-exist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why MRAPs Exist
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-default-catch-all-mrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Default Catch-All MRAP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-specific-mraps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating Specific MRAPs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#provider-mrap-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provider + MRAP Workflow
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Provider + MRAP Workflow">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-install-the-provider" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Install the Provider
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-create-mrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Create MRAP
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-configure-provider-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Configure Provider Credentials
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-create-managed-resource" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Create Managed Resource
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mrap-best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MRAP Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MRAP Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-be-specific" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Be Specific
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-include-both-v1-and-v2-during-migration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Include Both v1 and v2 During Migration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-organize-by-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Organize by Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-document-your-activation-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Document Your Activation Policies
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#managing-multiple-providers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Managing Multiple Providers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resources-not-reconciling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resources Not Reconciling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mrap-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MRAP Not Found
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#too-many-resources-activated" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Too Many Resources Activated
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-active-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking Active Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#migration-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Migration Considerations
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    kubernetesinmyhead.net
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../resource-templating/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Deployment
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Crossplane
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="crossplane-providers-and-managed-resource-activation-policies">Crossplane Providers and Managed Resource Activation Policies<a class="headerlink" href="#crossplane-providers-and-managed-resource-activation-policies" title="Anchor link to this section for reference">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Anchor link to this section for reference">&para;</a></h2>
+<p>This guide explains the relationship between Providers and Managed Resource
+Activation Policies (MRAP) in Crossplane v2, and how to configure them
+effectively.</p>
+<h2 id="understanding-providers">Understanding Providers<a class="headerlink" href="#understanding-providers" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="what-are-providers">What Are Providers?<a class="headerlink" href="#what-are-providers" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Providers are packages that extend Crossplane with the ability to manage
+external resources (AWS, GCP, Azure, Kubernetes, etc.). Each provider:</p>
+<ul>
+<li>Installs Custom Resource Definitions (CRDs) for managed resources</li>
+<li>Runs a controller that reconciles those resources</li>
+<li>Manages the lifecycle of cloud infrastructure</li>
+</ul>
+<h3 id="provider-types">Provider Types<a class="headerlink" href="#provider-types" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Monolithic Providers</strong> (legacy):</p>
+<ul>
+<li>Single package containing all resources for a cloud provider</li>
+<li>Example: <code>provider-aws</code> (includes S3, EC2, RDS, etc.)</li>
+<li>Larger footprint, slower updates</li>
+</ul>
+<p><strong>Family Providers</strong> (modular):</p>
+<ul>
+<li>Split into smaller, focused packages</li>
+<li>Example: <code>provider-aws-s3</code>, <code>provider-aws-ec2</code>, <code>provider-aws-rds</code></li>
+<li>Install only what you need</li>
+<li>Better performance and faster updates</li>
+</ul>
+<h3 id="installing-providers">Installing Providers<a class="headerlink" href="#installing-providers" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Providers are installed using the <code>Provider</code> resource:</p>
+<pre><code class="language-yaml">apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws-s3
+spec:
+  package: xpkg.upbound.io/upbound/provider-aws-s3:v2.0.0
+</code></pre>
+<p>When a provider is installed:</p>
+<ol>
+<li>Crossplane downloads the package</li>
+<li>CRDs are created in the cluster</li>
+<li>Provider controller is deployed</li>
+<li>Provider becomes available for use</li>
+</ol>
+<p>Check provider status:</p>
+<pre><code class="language-bash">kubectl get providers
+kubectl get providerrevisions
+</code></pre>
+<h2 id="understanding-managed-resource-activation-policies-mrap">Understanding Managed Resource Activation Policies (MRAP)<a class="headerlink" href="#understanding-managed-resource-activation-policies-mrap" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="what-are-mraps">What Are MRAPs?<a class="headerlink" href="#what-are-mraps" title="Anchor link to this section for reference">&para;</a></h3>
+<p>MRAPs are Crossplane v2 resources that control <strong>which managed resource types
+Crossplane actively reconciles</strong>.</p>
+<p>Key concept: Installing a provider creates CRDs, but MRAP determines if
+Crossplane watches and reconciles resources of those types.</p>
+<h3 id="why-mraps-exist">Why MRAPs Exist<a class="headerlink" href="#why-mraps-exist" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Performance</strong>: Limit reconciliation to only the resources you actually use
+<strong>Security</strong>: Explicit control over what resource types can be managed
+<strong>Multi-tenancy</strong>: Different namespaces can have different activation policies
+<strong>Scalability</strong>: Reduce overhead in clusters with many providers installed</p>
+<h3 id="the-default-catch-all-mrap">The Default Catch-All MRAP<a class="headerlink" href="#the-default-catch-all-mrap" title="Anchor link to this section for reference">&para;</a></h3>
+<p>After upgrading to Crossplane v2, a default catch-all MRAP may be created
+that activates <strong>all</strong> managed resource types.</p>
+<p><strong>Problem with catch-all</strong>:</p>
+<ul>
+<li>Reconciles every CRD, even unused ones</li>
+<li>Poor performance at scale</li>
+<li>Less explicit control</li>
+<li>Higher resource consumption</li>
+</ul>
+<p><strong>Best practice</strong>: Delete the default catch-all and create specific MRAPs.</p>
+<h3 id="creating-specific-mraps">Creating Specific MRAPs<a class="headerlink" href="#creating-specific-mraps" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Create targeted activation policies for only the resource types you use:</p>
+<pre><code class="language-yaml">apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceActivationPolicy
+metadata:
+  name: aws-storage-resources
+spec:
+  activate:
+    - buckets.s3.aws.upbound.io          # v1 cluster-scoped
+    - buckets.s3.aws.m.upbound.io        # v2 namespaced
+    - bucketpolicies.s3.aws.upbound.io
+    - bucketpolicies.s3.aws.m.upbound.io
+</code></pre>
+<h2 id="provider-mrap-workflow">Provider + MRAP Workflow<a class="headerlink" href="#provider-mrap-workflow" title="Anchor link to this section for reference">&para;</a></h2>
+<p>The complete flow for using managed resources:</p>
+<pre><code class="language-text">1. Install Provider
+   └─&gt; Creates CRDs (e.g., buckets.s3.aws.upbound.io)
+
+2. Create MRAP
+   └─&gt; Activates reconciliation for specific CRD types
+
+3. Deploy ProviderConfig
+   └─&gt; Configures credentials for the provider
+
+4. Create Managed Resources
+   └─&gt; Crossplane reconciles them (because MRAP activates them)
+</code></pre>
+<h3 id="installation-example">Installation Example<a class="headerlink" href="#installation-example" title="Anchor link to this section for reference">&para;</a></h3>
+<h4 id="step-1-install-the-provider">Step 1: Install the Provider<a class="headerlink" href="#step-1-install-the-provider" title="Anchor link to this section for reference">&para;</a></h4>
+<pre><code class="language-yaml">apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws-s3
+spec:
+  package: xpkg.upbound.io/upbound/provider-aws-s3:v2.0.0
+</code></pre>
+<h4 id="step-2-create-mrap">Step 2: Create MRAP<a class="headerlink" href="#step-2-create-mrap" title="Anchor link to this section for reference">&para;</a></h4>
+<pre><code class="language-yaml">apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceActivationPolicy
+metadata:
+  name: aws-s3-activation
+spec:
+  activate:
+    - buckets.s3.aws.m.upbound.io
+    - bucketpolicies.s3.aws.m.upbound.io
+</code></pre>
+<h4 id="step-3-configure-provider-credentials">Step 3: Configure Provider Credentials<a class="headerlink" href="#step-3-configure-provider-credentials" title="Anchor link to this section for reference">&para;</a></h4>
+<pre><code class="language-yaml">apiVersion: aws.m.upbound.io/v1beta1
+kind: ProviderConfig
+metadata:
+  name: aws-config
+  namespace: production
+spec:
+  credentials:
+    source: Secret
+    secretRef:
+      name: aws-credentials
+      key: credentials
+</code></pre>
+<h4 id="step-4-create-managed-resource">Step 4: Create Managed Resource<a class="headerlink" href="#step-4-create-managed-resource" title="Anchor link to this section for reference">&para;</a></h4>
+<pre><code class="language-yaml">apiVersion: s3.aws.m.upbound.io/v1beta1
+kind: Bucket
+metadata:
+  name: my-bucket
+  namespace: production
+spec:
+  forProvider:
+    region: us-east-1
+  providerConfigRef:
+    name: aws-config
+</code></pre>
+<h2 id="mrap-best-practices">MRAP Best Practices<a class="headerlink" href="#mrap-best-practices" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="1-be-specific">1. Be Specific<a class="headerlink" href="#1-be-specific" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Only activate resource types you actually use:</p>
+<p><strong>Bad</strong> (activates everything):</p>
+<pre><code class="language-yaml">spec:
+  activate:
+    - &quot;*&quot;  # Avoid this
+</code></pre>
+<p><strong>Good</strong> (explicit list):</p>
+<pre><code class="language-yaml">spec:
+  activate:
+    - buckets.s3.aws.m.upbound.io
+    - instances.ec2.aws.m.upbound.io
+</code></pre>
+<h3 id="2-include-both-v1-and-v2-during-migration">2. Include Both v1 and v2 During Migration<a class="headerlink" href="#2-include-both-v1-and-v2-during-migration" title="Anchor link to this section for reference">&para;</a></h3>
+<p>During the v1 to v2 migration period, include both cluster-scoped and
+namespaced versions:</p>
+<pre><code class="language-yaml">spec:
+  activate:
+    - buckets.s3.aws.upbound.io      # v1 (cluster-scoped)
+    - buckets.s3.aws.m.upbound.io    # v2 (namespaced)
+</code></pre>
+<p>Once migration is complete, remove v1 entries.</p>
+<h3 id="3-organize-by-function">3. Organize by Function<a class="headerlink" href="#3-organize-by-function" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Create separate MRAPs for different resource groups:</p>
+<pre><code class="language-yaml">---
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceActivationPolicy
+metadata:
+  name: storage-resources
+spec:
+  activate:
+    - buckets.s3.aws.m.upbound.io
+    - bucketpolicies.s3.aws.m.upbound.io
+---
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceActivationPolicy
+metadata:
+  name: compute-resources
+spec:
+  activate:
+    - instances.ec2.aws.m.upbound.io
+    - securitygroups.ec2.aws.m.upbound.io
+</code></pre>
+<h3 id="4-document-your-activation-policies">4. Document Your Activation Policies<a class="headerlink" href="#4-document-your-activation-policies" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Maintain clear documentation of which MRAPs exist and why, so teams know
+what resources are available.</p>
+<h2 id="managing-multiple-providers">Managing Multiple Providers<a class="headerlink" href="#managing-multiple-providers" title="Anchor link to this section for reference">&para;</a></h2>
+<p>When using multiple providers (AWS, GCP, Azure), create organized MRAPs:</p>
+<pre><code class="language-yaml">apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: ManagedResourceActivationPolicy
+metadata:
+  name: multi-cloud-storage
+spec:
+  activate:
+    # AWS S3
+    - buckets.s3.aws.m.upbound.io
+    # GCP Storage
+    - buckets.storage.gcp.m.upbound.io
+    # Azure Storage
+    - accounts.storage.azure.m.upbound.io
+</code></pre>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="resources-not-reconciling">Resources Not Reconciling<a class="headerlink" href="#resources-not-reconciling" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Problem</strong>: Created a managed resource but it's not being reconciled</p>
+<p><strong>Solutions</strong>:</p>
+<ol>
+<li>Check if provider is installed and healthy: <code>kubectl get providers</code></li>
+<li>Verify MRAP includes the resource type:
+   <code>kubectl get managedresourceactivationpolicy -o yaml</code></li>
+<li>Check provider logs for errors</li>
+</ol>
+<h3 id="mrap-not-found">MRAP Not Found<a class="headerlink" href="#mrap-not-found" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Problem</strong>: Error about missing MRAP after upgrade</p>
+<p><strong>Solution</strong>: Create an MRAP for the resource types you're using.
+In v2, MRAPs are required.</p>
+<h3 id="too-many-resources-activated">Too Many Resources Activated<a class="headerlink" href="#too-many-resources-activated" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Problem</strong>: Performance issues, high memory usage</p>
+<p><strong>Solution</strong>: Review MRAPs and remove unused resource types from
+activation lists.</p>
+<h2 id="checking-active-resources">Checking Active Resources<a class="headerlink" href="#checking-active-resources" title="Anchor link to this section for reference">&para;</a></h2>
+<p>To see which resource types are activated:</p>
+<pre><code class="language-bash">kubectl get managedresourceactivationpolicy -o yaml
+</code></pre>
+<p>To list all CRDs installed by providers:</p>
+<pre><code class="language-bash">kubectl get crd | grep -E '(aws|gcp|azure).*upbound'
+</code></pre>
+<h2 id="migration-considerations">Migration Considerations<a class="headerlink" href="#migration-considerations" title="Anchor link to this section for reference">&para;</a></h2>
+<p>When migrating from v1 to v2:</p>
+<ol>
+<li><strong>Providers continue working</strong> - Existing providers don't need
+   immediate changes</li>
+<li><strong>MRAPs are new</strong> - You must create MRAPs in v2 for reconciliation
+   to work</li>
+<li><strong>Both versions coexist</strong> - Include both v1 and v2 resource types
+   in MRAPs during migration</li>
+<li><strong>Cleanup after migration</strong> - Remove v1 resource types from MRAPs
+   once migration is complete</li>
+</ol>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Anchor link to this section for reference">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Purpose</th>
+<th>Required?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Provider</strong></td>
+<td>Installs CRDs and controllers</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><strong>MRAP</strong></td>
+<td>Activates reconciliation for resource types</td>
+<td>Yes (v2)</td>
+</tr>
+<tr>
+<td><strong>ProviderConfig</strong></td>
+<td>Configures credentials</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td><strong>Managed Resource</strong></td>
+<td>Actual infrastructure to create</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Key takeaway</strong>: Providers install capabilities, MRAPs activate them,
+ProviderConfigs configure them, and Managed Resources use them.</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li><a href="https://docs.crossplane.io/latest/concepts/providers/">Crossplane Provider Documentation</a></li>
+<li><a href="https://docs.crossplane.io/latest/concepts/managed-resources/#managed-resource-activation-policies">Managed Resource Activation Policies</a></li>
+<li><a href="https://marketplace.upbound.io/providers">Upbound Marketplace</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../../cluster-api/resources/cluster/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Cluster">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Cluster
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../upgrading-to-v2/" class="md-footer__link md-footer__link--next" aria-label="Next: Upgrading Crossplane from v1 to v2">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Upgrading Crossplane from v1 to v2
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://linkedin.com/in/jorge-p-275960300" target="_blank" rel="noopener" title="LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

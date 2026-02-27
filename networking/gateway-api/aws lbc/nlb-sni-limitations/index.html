@@ -1,0 +1,3558 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kubernetesinmyhead.net/networking/gateway-api/aws%20lbc/nlb-sni-limitations/">
+      
+      
+        <link rel="prev" href="../gateway-vs-aws-listeners/">
+      
+      
+        <link rel="next" href="../protocols/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+    
+    
+      
+        <title>AWS NLB SNI Routing Limitations - Kubernetes in my head</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#aws-nlb-sni-routing-limitations" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Kubernetes in my head" class="md-header__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kubernetes in my head
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              AWS NLB SNI Routing Limitations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Kubernetes in my head" class="md-nav__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kubernetes in my head
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kubernetesinmyhead.net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../CI-CD/argo-events/filtering/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI CD
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../database/cloudnative-pg/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../deployment/resource-templating/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../git/detached-head/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Git
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../gitops/get-raw-yaml/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gitops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../k8s-resource-handling/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    K8s resource handling
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../kubernetes/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../languages/comment-comment-out/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Languages
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../misc/android/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11" id="__nav_11_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Networking
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../filtering-with-nodeport/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Good/Bad news filtering in NSX-T/Nodeport
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../kube-proxy-ipvs-to-nftables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migrating kube-proxy from IPVS to nftables in kubeadm clusters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../network-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Network policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../onpremise-loadbalancers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    On premise load balancers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../aws-load-balancer-controller/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aws load balancer controller
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../cilium/99-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cilium
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../contour/deployment/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contour
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_8" id="__nav_11_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gateway api
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_11_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Gateway api
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../98-tips/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tips
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contour-to-envoy-gateway-migration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contour to Envoy Gateway Migration Path
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../external-dns-cert-manager/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    External dns and cert manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gateway-api-implementations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gateway API Implementations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gateway-backend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gateway to Backend (upstream)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../linking-apps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Linking Apps
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../listeners/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Listeners
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../merging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Merging from class
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../overlapping-tls-alpn/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overlapping TLS and ALPN
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_11_8_10" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_11_8_10" id="__nav_11_8_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Aws lbc
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_11_8_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_11_8_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Aws lbc
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../98-tips/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tips
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gateway-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gateway api
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gateway-vs-aws-listeners/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gateway Listener vs AWS Load Balancer Listener
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS NLB SNI Routing Limitations
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS NLB SNI Routing Limitations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-sni-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is SNI Routing?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What is SNI Routing?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-use-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Use Case
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-nlb-cannot-support-sni-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why NLB Cannot Support SNI Routing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why NLB Cannot Support SNI Routing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-4-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 4 Operation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routing-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Routing Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tls-support-in-nlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TLS Support in NLB
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-api-implications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway API Implications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway API Implications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tlsroute-non-conformance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TLSRoute Non-Conformance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendation-use-tcproute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendation: Use TCPRoute
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architectural-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architectural Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pattern-1-two-tier-gateway-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 1: Two-Tier Gateway Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-2-tls-termination-at-nlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 2: TLS Termination at NLB
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aws-load-balancer-controller-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWS Load Balancer Controller Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gateway-implementation-layer-envoy-gateway-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway Implementation Layer (Envoy Gateway Example)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-alb-vs-nlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison: ALB vs NLB
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparison: ALB vs NLB">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#application-load-balancer-alb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application Load Balancer (ALB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network-load-balancer-nlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network Load Balancer (NLB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues-and-solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Issues and Solutions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues and Solutions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue-tlsroute-listener-rejection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: TLSRoute Listener Rejection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-multiple-hostnames-with-nlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Multiple Hostnames with NLB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-tls-termination-with-multiple-certificates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: TLS Termination with Multiple Certificates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../protocols/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Protocols in Network Load Balancer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tcproute-acm/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TCPRoute and AWS Certificate Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../envoy-gateway/backend-selfsigned-tls/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Envoy gateway
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../kgateway/gateway-classes/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kgateway
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../migration-from-nginx-controller/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Migration from nginx controller
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../routes/00-routes/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Routes
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../metallb/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metallb
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../services/traffic-policies/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../observability/architecture/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../operating-systems/too-many-open-files/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../platforms/aws/cli/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platforms
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../queues/nats/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queues
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../security/cert-manager/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../services/external-dns/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../storage/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../tools/Buildkit/output/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../vibe-sreing/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vibe sreing
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-sni-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is SNI Routing?
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="What is SNI Routing?">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-use-case" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example Use Case
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-nlb-cannot-support-sni-routing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why NLB Cannot Support SNI Routing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Why NLB Cannot Support SNI Routing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#layer-4-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer 4 Operation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#routing-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Routing Capabilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tls-support-in-nlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TLS Support in NLB
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gateway-api-implications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway API Implications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Gateway API Implications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tlsroute-non-conformance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TLSRoute Non-Conformance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#recommendation-use-tcproute" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommendation: Use TCPRoute
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architectural-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architectural Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pattern-1-two-tier-gateway-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 1: Two-Tier Gateway Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pattern-2-tls-termination-at-nlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pattern 2: TLS Termination at NLB
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#aws-load-balancer-controller-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWS Load Balancer Controller Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gateway-implementation-layer-envoy-gateway-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gateway Implementation Layer (Envoy Gateway Example)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-alb-vs-nlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison: ALB vs NLB
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparison: ALB vs NLB">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#application-load-balancer-alb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application Load Balancer (ALB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#network-load-balancer-nlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Network Load Balancer (NLB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decision-matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Decision Matrix
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues-and-solutions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Issues and Solutions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues and Solutions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#issue-tlsroute-listener-rejection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: TLSRoute Listener Rejection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-multiple-hostnames-with-nlb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: Multiple Hostnames with NLB
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-tls-termination-with-multiple-certificates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Issue: TLS Termination with Multiple Certificates
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#see-also" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        See Also
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    kubernetesinmyhead.net
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../../filtering-with-nodeport/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Networking
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../98-tips/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Gateway api
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../98-tips/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Aws lbc
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="aws-nlb-sni-routing-limitations">AWS NLB SNI Routing Limitations<a class="headerlink" href="#aws-nlb-sni-routing-limitations" title="Anchor link to this section for reference">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Anchor link to this section for reference">&para;</a></h2>
+<p>AWS Network Load Balancer (NLB) does not support SNI (Server Name Indication) routing, which has important implications when using Gateway API with the AWS Load Balancer Controller. This limitation affects TLSRoute implementation and requires specific architectural patterns.</p>
+<h2 id="what-is-sni-routing">What is SNI Routing?<a class="headerlink" href="#what-is-sni-routing" title="Anchor link to this section for reference">&para;</a></h2>
+<p><strong>SNI (Server Name Indication)</strong> is a TLS extension that allows clients to specify the hostname they're connecting to during the TLS handshake, before the encrypted connection is established.</p>
+<p><strong>SNI Routing</strong> refers to a load balancer's ability to:</p>
+<ol>
+<li>Inspect the SNI field in the TLS ClientHello message (without decrypting the payload)</li>
+<li>Route traffic to different backend targets based on the hostname in the SNI field</li>
+<li>Pass through the encrypted TLS connection to the backend</li>
+</ol>
+<h3 id="example-use-case">Example Use Case<a class="headerlink" href="#example-use-case" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code>Client → Load Balancer (inspects SNI) → Backend
+  |            |
+  |            ├─ app1.example.com → Service A
+  |            └─ app2.example.com → Service B
+  |
+  TLS handshake includes hostname
+</code></pre>
+<h2 id="why-nlb-cannot-support-sni-routing">Why NLB Cannot Support SNI Routing<a class="headerlink" href="#why-nlb-cannot-support-sni-routing" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="layer-4-operation">Layer 4 Operation<a class="headerlink" href="#layer-4-operation" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Network Load Balancers operate at <strong>Layer 4 (TCP/UDP)</strong>:</p>
+<ul>
+<li>They forward TCP/UDP streams without inspecting application-layer data</li>
+<li>They work with raw packets, IP addresses, and port numbers</li>
+<li>No visibility into TLS handshake details</li>
+</ul>
+<h3 id="routing-capabilities">Routing Capabilities<a class="headerlink" href="#routing-capabilities" title="Anchor link to this section for reference">&para;</a></h3>
+<p>NLB can only route based on:</p>
+<ul>
+<li>Source/destination IP addresses</li>
+<li>Source/destination ports</li>
+<li>Protocol (TCP/UDP)</li>
+</ul>
+<p>NLB <strong>cannot</strong> route based on:</p>
+<ul>
+<li>Hostnames in SNI field</li>
+<li>HTTP headers</li>
+<li>TLS certificate names</li>
+<li>Application-layer content</li>
+</ul>
+<h3 id="tls-support-in-nlb">TLS Support in NLB<a class="headerlink" href="#tls-support-in-nlb" title="Anchor link to this section for reference">&para;</a></h3>
+<p>While NLB supports TLS, it operates in two modes:</p>
+<ol>
+<li><strong>TLS Passthrough</strong>: Forwards encrypted traffic without inspection (cannot see SNI)</li>
+<li><strong>TLS Termination</strong>: Decrypts traffic but still cannot route based on SNI (single certificate per listener)</li>
+</ol>
+<h2 id="gateway-api-implications">Gateway API Implications<a class="headerlink" href="#gateway-api-implications" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="tlsroute-non-conformance">TLSRoute Non-Conformance<a class="headerlink" href="#tlsroute-non-conformance" title="Anchor link to this section for reference">&para;</a></h3>
+<p>According to AWS Load Balancer Controller maintainer zac-nixon (<a href="https://github.com/kubernetes-sigs/aws-load-balancer-controller/issues/4561#issuecomment-3849169928">source</a>):</p>
+<blockquote>
+<p>"Our TLSRoute is not conformant to the Gateway API spec, AWS NLB does not support SNI routing."</p>
+</blockquote>
+<p>The Gateway API TLSRoute specification expects:</p>
+<pre><code class="language-yaml">apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TLSRoute
+metadata:
+  name: example
+spec:
+  parentRefs:
+  - name: tls-gateway
+  hostnames:
+  - &quot;app1.example.com&quot;  # SNI-based routing expected
+  - &quot;app2.example.com&quot;  # SNI-based routing expected
+  rules:
+  - backendRefs:
+    - name: backend-service
+</code></pre>
+<p><strong>This pattern does not work with AWS NLB</strong> because it cannot route based on hostnames.</p>
+<h3 id="recommendation-use-tcproute">Recommendation: Use TCPRoute<a class="headerlink" href="#recommendation-use-tcproute" title="Anchor link to this section for reference">&para;</a></h3>
+<p>The AWS Load Balancer Controller team recommends using <strong>TCPRoute</strong> instead:</p>
+<pre><code class="language-yaml">apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: example
+spec:
+  parentRefs:
+  - name: tcp-gateway
+    sectionName: tcp-443
+  rules:
+  - backendRefs:
+    - name: gateway-proxy-service
+      port: 443
+</code></pre>
+<p><strong>Why TCPRoute is better:</strong></p>
+<ul>
+<li>Clear expectations: Simple TCP port forwarding</li>
+<li>Conformant to Gateway API spec</li>
+<li>Matches NLB actual capabilities</li>
+<li>No confusion about hostname-based routing</li>
+</ul>
+<h2 id="architectural-patterns">Architectural Patterns<a class="headerlink" href="#architectural-patterns" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="pattern-1-two-tier-gateway-architecture">Pattern 1: Two-Tier Gateway Architecture<a class="headerlink" href="#pattern-1-two-tier-gateway-architecture" title="Anchor link to this section for reference">&para;</a></h3>
+<p>The recommended architecture for SNI-based routing on AWS:</p>
+<pre><code>┌─────────┐
+│ Client  │
+└────┬────┘
+     │ TLS (SNI: app1.example.com)
+     ▼
+┌─────────────────────────────────────┐
+│ AWS NLB (via AWS LBC + TCPRoute)    │
+│ - Simple TCP:443 forwarding         │
+│ - No SNI inspection                 │
+└────┬────────────────────────────────┘
+     │ TLS passthrough
+     ▼
+┌─────────────────────────────────────┐
+│ Gateway Proxy (Envoy/Nginx/etc)     │
+│ - Inspects SNI field                │
+│ - Routes based on hostname          │
+│ - Uses its own Gateway API resources│
+└────┬────────────────────────────────┘
+     │
+     ├─ app1.example.com → Service A
+     └─ app2.example.com → Service B
+</code></pre>
+<h3 id="pattern-2-tls-termination-at-nlb">Pattern 2: TLS Termination at NLB<a class="headerlink" href="#pattern-2-tls-termination-at-nlb" title="Anchor link to this section for reference">&para;</a></h3>
+<p>For single hostname scenarios:</p>
+<pre><code>┌─────────┐
+│ Client  │
+└────┬────┘
+     │ TLS
+     ▼
+┌─────────────────────────────────────┐
+│ AWS NLB (TLS Listener + TCPRoute)   │
+│ - Terminates TLS                    │
+│ - Uses ACM certificate              │
+│ - Forwards to single backend        │
+└────┬────────────────────────────────┘
+     │ HTTP or TLS re-encryption
+     ▼
+┌─────────────────────────────────────┐
+│ Backend Service                     │
+└─────────────────────────────────────┘
+</code></pre>
+<p>See <a href="../tcproute-acm/">tcproute-acm.md</a> for implementation details.</p>
+<h2 id="implementation-example">Implementation Example<a class="headerlink" href="#implementation-example" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="aws-load-balancer-controller-layer">AWS Load Balancer Controller Layer<a class="headerlink" href="#aws-load-balancer-controller-layer" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: nlb-gateway
+spec:
+  gatewayClassName: aws-load-balancer-controller
+  listeners:
+  - name: tls-443
+    protocol: TCP
+    port: 443
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: to-gateway-proxy
+spec:
+  parentRefs:
+  - name: nlb-gateway
+    sectionName: tls-443
+  rules:
+  - backendRefs:
+    - name: envoy-gateway-service  # or nginx-gateway-fabric-service
+      port: 443
+</code></pre>
+<h3 id="gateway-implementation-layer-envoy-gateway-example">Gateway Implementation Layer (Envoy Gateway Example)<a class="headerlink" href="#gateway-implementation-layer-envoy-gateway-example" title="Anchor link to this section for reference">&para;</a></h3>
+<pre><code class="language-yaml">apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: envoy-gateway
+spec:
+  gatewayClassName: envoy-gateway-class
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: &quot;*.example.com&quot;
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: wildcard-cert
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: app1-route
+spec:
+  parentRefs:
+  - name: envoy-gateway
+  hostnames:
+  - &quot;app1.example.com&quot;
+  rules:
+  - backendRefs:
+    - name: app1-service
+      port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: app2-route
+spec:
+  parentRefs:
+  - name: envoy-gateway
+  hostnames:
+  - &quot;app2.example.com&quot;
+  rules:
+  - backendRefs:
+    - name: app2-service
+      port: 8080
+</code></pre>
+<h2 id="comparison-alb-vs-nlb">Comparison: ALB vs NLB<a class="headerlink" href="#comparison-alb-vs-nlb" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="application-load-balancer-alb">Application Load Balancer (ALB)<a class="headerlink" href="#application-load-balancer-alb" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Supports:</strong></p>
+<ul>
+<li>HTTP/HTTPS protocols</li>
+<li>Host-based routing</li>
+<li>Path-based routing</li>
+<li>TLS termination with SNI support</li>
+<li>Multiple certificates per listener</li>
+</ul>
+<p><strong>Gateway API Support:</strong></p>
+<ul>
+<li>HTTPRoute: Full support</li>
+<li>TLSRoute: Not applicable (terminates TLS)</li>
+</ul>
+<h3 id="network-load-balancer-nlb">Network Load Balancer (NLB)<a class="headerlink" href="#network-load-balancer-nlb" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Supports:</strong></p>
+<ul>
+<li>TCP/UDP protocols</li>
+<li>IP-based routing</li>
+<li>Port-based routing</li>
+<li>TLS passthrough</li>
+<li>TLS termination (single cert per listener)</li>
+</ul>
+<p><strong>Gateway API Support:</strong></p>
+<ul>
+<li>TCPRoute: Full support</li>
+<li>UDPRoute: Full support</li>
+<li>TLSRoute: Non-conformant (no SNI routing)</li>
+</ul>
+<h2 id="decision-matrix">Decision Matrix<a class="headerlink" href="#decision-matrix" title="Anchor link to this section for reference">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Requirement</th>
+<th>Use ALB</th>
+<th>Use NLB + Gateway Proxy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP/HTTPS routing</td>
+<td>✓</td>
+<td>-</td>
+</tr>
+<tr>
+<td>SNI-based TLS routing</td>
+<td>✓</td>
+<td>✓ (at proxy layer)</td>
+</tr>
+<tr>
+<td>Non-HTTP protocols</td>
+<td>-</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Static IP addresses</td>
+<td>-</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Lowest latency</td>
+<td>-</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>WebSocket/gRPC</td>
+<td>✓</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Custom TLS policies</td>
+<td>-</td>
+<td>✓ (at proxy layer)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="common-issues-and-solutions">Common Issues and Solutions<a class="headerlink" href="#common-issues-and-solutions" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="issue-tlsroute-listener-rejection">Issue: TLSRoute Listener Rejection<a class="headerlink" href="#issue-tlsroute-listener-rejection" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Error:</strong></p>
+<pre><code>Listener does not allow route attachment, kind does not match between listener and route
+</code></pre>
+<p><strong>Cause:</strong> Attempting to attach TLSRoute to an NLB Gateway expecting SNI routing functionality.</p>
+<p><strong>Solution:</strong> Use TCPRoute instead of TLSRoute.</p>
+<h3 id="issue-multiple-hostnames-with-nlb">Issue: Multiple Hostnames with NLB<a class="headerlink" href="#issue-multiple-hostnames-with-nlb" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Problem:</strong> Need to route multiple hostnames (app1.example.com, app2.example.com) but using NLB.</p>
+<p><strong>Solution:</strong></p>
+<ol>
+<li>Use TCPRoute to forward to a gateway proxy (Envoy/Nginx)</li>
+<li>Configure SNI routing at the proxy layer using Gateway API resources</li>
+</ol>
+<h3 id="issue-tls-termination-with-multiple-certificates">Issue: TLS Termination with Multiple Certificates<a class="headerlink" href="#issue-tls-termination-with-multiple-certificates" title="Anchor link to this section for reference">&para;</a></h3>
+<p><strong>Problem:</strong> NLB listener can only have one certificate, need multiple domains.</p>
+<p><strong>Solution:</strong></p>
+<ul>
+<li>Use a wildcard certificate (*.example.com)</li>
+<li>Use a certificate with multiple SANs</li>
+<li>Use ALB instead (supports SNI with multiple certificates)</li>
+</ul>
+<h2 id="references">References<a class="headerlink" href="#references" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li><a href="https://github.com/kubernetes-sigs/aws-load-balancer-controller/issues/4561">GitHub Issue #4561</a> - Discussion about TLSRoute limitations</li>
+<li><a href="https://gateway-api.sigs.k8s.io/references/spec/#gateway.networking.k8s.io/v1alpha2.TLSRoute">Gateway API TLSRoute Spec</a></li>
+<li><a href="https://docs.aws.amazon.com/elasticloadbalancing/latest/network/">AWS NLB Documentation</a></li>
+<li><a href="https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/gateway/">AWS Load Balancer Controller Gateway API Guide</a></li>
+</ul>
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li><a href="../gateway-vs-aws-listeners/">Gateway vs AWS Listeners</a> - Mapping between Gateway API and AWS ELB concepts</li>
+<li><a href="../tcproute-acm/">TCPRoute with ACM</a> - TLS termination at NLB using ACM certificates</li>
+<li><a href="../protocols/">Protocols</a> - Protocol support in AWS Load Balancer Controller</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../gateway-vs-aws-listeners/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Gateway Listener vs AWS Load Balancer Listener">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Gateway Listener vs AWS Load Balancer Listener
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../protocols/" class="md-footer__link md-footer__link--next" aria-label="Next: Protocols in Network Load Balancer">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Protocols in Network Load Balancer
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://linkedin.com/in/jorge-p-275960300" target="_blank" rel="noopener" title="LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
