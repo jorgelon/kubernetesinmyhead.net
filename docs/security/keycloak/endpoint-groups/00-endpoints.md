@@ -1,160 +1,105 @@
 # Endpoints
 
-Keycloak exposes some endpoints for communication between applications and for management purposes.
-
-We can group those endpoints in 3 main endpoint groups:
-
-- Frontend
-- Backend
-- Administration
-
-> There is another interface called the management interface
-
-## Base URL
-
-For that, we need to configure a base Url for them, that contains:
-
-- a scheme (https,...)
-
-- a hostname (example.keycloak.org,...)
-
-- a port (8443,...)
-
-- a path (/auth,...)
-
-The base URL for each group has an important impact on:
-
-- how tokens are issued and validated
-- how links are created for actions that require the user to be redirected to Keycloak
-- how applications will discover these endpoints when fetching the OpenID Connect Discovery Document from realms/{realm-name}/.well-known/openid-configuration.
+Keycloak exposes endpoints across 4 groups. The base URL for each group impacts token
+issuance, redirect link generation, and OIDC discovery.
 
 ## Frontend group
 
-The frontend group of Keycloak endpoints refers to the URLs and API paths that are accessed by users and applications through the frontchannel. This is, via a publicly accessible communication path, typically over the internet.
+Publicly accessible. Used for browser-based flows and user interaction.
 
-These endpoints are designed for operations that require direct user interaction , such as browser-based authentication flows. Some examples are:
-
-- The login page
-
-Where users are redirected to authenticate.
-
-```txt
-https://<hostname>/realms/{realm}/protocol/openid-connect/auth
-```
-
-- Consent/Registration
-
-```txt
-https://<hostname>/realms/{realm}/login-actions/...
-```
-
-- Account management
-
-User self-service account management
-
-```txt
-https://<hostname>/realms/{realm}/account/
-```
-
-- OpenID Connect Discovery Document
-
-OIDC discovery for applications
-
-```txt
-https://<hostname>/realms/{realm}/.well-known/openid-configuration
-```
-
-- clicking on a link to reset a password
-
-- performing actions that involve binding tokens
-
-These activities are considered frontchannel requests because they happen over a channel that is exposed to users and external applications, rather than being restricted to internal or backend communication.
-
-So, the front channel is a publicly accessible communication channel, which refers to a communication path that is publicly accessible, typically over the internet.
+| Path                                                  | Description                            |
+|-------------------------------------------------------|----------------------------------------|
+| `/realms/{realm}/protocol/openid-connect/auth`        | OIDC Authorization / Login             |
+| `/realms/{realm}/protocol/saml`                       | SAML SSO                               |
+| `/realms/{realm}/protocol/openid-connect/auth/device` | Device Authorization                   |
+| `/realms/{realm}/login-actions/...`                   | Consent / Registration actions         |
+| `/realms/{realm}/account/`                            | Account management (user self-service) |
+| `/realms/{realm}/.well-known/openid-configuration`    | OIDC Discovery Document                |
 
 ## Backend group
 
-The backend group of Keycloak endpoints refers to URLs and API paths used for direct, programmatic communication between Keycloak and client applications, typically over a secure or private network.
+Programmatic client-to-server communication. Handles token operations without user interaction.
 
-These endpoints are designed for backend-to-backend interactions, such as exchanging tokens, introspecting tokens, or retrieving user information, and do not require direct user interaction.
-
-> These endpoints handle sensitive operations like token issuance and validation.
-
-Some examples are:
-
-- Token Endpoint
-
-Issues and refreshes tokens for clients.
-
-```txt
-https://<hostname>/realms/{realm}/protocol/openid-connect/token
-```
-
-- Token Introspection Endpoint
-Allows clients to validate and inspect tokens.
-
-```txt
-https://<hostname>/realms/{realm}/protocol/openid-connect/token/introspect
-```
-
-- Userinfo Endpoint
-
-Returns user profile information associated with an access token.
-
-```txt
-https://<hostname>/realms/{realm}/protocol/openid-connect/userinfo
-```
-
-- JWKS URI Endpoint
-
-Provides the public keys used to verify JWT signatures.
-
-```txt
-https://<hostname>/realms/{realm}/protocol/openid-connect/certs
-```
-
-- Authorization Endpoint
-
-Used by applications to obtain authorization from users (can be both frontend and backend, depending on flow).
-
-```txt
-https://<hostname>/realms/{realm}/protocol/openid-connect/auth
-```
-
-The backend endpoints are those accessible through a public domain or through a private network. They’re related to direct backend communication between Keycloak and a client (an application secured by Keycloak). Such communication might be over a local network, avoiding a reverse proxy.
+| Path                                                       | Description                |
+|------------------------------------------------------------|----------------------------|
+| `/realms/{realm}/protocol/openid-connect/token`            | Token Endpoint             |
+| `/realms/{realm}/protocol/openid-connect/token/introspect` | Token Introspection        |
+| `/realms/{realm}/protocol/openid-connect/logout`           | End Session (Logout)       |
+| `/realms/{realm}/protocol/openid-connect/revoke`           | Token Revocation           |
+| `/realms/{realm}/protocol/openid-connect/userinfo`         | Userinfo                   |
+| `/realms/{realm}/protocol/openid-connect/certs`            | JWKS URI                   |
+| `/realms/{realm}/clients-registrations/...`                | Client Registration        |
+| `/realms/{realm}/protocol/saml/descriptor`                 | SAML Descriptor (metadata) |
 
 ## Administration group
 
-The administration group Keycloak endpoints are URLs and API paths dedicated to managing and configuring the Keycloak server and its realms.
+Not exposed publicly.
 
-These endpoints are intended for administrators and are typically not exposed to the public internet for security reasons. They provide both a web-based interface and programmatic access for automation and integration.
+| Path                        | Description                               |
+|-----------------------------|-------------------------------------------|
+| `/admin/`                   | Administration Console (web UI)           |
+| `/admin/realms/{realm}/...` | Admin REST API                            |
+| `/resources/`               | Static assets (CSS, JS for admin console) |
 
-- Administration Console
+## Management interface
 
-The web-based UI for managing realms, users, clients, roles, and other Keycloak resources.
+Dedicated port 9000 (separate from the main server). Health is enabled by default; metrics
+require opt-in via `KC_METRICS_ENABLED` or `spec.additionalOptions`.
 
-```txt
-https://<hostname>/admin/
-```
+| Path              | Purpose            |
+|-------------------|--------------------|
+| `/health/ready`   | Readiness probe    |
+| `/health/live`    | Liveness probe     |
+| `/health/started` | Startup probe      |
+| `/metrics`        | Prometheus metrics |
 
-- Admin REST API
+Port: `KC_HTTP_MANAGEMENT_PORT` / `spec.httpManagement.port` (default 9000).
 
-A set of RESTful endpoints for programmatic management of Keycloak. Allows automation, scripting and integration with external systems.
+## Exposure recommendations
 
-```txt
-https://<hostname>/admin/realms/{realm}/...
-```
+Only expose HTTPS (port 8443 via `KC_HTTPS_PORT`). Do not enable HTTP.
 
-- Static Resources for Admin Console
+| Path          | Exposure      | Notes                                           |
+|---------------|---------------|-------------------------------------------------|
+| `/realms/`    | Public        | Core OIDC/SAML endpoints                        |
+| `/resources/` | Public        | Static assets for login pages and admin console |
+| `/js/`        | Public        | Keycloak JS adapter                             |
+| `/admin/`     | Internal only | Admin UI and REST API                           |
+| `/health`     | Internal only | Management interface — port 9000                |
+| `/metrics`    | Internal only | Management interface — port 9000                |
 
-CSS, JavaScript, images, and other static files required by the administration console.
+### Admin console access
 
-```txt
-https://<hostname>/resources/
-```
+The admin web UI (`/admin/`) should be exposed on a **separate hostname** using
+`--hostname-admin` / `KC_HOSTNAME_ADMIN` / `spec.hostname.admin`. The admin console also
+needs `/resources/` for its static assets (already public).
+
+> Never expose `/admin/` on the same public hostname as the frontend. Restrict it to a VPN,
+> internal network, or a separate ingress with IP allowlisting.
+
+### Internal pod calls via the Kubernetes service
+
+When a pod calls Keycloak using the internal Kubernetes service DNS name
+(e.g., `keycloak-service.keycloak.svc.cluster.local`), the `Host` header contains that name
+— not the configured `KC_HOSTNAME`.
+
+With `hostname-strict: true` (default), Keycloak **rejects** these requests. Two solutions:
+
+#### Option 1 - backchannel dynamic resolution (`KC_HOSTNAME_BACKCHANNEL_DYNAMIC` / `spec.hostname.backchannelDynamic`)
+
+Keycloak accepts requests from any hostname on the backchannel. Issued tokens still carry the
+public `KC_HOSTNAME` in the `iss` claim, so token validation against the JWKS URI is
+unaffected.
+
+#### Option 2 - split-horizon DNS
+
+Configure in-cluster DNS so the public hostname resolves to the internal service ClusterIP.
+Pods use the public hostname; `Host` headers match; tokens are fully consistent. More complex
+to set up but behaviorally identical to external traffic.
 
 ## Links
 
-- Configuring the hostname (v2)
-
-<https://www.keycloak.org/server/hostname>
+- Configuring the hostname (v2): <https://www.keycloak.org/server/hostname>
+- Management Interface: <https://www.keycloak.org/server/management-interface>
+- Configuring a reverse proxy: <https://www.keycloak.org/server/reverseproxy>
+- Configuring Keycloak for production: <https://www.keycloak.org/server/configuration-production>
