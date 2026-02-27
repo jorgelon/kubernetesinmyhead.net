@@ -2,6 +2,8 @@
 
 ## Purpose
 
+The TLSRoute resource is similar to TCPRoute, but can be configured to match against TLS-specific metadata. This allows more flexibility in matching streams for a given TLS listener.
+
 TLSRoute provides TLS-aware traffic routing capabilities within the Kubernetes Gateway API. It allows you to:
 
 - **Route TLS traffic** based on SNI (Server Name Indication) without terminating encryption
