@@ -36,13 +36,13 @@ A repository can be bound to an ArgoCD project by adding the `project` field.
 
 ### With project field vs without
 
-| | Global (no `project` field) | Project-scoped (`project` field set) |
-|---|---|---|
-| **Visibility** | Available to all projects | Only the named project can use it |
-| **`sourceRepos` required** | Yes — must be listed in the AppProject | No — implicitly allowed for that project |
-| **Credentials** | Listed in Secret or via `repo-creds` template | Same, but the repo is invisible to other projects |
-| **Self-service** | Admin adds it once, all projects can reference it | Developers can manage their own repos (with RBAC) |
-| **ApplicationSet** | Usable from any project | Only by AppSets whose `project` matches; templated `project` fields (e.g. `{{ project }}`) require a global repo |
+|                            | Global (no `project` field)                       | Project-scoped (`project` field set)                                                                             |
+|----------------------------|---------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| **Visibility**             | Available to all projects                         | Only the named project can use it                                                                                |
+| **`sourceRepos` required** | Yes — must be listed in the AppProject            | No — implicitly allowed for that project                                                                         |
+| **Credentials**            | Listed in Secret or via `repo-creds` template     | Same, but the repo is invisible to other projects                                                                |
+| **Self-service**           | Admin adds it once, all projects can reference it | Developers can manage their own repos (with RBAC)                                                                |
+| **ApplicationSet**         | Usable from any project                           | Only by AppSets whose `project` matches; templated `project` fields (e.g. `{{ project }}`) require a global repo |
 
 **When to use project-scoped repos:**
 
