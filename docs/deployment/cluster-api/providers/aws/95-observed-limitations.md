@@ -24,9 +24,13 @@ It is not possible to configure only 1 Nat gateway en a 3 zone eks cluster
 <https://github.com/kubernetes-sigs/cluster-api-provider-aws/issues/1323>
 <https://github.com/kubernetes-sigs/cluster-api-provider-aws/issues/1484>
 
-## Coredns enabled
+### Regional NAT gateway not supported
 
-With empty addons coredns is deployed via deployment. Default eks behaviour. Is it related with bootstrapSelfManagedAddons?
+AWS announced regional NAT gateways in November 2025. A regional NAT gateway spans
+multiple AZs automatically without requiring a public subnet per AZ. CAPA does not
+support this mode yet. There is an open feature request:
+
+<https://github.com/kubernetes-sigs/cluster-api-provider-aws/issues/5790>
 
 ## MachinePools and AWSManagedMachinePool maturity
 
