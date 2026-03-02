@@ -1,10 +1,10 @@
 # Management Cluster
 
 We assume the CAPI Operator and CoreProvider are already installed. CAPA requires
-credentials from startup: it is a continuous reconciliation loop, and the moment an
-`AWSCluster` or `AWSManagedControlPlane` is created, the controller calls AWS APIs
-immediately. These credentials also act as the **default identity** used when an
-`AWSCluster` has no `identityRef`.
+credentials from startup: it is a continuous reconciliation loop, and the moment
+an `AWSCluster` or `AWSManagedControlPlane` is created, the controller calls AWS
+APIs immediately. These credentials also act as the **default identity** used when
+an `AWSCluster` has no `identityRef`.
 
 ## Step 1: Create IAM Resources with clusterawsadm
 
@@ -46,8 +46,8 @@ spec:
 clusterawsadm bootstrap iam create-cloudformation-stack --config bootstrap.yaml
 ```
 
-Creates the bootstrap user/group, instance profiles (control-plane, controllers, nodes),
-managed policies, and other roles.
+Creates the bootstrap user/group, instance profiles (control-plane, controllers,
+nodes), managed policies, and other roles.
 
 ## Step 2: Controller Credentials
 
@@ -64,21 +64,24 @@ kubectl create secret generic aws-bootstrap \
   --namespace capa-system
 ```
 
-> Relies on static access keys — rotate regularly. Prefer an AWS-hosted management cluster.
+> Relies on static access keys — rotate regularly. Prefer an AWS-hosted management
+> cluster.
 
 ### On EC2 (Instance Profile / IMDS)
 
 When nodes run on EC2 with an instance profile, CAPA picks up credentials from IMDS
-automatically. The profile must include the `controllers.cluster-api-provider-aws.sigs.k8s.io`
-role. Create the `aws-bootstrap` secret with `AWS_B64ENCODED_CREDENTIALS: ""` — the SDK
-falls through to IMDS automatically.
+automatically. The profile must include the
+`controllers.cluster-api-provider-aws.sigs.k8s.io` role. Create the `aws-bootstrap`
+secret with `AWS_B64ENCODED_CREDENTIALS: ""` — the SDK falls through to IMDS
+automatically.
 
 ### On EKS (IRSA) — Recommended
 
 The controller pod assumes an IAM role via the EKS pod identity webhook without static
 credentials.
 
-1. Create an IAM role with CAPA permissions and a trust policy for the CAPA service account:
+1. Create an IAM role with CAPA permissions and a trust policy for the CAPA service
+   account:
 
    ```json
    {
@@ -131,8 +134,8 @@ See [Features](11-features.md) for optional feature gates.
 
 ### After Deployment: Annotate the Service Account (IRSA only)
 
-Once deployed, the `capa-controller-manager` ServiceAccount exists. Annotate it with the
-role ARN so IRSA takes effect:
+Once deployed, the `capa-controller-manager` ServiceAccount exists. Annotate it with
+the role ARN so IRSA takes effect:
 
 ```shell
 kubectl annotate serviceaccount capa-controller-manager \
