@@ -49,13 +49,13 @@ A single NAT Gateway that automatically expands and contracts across AZs based o
 
 Key benefits over zonal:
 
-| Feature | Zonal | Regional |
-|---|---|---|
-| Public subnet required | Yes | No |
-| Route table management | One per AZ | Single entry for all AZs |
-| HA | Manual (create per AZ) | Automatic |
-| IP addresses per AZ | Up to 8 | Up to 32 |
-| Private NAT support | Yes | No |
+| Feature                | Zonal                  | Regional                 |
+|------------------------|------------------------|--------------------------|
+| Public subnet required | Yes                    | No                       |
+| Route table management | One per AZ             | Single entry for all AZs |
+| HA                     | Manual (create per AZ) | Automatic                |
+| IP addresses per AZ    | Up to 8                | Up to 32                 |
+| Private NAT support    | Yes                    | No                       |
 
 Two sub-modes:
 
@@ -67,12 +67,12 @@ window, traffic is proxied cross-zone by the gateway in an existing AZ.
 
 ## Decision Matrix
 
-| Scenario | Pattern |
-|---|---|
-| Production, public internet egress, multi-AZ | Regional |
-| Private NAT / private connectivity | Per-AZ zonal |
+| Scenario                                      | Pattern      |
+|-----------------------------------------------|--------------|
+| Production, public internet egress, multi-AZ  | Regional     |
+| Private NAT / private connectivity            | Per-AZ zonal |
 | High cross-AZ traffic volume (cost-sensitive) | Per-AZ zonal |
-| Dev / test | Single |
+| Dev / test                                    | Single       |
 
 ## Private NAT
 
