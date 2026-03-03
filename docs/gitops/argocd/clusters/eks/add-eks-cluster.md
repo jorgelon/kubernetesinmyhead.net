@@ -8,33 +8,22 @@ Two methods to register an EKS cluster:
 - **Declarative Secret**: a `v1/Secret` with label `argocd.argoproj.io/secret-type: cluster`.
   Preferred for GitOps.
 
-| Scenario | ArgoCD location | Auth method |
-|---|---|---|
-| Same account | EKS in the same AWS account | IRSA or Pod Identity |
+| Scenario      | ArgoCD location                | Auth method                                     |
+|---------------|--------------------------------|-------------------------------------------------|
+| Same account  | EKS in the same AWS account    | IRSA or Pod Identity                            |
 | Cross-account | EKS in a different AWS account | IRSA or Pod Identity (cross-account assumption) |
-| Outside AWS | On-prem / other cloud | Bearer token or AWS profile |
+| Outside AWS   | On-prem / other cloud          | Bearer token or AWS profile                     |
 
 ## Prerequisites
 
 **EKS authentication modes** — two ways to map IAM identities to Kubernetes RBAC:
 
 - **ConfigMap** (`aws-auth`): legacy mode, edit `kube-system/aws-auth`.
-- **EKS API** (access entries): newer mode, must be enabled on the cluster. The IAM principal that created
-  the cluster gets an `AmazonEKSClusterAdminPolicy` access entry by default.
+- **EKS API** (access entries): newer mode; the IAM principal that created the cluster gets an
+  `AmazonEKSClusterAdminPolicy` access entry by default.
 
-**OIDC provider** — required for IRSA only. Each EKS cluster has an OIDC URL (EKS console →
-**Overview → Details**). Verify it is registered in **IAM → Identity Providers**. If missing, create
-it: provider type `OpenID Connect`, audience `sts.amazonaws.com`.
-
-**IRSA** (IAM Roles for Service Accounts) — lets Kubernetes service accounts assume IAM roles via OIDC
-federation. Requires OIDC provider setup and a service account annotation.
-
-**Pod Identity** — newer alternative to IRSA. Uses the EKS Pod Identity Agent add-on (a DaemonSet)
-instead of OIDC federation. No OIDC provider setup and no service account annotation needed. Requires
-ArgoCD to run on EKS.
-
-IAM roles carry temporary credentials and are assumable by any authorized principal. An ARN uniquely
-identifies every AWS resource.
+See [irsa-setup.md](irsa-setup.md) for OIDC provider, IRSA, and Pod Identity prerequisites
+(required for Scenarios 1 & 2).
 
 ## Scenarios 1 & 2: Same Account and Cross-Account
 
@@ -44,18 +33,38 @@ management role, cluster role, access entries, and the cluster Secret YAML.
 ## Scenario 3: ArgoCD Outside AWS
 
 **Option A — Bearer token (CLI):** use `argocd cluster add` with a kubeconfig that has valid AWS
-credentials. See [CLI Registration](#cli-registration).
+credentials. See [CLI Registration](#cli-registration). After registration, follow
+[Final Steps](#final-steps) to export and convert the generated Secret to a GitOps resource.
 
-**Option B — AWS profile (v2.10+):** store AWS credentials in a Kubernetes Secret and reference a named
-profile:
+**Option B — AWS profile (v2.10+, Preferred):** store AWS credentials in a Kubernetes Secret and
+reference a named profile. Preferred because it produces a fully declarative cluster Secret manageable
+via GitOps:
 
 ```yaml
 config: |
   {
-    "awsAuthConfig": { "clusterName": "<CLUSTER_NAME>", "profile": "<AWS_PROFILE_NAME>" },
+    "awsAuthConfig": { "clusterName": "<EKS_CLUSTER_NAME>", "profile": "<AWS_PROFILE_NAME>" },
     "tlsClientConfig": { "insecure": false, "caData": "<BASE64_CA_DATA>" }
   }
 ```
+
+Use [`cluster-external-secret.yaml`](cluster-external-secret.yaml) as a template. It pulls all four
+fields — `server`, `caData`, `clusterName`, and `profile` — from the secrets store, so no sensitive
+or environment-specific values are hardcoded. `<ARGOCD_CLUSTER_NAME>` is the only placeholder left
+in the manifest, used as the K8s resource name and the secrets store path prefix.
+
+## Token and Credential Expiry
+
+| Component                               | TTL                          | Auto-renewed?                                 |
+|-----------------------------------------|------------------------------|-----------------------------------------------|
+| EKS bearer token                        | 15 min (hard EKS limit)      | Yes — `argocd-k8s-auth` regenerates on expiry |
+| AWS static credentials (IAM access key) | Never, until rotated         | N/A                                           |
+| AWS STS temporary credentials           | 15 min – 12 h (role session) | No — rotate externally before expiry          |
+
+For **Option B**: if the profile uses static IAM credentials they never expire; STS temporary
+credentials must be rotated before expiry or ArgoCD will lose cluster access.
+For **Option A**: the generated Secret uses the exec plugin pattern (auto-refreshing EKS tokens),
+but the underlying AWS credentials must remain valid.
 
 ## CLI Registration
 
@@ -63,7 +72,7 @@ config: |
 # 1. Get the kubeconfig of the target cluster
 aws configure list-profiles
 export AWS_PROFILE=<TARGET_PROFILE>
-aws eks update-kubeconfig --kubeconfig /path/to/target.yaml --name <CLUSTER_NAME>
+aws eks update-kubeconfig --kubeconfig /path/to/target.yaml --name <EKS_CLUSTER_NAME>
 
 # 2. Identify the context name
 export KUBECONFIG=/path/to/target.yaml
