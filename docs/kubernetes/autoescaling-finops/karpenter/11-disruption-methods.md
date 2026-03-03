@@ -4,7 +4,10 @@
 
 - Node
 
-A node can be manually deleted by a user or by an external system. When a **node without this finalizer is deleted** (via kubectl or api call), the instance will not be deleted from AWS EC2. It is only unregistered from the kubernetes cluster. All the containing pods will deleted by a gargage collection and they will start in another node.
+A node can be manually deleted by a user or by an external system. When a **node without this
+finalizer is deleted** (via kubectl or api call), the instance will not be deleted from AWS EC2.
+It is only unregistered from the kubernetes cluster. All the containing pods will deleted by a
+garbage collection and they will start in another node.
 This karpenter finalizer **improves** the deletion process.
 
 - Nodeclaim
@@ -13,7 +16,8 @@ The karpenter nodes are associated to a nodeclain. **Deleting the nodeclain** al
 
 - Nodepool
 
-The nodepools are the owners of the nodeclaims (ownerReferences). If a **nodepool is deleted**, the associated nodeclaims and nodes will be deleted.
+The nodepools are the owners of the nodeclaims (ownerReferences). If a **nodepool is deleted**,
+the associated nodeclaims and nodes will be deleted.
 
 ## Automatic graceful methods: Consolidation
 
@@ -27,42 +31,53 @@ Karpenter can delete nodes:
 - when the workloads can run in another nodes. (deletion mechanism)
 - when the nodes can be replaced with cheaper variants. (replace mechanism)
 
-There are 2 consolidation policies: WhenEmptyOrUnderutilized (default) and WhenEmpty and it can be specified in **spec.disruption.consolidationPolicy** of the nodepool.
+There are 2 consolidation policies: WhenEmptyOrUnderutilized (default) and WhenEmpty and it can be
+specified in **spec.disruption.consolidationPolicy** of the nodepool.
 
 The order of the actions that the consolidation tries to do is:
 
 - delete all the empty nodes in parallel
 - delete 2 or more nodes and possibly creating a new one if this is a cheaper solution
-- delete a single node and possibly creating a new one if this is a cheaper solution
+- delete a single node and possibly creating a new one if this is a cheaper
+  solution
 
-> Nodes with fewer pods, or with upcoming expiration or with lower priority pods will be better candidates to be consolidated
+> Nodes with fewer pods, or with upcoming expiration or with lower priority pods will be better
+> candidates to be consolidated
 
-Things like the anti-affinity, pod disruption budgets or topology spreads affects the effectiveness of the consolidation
+Things like the anti-affinity, pod disruption budgets or topology spreads affects the effectiveness
+of the consolidation
 
 ### Spot to spot consolidation
 
 The spot nodes are consolidated by default with the deletion mechanism.
 
-It is possible to enable the replace one through the SpotToSpotConsolidation feature flag karpenter considers another things in addition to the cheapest price. It also needs a minimum of 15 instance types to work and possibility to be interrupted is also observed.
+It is possible to enable the replace one through the SpotToSpotConsolidation feature flag.
+Karpenter considers other things in addition to the cheapest price. It also needs a minimum of 15
+instance types to work and the possibility to be interrupted is also observed.
 
 ### consolidateAfter
 
-When a pod is added or deleted from a node, karpenter starts to calculate if the node is consolidatable when the value specified in **spec.disruption.consolidateAfter** is reached. With this we can tell karpenter to be more cautious or aggressive in terms of consolidation.
+When a pod is added or deleted from a node, karpenter starts to calculate if the node is
+consolidatable when the value specified in **spec.disruption.consolidateAfter** is reached. With
+this we can tell karpenter to be more cautious or aggressive in terms of consolidation.
 
 > We can disable the consolidation with the "Never" value here
 
 ## Automatic graceful methods: Drift
 
-The drift method tries to reconciliate the desired state of the nodepools and ec2nodeclasses with the actual one.
-In order to check if there is a drift, karpenter compares some fields in that resources. It also maintains some hashes in the resources.
+The drift method tries to reconciliate the desired state of the nodepools and ec2nodeclasses with
+the actual one.
+In order to check if there is a drift, karpenter compares some fields in that resources. It also
+maintains some hashes in the resources.
 
 ## Automated forceful methods: Expiration
 
-It is possible to expire nodes with the **spec.template.spec.expireAfter** field. The default vale is 720 hours (30 days)
+It is possible to expire nodes with the **spec.template.spec.expireAfter** field. The default
+value is 720 hours (30 days)
 
 ## Automated forceful methods: Interruption
 
-When this methods karpenter watch some events that can cause involuntary interruptions.
+With this method karpenter watches some events that can cause involuntary interruptions.
 
 - AWS will reclaim an spot instance
 - Maintenance tasks
@@ -71,4 +86,6 @@ When this methods karpenter watch some events that can cause involuntary interru
 
 Then karpenter sends a drain, taint and deletion of the node.
 
-> With the spot interruption warnings, there are 2 minutes to solve the situation. In order to get the events we need to configure an sqs queue and a some EventBridge rules. Also, by default, karpenter does not manage the **Spot Rebalance Recommendations**.
+> With the spot interruption warnings, there are 2 minutes to solve the situation. In order to get
+> the events we need to configure an sqs queue and some EventBridge rules. Also, by default,
+> karpenter does not manage the **Spot Rebalance Recommendations**.

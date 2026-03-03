@@ -6,12 +6,14 @@ There are some differences between community Karpenter and karpenter deployed in
 
 2 builtin node pools are available: system and general purpose.
 
-- If you choose to deploy at least a built-in nodepool, also a built-in nodeclass called "default" will be deployed
+- If you choose to deploy at least a built-in nodepool, also a built-in nodeclass called "default"
+  will be deployed
 - If you choose to not deploy a built-in node pool, no nodeclass will be deployed
 
 ## Custom node class
 
-The nodeclass also needs to create an EKS Access Entry to permit the nodes to join the cluster.
+The nodeclass also needs to create an EKS Access Entry to permit the nodes to join the
+cluster.
 
 > See more here about here if you want to create a custom node class: <https://docs.aws.amazon.com/eks/latest/userguide/create-node-class.html>
 
@@ -19,7 +21,8 @@ The nodeclass also needs to create an EKS Access Entry to permit the nodes to jo
 
 ### Labels
 
-In order to create a custom nodepool in EKS auto mode, the labels you can use are slightly different from community karpenter. See this table:
+In order to create a custom nodepool in EKS auto mode, the labels you can use are slightly
+different from community karpenter. See this table:
 
 | Purpose                  | Community Karpenter                                          | EKS Auto Mode                                                |
 |--------------------------|--------------------------------------------------------------|--------------------------------------------------------------|
@@ -27,6 +30,7 @@ In order to create a custom nodepool in EKS auto mode, the labels you can use ar
 | Instance type            | `node.kubernetes.io/instance-type`                           | `node.kubernetes.io/instance-type`                           |
 | Architecture             | `kubernetes.io/arch`                                         | `kubernetes.io/arch`                                         |
 | OS                       | `kubernetes.io/os`                                           | Not supported (Linux only)                                   |
+| Windows build            | `node.kubernetes.io/windows-build`                           | Not supported (Linux only)                                   |
 | Capacity type            | `karpenter.sh/capacity-type`                                 | `karpenter.sh/capacity-type`                                 |
 | Compute type             | -                                                            | `eks.amazonaws.com/compute-type`                             |
 | Hypervisor               | `karpenter.k8s.aws/instance-hypervisor`                      | `eks.amazonaws.com/instance-hypervisor`                      |
@@ -37,6 +41,7 @@ In order to create a custom nodepool in EKS auto mode, the labels you can use ar
 | Instance size            | `karpenter.k8s.aws/instance-size`                            | `eks.amazonaws.com/instance-size`                            |
 | CPU count                | `karpenter.k8s.aws/instance-cpu`                             | `eks.amazonaws.com/instance-cpu`                             |
 | CPU manufacturer         | `karpenter.k8s.aws/instance-cpu-manufacturer`                | `eks.amazonaws.com/instance-cpu-manufacturer`                |
+| CPU speed (MHz)          | `karpenter.k8s.aws/instance-cpu-sustained-clock-speed-mhz`   | Not supported                                                |
 | Memory (MiB)             | `karpenter.k8s.aws/instance-memory`                          | `eks.amazonaws.com/instance-memory`                          |
 | EBS bandwidth (Mbps)     | `karpenter.k8s.aws/instance-ebs-bandwidth`                   | `eks.amazonaws.com/instance-ebs-bandwidth`                   |
 | Network bandwidth (Mbps) | `karpenter.k8s.aws/instance-network-bandwidth`               | `eks.amazonaws.com/instance-network-bandwidth`               |
