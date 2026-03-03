@@ -60,9 +60,3 @@ More info here about instances in eks auto mode:
 See more info here about creating a custom nodepool for EKS Auto Mode
 
 <https://docs.aws.amazon.com/eks/latest/userguide/create-node-pool.html>
-
-## Links
-
-- Learn about Amazon EKS Auto Mode Managed instances
-
-<https://docs.aws.amazon.com/eks/latest/userguide/automode-learn-instances.html>
