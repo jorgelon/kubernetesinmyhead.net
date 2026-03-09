@@ -2,7 +2,8 @@
 
 ## Overview
 
-This guide covers the complete upgrade process from Crossplane v1 to v2, with a focus on environments using standalone managed resources (not Compositions).
+This guide covers the complete upgrade process from Crossplane v1 to v2, with a focus on
+environments using standalone managed resources (not Compositions).
 
 ## Prerequisites
 
@@ -87,7 +88,8 @@ Before upgrading to Crossplane v2, ensure:
 
 1. **Test in staging first** - Perform the upgrade in a non-production environment
 2. **Gradual migration** - Migrate resources incrementally, not all at once
-3. **Keep both versions during transition** - Maintain both cluster-scoped and namespaced resources during migration
+3. **Keep both versions during transition** - Maintain both cluster-scoped and namespaced
+   resources during migration
 4. **Use orphan deletion policy** - Set `deletionPolicy: Orphan` for safety during migration
 5. **Monitor closely** - Watch logs and metrics during and after the upgrade
 6. **Document your process** - Keep detailed notes of your specific migration steps
@@ -95,11 +97,14 @@ Before upgrading to Crossplane v2, ensure:
 
 ## Day 2 Operations
 
-After successfully upgrading Crossplane to v2, you can begin adopting v2 features at your own pace. Existing v1 cluster-scoped resources continue working indefinitely alongside new v2 namespaced resources.
+After successfully upgrading Crossplane to v2, you can begin adopting v2 features at your
+own pace. Existing v1 cluster-scoped resources continue working indefinitely alongside new
+v2 namespaced resources.
 
 ### Understanding Coexistence
 
-Crossplane v2 supports both cluster-scoped (v1) and namespaced (v2) resources simultaneously. This allows you to:
+Crossplane v2 supports both cluster-scoped (v1) and namespaced (v2) resources simultaneously.
+This allows you to:
 
 - Run v2 without immediately migrating existing resources
 - Test namespaced resources while keeping production on cluster-scoped resources
@@ -108,11 +113,13 @@ Crossplane v2 supports both cluster-scoped (v1) and namespaced (v2) resources si
 
 ### Configure Managed Resource Activation Policies (MRAP)
 
-In Crossplane v2, you must explicitly specify which managed resources should be reconciled using MRAPs.
+In Crossplane v2, you must explicitly specify which managed resources should be reconciled
+using MRAPs.
 
 #### Step 1: Review Default MRAP
 
-By default, Crossplane v2 may create a catch-all MRAP that activates all resource types. Review existing policies:
+By default, Crossplane v2 may create a catch-all MRAP that activates all resource types.
+Review existing policies:
 
 ```bash
 kubectl get managedresourceactivationpolicy -o yaml
@@ -135,7 +142,8 @@ spec:
     - instances.ec2.aws.m.upbound.io
 ```
 
-**Important**: Include both cluster-scoped (`.aws.upbound.io`) and namespaced (`.aws.m.upbound.io`) resource types during the migration period.
+**Important**: Include both cluster-scoped (`.aws.upbound.io`) and namespaced
+(`.aws.m.upbound.io`) resource types during the migration period.
 
 #### Step 3: Delete Default Catch-All (Optional)
 
@@ -180,7 +188,7 @@ Use for resources with globally unique names (like S3 buckets) or zero-downtime 
 
 ProviderConfigs also need to be namespaced:
 
-**Before (v1)**
+##### Before (v1)
 
 ```yaml
 apiVersion: aws.upbound.io/v1beta1
@@ -196,7 +204,7 @@ spec:
       key: credentials
 ```
 
-**After (v2)**
+##### After (v2)
 
 ```yaml
 apiVersion: aws.m.upbound.io/v1beta1
@@ -212,7 +220,8 @@ spec:
       key: credentials
 ```
 
-Note: The secret reference no longer needs a namespace when ProviderConfig is namespaced (it uses the same namespace).
+Note: The secret reference no longer needs a namespace when ProviderConfig is namespaced
+(it uses the same namespace).
 
 #### Create Namespace Structure
 

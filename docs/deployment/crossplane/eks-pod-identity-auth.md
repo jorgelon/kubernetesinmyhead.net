@@ -59,7 +59,8 @@ In the EKS cluster's **Access** tab, create a Pod Identity association:
 
 - **IAM role**: `crossplane-provider-aws`
 - **Namespace**: `crossplane-system`
-- **Service account**: `provider-aws` (must match `serviceAccountTemplate.metadata.name` below)
+- **Service account**: `provider-aws` (must match `serviceAccountTemplate.metadata.name`
+  below)
 
 ## Crossplane Configuration
 
@@ -105,22 +106,39 @@ kubectl get providers
 kubectl get providerconfig
 ```
 
-Verify end-to-end authentication by creating an S3 Bucket managed resource:
+Verify end-to-end authentication by creating a managed resource and confirming it
+reconciles successfully in AWS — no static credentials should be present in the
+cluster.
+
+## Managed Resources in Other Namespaces
+
+In Crossplane v2, managed resources and `ProviderConfig` are **namespace-scoped**
+(they were cluster-scoped in v1.x).
+
+### How Authentication Works
+
+Authentication is always performed by the **provider pod running in
+`crossplane-system`**, regardless of which namespace the managed resource lives in.
+The provider pod watches all namespaces via ClusterRole. When reconciling a resource,
+it fetches the `ProviderConfig` from the same namespace as the resource. For
+`source: PodIdentity`, the provider uses its own pod's ambient AWS credentials —
+the namespace of the resource or `ProviderConfig` does not affect authentication.
+
+### Deploying to Another Namespace
+
+Copy the `ProviderConfig` into the target namespace. No additional IAM roles, EKS
+Pod Identity Associations, ServiceAccounts, or RBAC are required:
 
 ```yaml
-apiVersion: s3.aws.upbound.io/v1beta1
-kind: Bucket
+apiVersion: aws.upbound.io/v1beta1
+kind: ProviderConfig
 metadata:
-  name: test-pod-identity-bucket
+  name: default
+  namespace: my-namespace
 spec:
-  forProvider:
-    region: eu-west-1
-  providerConfigRef:
-    name: default
+  credentials:
+    source: PodIdentity
 ```
-
-If the Pod Identity association is correct, the bucket will be created in AWS
-without any static credentials in the cluster.
 
 ## References
 
