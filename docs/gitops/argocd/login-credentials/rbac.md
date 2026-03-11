@@ -19,7 +19,8 @@ The `policy.default` key in `argocd-rbac-cm` defines the role granted to every a
 All authenticated users get _at least_ the permissions granted by the default policy.
 This access cannot be blocked by a `deny` rule.
 
-It is recommended to set a minimal `role:authenticated` with the least permissions possible:
+The recommended approach is to set `policy.default: ''` (empty), so no permissions are granted
+by default. All access must then be explicitly assigned via roles or group bindings.
 
 ```yaml
 apiVersion: v1
@@ -28,13 +29,7 @@ metadata:
   name: argocd-rbac-cm
   namespace: argocd
 data:
-  policy.default: role:readonly
-  policy.csv: |
-    p, role:org-admin, applications, *, */*, allow
-    p, role:org-admin, clusters, get, *, allow
-    g, my-org:team-alpha, role:org-admin
-    g, user@example.org, role:admin
-  scopes: '[groups, email]'
+  policy.default: ''
 ```
 
 ## Policy Syntax
