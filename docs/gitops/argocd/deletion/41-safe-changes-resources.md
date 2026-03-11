@@ -22,9 +22,7 @@ STEPS
 
 - First of all the more secure starting point is to **disable autoSync** in the Application or, at least, **selfHeal to false**
 
-- Then we only need to **delete that tracking method** from the resource, for example the annotation, but autosync and self heal will be add it. So we need
-
-- Next we can edit that resource and remove the tracking annotation. The resource will be shown out of sync. This can be done via kubectl or argocd web interface.
+- Then we only need to **delete that tracking method** from the resource, for example the annotation. The resource will be shown out of sync. This can be done via kubectl or argocd web interface.
 
 - Then we push the changes to git where we declare we dont want the resource in that Application. Refresh the Application and the resource will dissapear but it will not be deleted from the cluster
 
