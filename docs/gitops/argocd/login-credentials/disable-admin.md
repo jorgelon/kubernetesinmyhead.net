@@ -4,7 +4,7 @@ Argocd documentation recommends to disable the admin user.
 
 ## New user
 
-First we will create a new user that will have adminpermissions
+First we will create a new user that will have admin permissions
 
 ### Create the new user
 
@@ -22,7 +22,7 @@ data:
 
 ### Make it administrator
 
-There is a predefined role called admin that our user will receive. Will will only remove all default permissions.
+There is a predefined role called admin that our user will receive. We will only remove all default permissions.
 
 ```yaml
 apiVersion: v1
@@ -47,10 +47,10 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 Login to our argocd instance
 
 ```shell
-argocd login "fqdn of the server"
+argocd login "fqdn of the server"  --grpc-web
 ```
 
-And change give the new user a password
+And give the new user a password
 
 ```shell
 argocd account update-password --account myuser --grpc-web
@@ -82,7 +82,8 @@ data:
   admin.enabled: "false"
 ```
 
-And delete delete the original secret
+And delete the original secret
 
 ```shell
 kubectl -n argocd delete secret argocd-initial-admin-secret
+```
