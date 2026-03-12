@@ -42,7 +42,7 @@ MRDs remain dormant until activated by a
 An MRAP declares which MRDs to activate. When an MRD is activated,
 Crossplane installs its CRD and starts reconciling resources of that type.
 
-```
+```txt
 Provider installs  →  MRDs created (no CRDs yet)
 MRAP activates MRD →  CRD installed + controller watches it
 ```
@@ -124,10 +124,10 @@ installs CRDs for every resource type the provider supports (~120+ for
 
 Upbound providers ship two MRD variants per resource type:
 
-| Suffix | Scope | Notes |
-|---|---|---|
-| `*.aws.m.upbound.io` | Namespaced | Crossplane v2, recommended |
-| `*.aws.upbound.io` | Cluster-scoped | Crossplane v1 (legacy) |
+| Suffix               | Scope          | Notes                      |
+|----------------------|----------------|----------------------------|
+| `*.aws.m.upbound.io` | Namespaced     | Crossplane v2, recommended |
+| `*.aws.upbound.io`   | Cluster-scoped | Crossplane v1 (legacy)     |
 
 Activate only the namespaced (`*.m.upbound.io`) variants unless you are
 mid-migration from v1.
