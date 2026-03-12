@@ -35,12 +35,7 @@ Before upgrading to Crossplane v2, ensure:
    - Check for ControllerConfig resources
    - Verify no external secret stores are configured
 
-### Step 2: Upgrade Crossplane Core
-
-1. Upgrade to v2
-2. Verify the upgrade (check deployment and logs)
-
-### Step 3: Upgrade Provider Packages
+### Step 2: Upgrade Crossplane Core and Provider Packages
 
 1. **Update provider manifests**
 
@@ -59,20 +54,7 @@ Before upgrading to Crossplane v2, ensure:
 
    Apply the updated provider manifests.
 
-3. **Verify provider health**
-
-   Check that providers are healthy and running:
-
-   ```bash
-   kubectl get providers
-   kubectl get providerrevisions
-   ```
-
-### Step 4: Verify and Test
-
-1. Check that existing cluster-scoped managed resources continue working
-2. Verify providers are healthy and running
-3. Test that existing infrastructure remains functional
+3. **Verify provider health**: `kubectl get providers && kubectl get providerrevisions`
 
 ## Complete Upgrade Checklist
 
@@ -86,70 +68,23 @@ Before upgrading to Crossplane v2, ensure:
 
 ## Best Practices
 
-1. **Test in staging first** - Perform the upgrade in a non-production environment
-2. **Gradual migration** - Migrate resources incrementally, not all at once
-3. **Keep both versions during transition** - Maintain both cluster-scoped and namespaced
-   resources during migration
-4. **Use orphan deletion policy** - Set `deletionPolicy: Orphan` for safety during migration
-5. **Monitor closely** - Watch logs and metrics during and after the upgrade
-6. **Document your process** - Keep detailed notes of your specific migration steps
-7. **Backup configurations** - Export all resource definitions before upgrading
+Test in staging first. Backup all resource definitions before upgrading. Migrate
+resources incrementally using `deletionPolicy: Orphan` for safety. Monitor logs
+and metrics throughout. Both cluster-scoped (v1) and namespaced (v2) resources
+coexist indefinitely — there is no forced cutover.
 
 ## Day 2 Operations
 
-After successfully upgrading Crossplane to v2, you can begin adopting v2 features at your
-own pace. Existing v1 cluster-scoped resources continue working indefinitely alongside new
-v2 namespaced resources.
-
-### Understanding Coexistence
-
-Crossplane v2 supports both cluster-scoped (v1) and namespaced (v2) resources simultaneously.
-This allows you to:
-
-- Run v2 without immediately migrating existing resources
-- Test namespaced resources while keeping production on cluster-scoped resources
-- Migrate resources gradually over time
-- Maintain both resource types indefinitely if needed
+After upgrading, adopt v2 features at your own pace.
 
 ### Configure Managed Resource Activation Policies (MRAP)
 
-In Crossplane v2, you must explicitly specify which managed resources should be reconciled
-using MRAPs.
+In Crossplane v2, you must explicitly specify which managed resources should be
+reconciled using MRAPs. During migration, include both cluster-scoped
+(`.aws.upbound.io`) and namespaced (`.aws.m.upbound.io`) resource types.
 
-#### Step 1: Review Default MRAP
-
-By default, Crossplane v2 may create a catch-all MRAP that activates all resource types.
-Review existing policies:
-
-```bash
-kubectl get managedresourceactivationpolicy -o yaml
-```
-
-#### Step 2: Create Targeted MRAPs
-
-Create activation policies for your specific resource types:
-
-```yaml
-apiVersion: apiextensions.crossplane.io/v1alpha1
-kind: ManagedResourceActivationPolicy
-metadata:
-  name: aws-resources
-spec:
-  activate:
-    - buckets.s3.aws.upbound.io        # v1 cluster-scoped
-    - buckets.s3.aws.m.upbound.io      # v2 namespaced
-    - instances.ec2.aws.upbound.io
-    - instances.ec2.aws.m.upbound.io
-```
-
-**Important**: Include both cluster-scoped (`.aws.upbound.io`) and namespaced
-(`.aws.m.upbound.io`) resource types during the migration period.
-
-#### Step 3: Delete Default Catch-All (Optional)
-
-For better performance and security, delete the default catch-all MRAP after creating specific policies.
-
-See the [Providers and MRAP](./providers-and-mrap.md) guide for more details.
+See [Providers and MRAP](./providers-and-mrap.md) for the full MRAP reference,
+including benefits, additive behavior, and best practices.
 
 ### Migrating to Namespaced Managed Resources
 
@@ -186,67 +121,16 @@ Use for resources with globally unique names (like S3 buckets) or zero-downtime 
 
 #### Migrate ProviderConfigs
 
-ProviderConfigs also need to be namespaced:
-
-##### Before (v1)
-
-```yaml
-apiVersion: aws.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: aws-provider
-spec:
-  credentials:
-    source: Secret
-    secretRef:
-      name: aws-credentials
-      namespace: crossplane-system
-      key: credentials
-```
-
-##### After (v2)
-
-```yaml
-apiVersion: aws.m.upbound.io/v1beta1
-kind: ProviderConfig
-metadata:
-  name: aws-provider
-  namespace: production-infrastructure
-spec:
-  credentials:
-    source: Secret
-    secretRef:
-      name: aws-credentials
-      key: credentials
-```
-
-Note: The secret reference no longer needs a namespace when ProviderConfig is namespaced
-(it uses the same namespace).
+ProviderConfigs also need to be namespaced. The API group changes from
+`aws.upbound.io/v1beta1` to `aws.m.upbound.io/v1beta1`, and the secret
+reference no longer needs an explicit namespace (it uses the ProviderConfig's
+own namespace). Place one ProviderConfig in each namespace that will contain
+managed resources.
 
 #### Create Namespace Structure
 
-Plan and create namespaces for your managed resources:
-
-```yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: production-infrastructure
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: staging-infrastructure
-```
-
-### Exploring Other v2 Features
-
-Beyond namespaced resources, consider exploring:
-
-1. **Composition functions** - More powerful than patch and transform
-2. **Multi-tenancy** - Use namespaces to isolate teams/environments
-3. **Refined MRAP policies** - Optimize which resources are actively reconciled
-4. **Updated monitoring** - Adjust dashboards for namespace-scoped resources
+Plan namespaces for your managed resources (e.g. `production-infrastructure`,
+`staging-infrastructure`) and declare them in git as part of your GitOps setup.
 
 ## References
 

@@ -1,29 +1,5 @@
 # Crossplane Providers and MRAP
 
-## Providers
-
-A provider extends Crossplane with the ability to manage external resources
-(AWS, GCP, Azure, etc.). Providers come in two shapes:
-
-**Monolithic** — single package for all resources of a cloud (legacy).
-
-**Family** — split into focused packages per service (e.g.
-`provider-aws-eks`, `provider-aws-s3`). Install only what you need.
-
-```yaml
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: provider-aws-eks
-spec:
-  package: xpkg.upbound.io/upbound/provider-aws-eks:v1.x.x
-```
-
-```bash
-kubectl get providers
-kubectl get providerrevisions
-```
-
 ## Managed Resource Definitions (MRDs)
 
 When a provider installs, it creates **ManagedResourceDefinitions** — one
@@ -34,13 +10,32 @@ per resource type. MRDs are lightweight Crossplane objects; at this stage
 kubectl get managedresourcedefinition
 ```
 
-MRDs remain dormant until activated by a
-`ManagedResourceActivationPolicy`.
+For providers with the `safe-start` capability, MRDs start as `Inactive`
+by default and remain dormant until activated by a
+`ManagedResourceActivationPolicy`. Without this capability, MRDs start as
+`Active` and all CRDs are installed immediately regardless of any MRAP.
 
 ## ManagedResourceActivationPolicy (MRAP)
 
 An MRAP declares which MRDs to activate. When an MRD is activated,
 Crossplane installs its CRD and starts reconciling resources of that type.
+
+### Benefits
+
+Without MRAP, installing a provider would immediately register CRDs for
+every resource type it supports — ~120+ CRDs for `provider-aws`. MRAP
+keeps them dormant until explicitly activated, which has direct resource
+consumption benefits:
+
+- **API server memory**: each CRD consumes ~3 MiB of API server memory and
+  registers additional REST API endpoints; 120 unused CRDs ≈ 360 MiB of
+  avoidable overhead
+- **etcd**: fewer CRDs stored, less schema data persisted
+- **Controller watches**: each active CRD spawns a controller watch loop;
+  unused CRDs mean unused goroutines and informer caches running in the
+  provider pod
+- **kubectl performance**: fewer registered API endpoints mean faster
+  discovery and shorter `kubectl` response times
 
 ```txt
 Provider installs  →  MRDs created (no CRDs yet)
@@ -66,6 +61,23 @@ Check what is actually activated:
 ```bash
 kubectl get managedresourceactivationpolicy default -o jsonpath='{.status.activated}' | tr ',' '\n'
 ```
+
+### `safe-start` capability required
+
+MRAP only has an effect on providers that declare the `safe-start`
+capability. Without it, all MRDs start as `Active` regardless — entries
+will appear in `status.activated` but no deactivation occurs.
+
+Verify whether your providers support it:
+
+```bash
+kubectl get providers.pkg.crossplane.io -o json \
+  | jq '.items[] | {name: .metadata.name, capabilities: .status.capabilities}'
+```
+
+Official Upbound providers support `safe-start`; community providers such as
+`crossplane-contrib` typically do not — making MRAP a no-op in those setups.
+See [Official vs Community Providers](./official-vs-community-providers.md).
 
 ### MRAPs are additive
 
@@ -136,4 +148,3 @@ mid-migration from v1.
 
 - [Crossplane Provider Documentation](https://docs.crossplane.io/latest/concepts/providers/)
 - [Managed Resource Activation Policies](https://docs.crossplane.io/latest/concepts/managed-resources/#managed-resource-activation-policies)
-- [Upbound Marketplace](https://marketplace.upbound.io/providers)

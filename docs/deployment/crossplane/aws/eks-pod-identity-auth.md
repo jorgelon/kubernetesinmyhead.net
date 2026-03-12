@@ -99,51 +99,30 @@ spec:
 
 ## Verification
 
-Check provider health:
-
-```bash
-kubectl get providers
-kubectl get providerconfig
-```
-
-Verify end-to-end authentication by creating a managed resource and confirming it
-reconciles successfully in AWS — no static credentials should be present in the
-cluster.
+Check provider health with `kubectl get providers && kubectl get providerconfig`.
+Verify end-to-end by creating a managed resource and confirming it reconciles
+in AWS — no static credentials should be present in the cluster.
 
 ## Managed Resources in Other Namespaces
 
 In Crossplane v2, managed resources and `ProviderConfig` are **namespace-scoped**
-(they were cluster-scoped in v1.x).
+(they were cluster-scoped in v1.x). For the full v1-to-v2 migration context, see
+[Upgrading Crossplane from v1 to v2](../upgrading-to-v2.md).
 
 ### How Authentication Works
 
-**EKS Pod Identity operates at the pod level, not the namespace level.** The full
-flow is:
+**EKS Pod Identity operates at the pod level, not the namespace level.** The Pod
+Identity Agent injects short-lived AWS credentials into the provider pod via
+environment variables (`AWS_CONTAINER_CREDENTIALS_FULL_URI`,
+`AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE`). The provider pod holds a ClusterRole
+allowing it to reconcile managed resources across all namespaces — AWS auth is
+entirely a concern of the pod in `crossplane-system`.
 
-1. The EKS Pod Identity Agent (DaemonSet) detects the Pod Identity Association
-   for the `provider-aws` ServiceAccount in `crossplane-system`.
-2. It injects AWS credential environment variables directly into the provider pod:
-   `AWS_CONTAINER_CREDENTIALS_FULL_URI` and `AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE`.
-3. The AWS SDK inside the provider pod reads these variables and automatically
-   fetches short-lived credentials from the EKS auth endpoint — no static keys needed.
-4. The provider pod uses those credentials for **every** AWS API call it makes,
-   regardless of which namespace the managed resource being reconciled lives in.
-
-The provider pod has a ClusterRole that allows it to watch and reconcile managed
-resources across all namespaces. AWS authentication is therefore entirely a concern
-of the pod in `crossplane-system`, not of the namespaces where resources are deployed.
-
-### Role of ProviderConfig
-
-`ProviderConfig` is a **configuration pointer**, not a credential store. It carries
-no IAM role ARN, access key, or identity information. The only thing
-`source: PodIdentity` declares is: *"when this ProviderConfig is referenced, use
-the ambient AWS credentials already injected into the provider pod."*
-
-In Crossplane v2, the provider controller looks up the `ProviderConfig` named by
-`providerConfigRef.name` in the **same namespace** as the managed resource being
-reconciled. A `ProviderConfig` living in `crossplane-system` is invisible to managed
-resources in any other namespace — hence the need to copy it.
+`ProviderConfig` with `source: PodIdentity` is a configuration pointer, not a
+credential store. In Crossplane v2, the controller looks up the `ProviderConfig`
+in the **same namespace** as the managed resource — a `ProviderConfig` in
+`crossplane-system` is invisible to resources in other namespaces, hence the need
+to copy it.
 
 ### Deploying to Another Namespace
 
@@ -162,11 +141,6 @@ spec:
   credentials:
     source: PodIdentity
 ```
-
-The `ProviderConfig` in `my-namespace` and the one in `crossplane-system` are
-independent objects that happen to carry the same instruction. They both point to the
-same authentication mechanism: the pod's ambient credentials. Updating or deleting
-one does not affect the other.
 
 ## References
 

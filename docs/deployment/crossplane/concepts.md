@@ -9,20 +9,14 @@ same declarative API model. Its main building blocks are:
 
 ## Provider and provider family
 
-A provider is a Crossplane controller that knows how to talk to an
-external API. It installs a set of CRDs (one per resource type) and a
-controller to reconcile them.
+A provider is a Crossplane controller that manages external resources (AWS, GCP,
+Azure, ...). A **provider family** groups related providers sharing a common
+`ProviderConfig` (e.g. `provider-family-aws` + `provider-aws-eks`). A
+`ProviderConfig` supplies credentials via `spec.providerConfigRef`.
 
-A **provider family** is a logical group of related providers sharing a
-common `ProviderConfig`. For example, `upbound-provider-aws-ec2` and
-`upbound-provider-aws-s3` are both part of `provider-family-aws`.
-
-### ProviderConfig
-
-A `ProviderConfig` supplies credentials to a provider. Each managed
-resource references a `ProviderConfig` via `spec.providerConfigRef`.
-
-Browse providers at <https://marketplace.upbound.io/providers>
+See [Official vs Community Providers](./official-vs-community-providers.md) for
+tier comparison and [Providers and MRAP](./providers-and-mrap.md) for MRAP
+activation details.
 
 ## Managed resource
 
