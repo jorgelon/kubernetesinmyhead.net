@@ -117,17 +117,40 @@ In Crossplane v2, managed resources and `ProviderConfig` are **namespace-scoped*
 
 ### How Authentication Works
 
-Authentication is always performed by the **provider pod running in
-`crossplane-system`**, regardless of which namespace the managed resource lives in.
-The provider pod watches all namespaces via ClusterRole. When reconciling a resource,
-it fetches the `ProviderConfig` from the same namespace as the resource. For
-`source: PodIdentity`, the provider uses its own pod's ambient AWS credentials —
-the namespace of the resource or `ProviderConfig` does not affect authentication.
+**EKS Pod Identity operates at the pod level, not the namespace level.** The full
+flow is:
+
+1. The EKS Pod Identity Agent (DaemonSet) detects the Pod Identity Association
+   for the `provider-aws` ServiceAccount in `crossplane-system`.
+2. It injects AWS credential environment variables directly into the provider pod:
+   `AWS_CONTAINER_CREDENTIALS_FULL_URI` and `AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE`.
+3. The AWS SDK inside the provider pod reads these variables and automatically
+   fetches short-lived credentials from the EKS auth endpoint — no static keys needed.
+4. The provider pod uses those credentials for **every** AWS API call it makes,
+   regardless of which namespace the managed resource being reconciled lives in.
+
+The provider pod has a ClusterRole that allows it to watch and reconcile managed
+resources across all namespaces. AWS authentication is therefore entirely a concern
+of the pod in `crossplane-system`, not of the namespaces where resources are deployed.
+
+### Role of ProviderConfig
+
+`ProviderConfig` is a **configuration pointer**, not a credential store. It carries
+no IAM role ARN, access key, or identity information. The only thing
+`source: PodIdentity` declares is: *"when this ProviderConfig is referenced, use
+the ambient AWS credentials already injected into the provider pod."*
+
+In Crossplane v2, the provider controller looks up the `ProviderConfig` named by
+`providerConfigRef.name` in the **same namespace** as the managed resource being
+reconciled. A `ProviderConfig` living in `crossplane-system` is invisible to managed
+resources in any other namespace — hence the need to copy it.
 
 ### Deploying to Another Namespace
 
-Copy the `ProviderConfig` into the target namespace. No additional IAM roles, EKS
-Pod Identity Associations, ServiceAccounts, or RBAC are required:
+Copy the `ProviderConfig` into every namespace that will contain managed resources.
+No additional IAM roles, Pod Identity Associations, ServiceAccounts, or RBAC are
+required — the actual credential exchange still happens entirely within the provider
+pod in `crossplane-system`:
 
 ```yaml
 apiVersion: aws.upbound.io/v1beta1
@@ -139,6 +162,11 @@ spec:
   credentials:
     source: PodIdentity
 ```
+
+The `ProviderConfig` in `my-namespace` and the one in `crossplane-system` are
+independent objects that happen to carry the same instruction. They both point to the
+same authentication mechanism: the pod's ambient credentials. Updating or deleting
+one does not affect the other.
 
 ## References
 
