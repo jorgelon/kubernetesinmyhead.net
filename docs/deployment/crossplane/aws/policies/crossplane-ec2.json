@@ -2,7 +2,6 @@
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "VisualEditor0",
             "Effect": "Allow",
             "Action": [
                 "ec2:CreateSecurityGroup",
@@ -20,7 +19,6 @@
             ]
         },
         {
-            "Sid": "Statement1",
             "Effect": "Allow",
             "Action": [
                 "ec2:DescribeSecurityGroups",
