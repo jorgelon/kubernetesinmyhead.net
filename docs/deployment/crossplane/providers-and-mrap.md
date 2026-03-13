@@ -1,5 +1,7 @@
 # Crossplane Providers and MRAP
 
+> Applies to Crossplane **v2.0+**. MRDs and MRAP are not available in v1.x.
+
 ## Managed Resource Definitions (MRDs)
 
 When a provider installs, it creates **ManagedResourceDefinitions** — one
@@ -41,7 +43,6 @@ consumption benefits:
 Provider installs  →  MRDs created (no CRDs yet)
 MRAP activates MRD →  CRD installed + controller watches it
 ```
-
 ```yaml
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: ManagedResourceActivationPolicy
@@ -59,7 +60,8 @@ spec:
 Check what is actually activated:
 
 ```bash
-kubectl get managedresourceactivationpolicy default -o jsonpath='{.status.activated}' | tr ',' '\n'
+kubectl get managedresourceactivationpolicy default \
+  -o jsonpath='{.status.activated}' | tr ',' '\n'
 ```
 
 ### `safe-start` capability required
@@ -75,9 +77,9 @@ kubectl get providers.pkg.crossplane.io -o json \
   | jq '.items[] | {name: .metadata.name, capabilities: .status.capabilities}'
 ```
 
-Official Upbound providers support `safe-start`; community providers such as
-`crossplane-contrib` typically do not — making MRAP a no-op in those setups.
-See [Official vs Community Providers](./official-vs-community-providers.md).
+Both official Upbound providers and `crossplane-contrib/provider-upjet-aws`
+support `safe-start`. Other community providers may not — verify with the
+command above. See [Official vs Community Providers](./official-vs-community-providers.md).
 
 ### MRAPs are additive
 
@@ -97,24 +99,21 @@ spec:
 
 The only fix is to update or delete the wildcard MRAP itself.
 
-### CRDs are not removed on deactivation
+### Activation is permanent
 
-Removing an MRD from an MRAP's activate list does **not** uninstall its
-CRD. CRD removal is destructive (it would delete all resources of that
-type), so Crossplane leaves it to you.
+MRD state is **one-way only**: `Inactive → Active`. Once activated, an MRD
+**cannot be set back to `Inactive`** — a CEL validation rule on the type
+enforces this, preventing accidental CRD deletion that would cascade-delete
+all resources of that type.
 
-The MRAP change only affects future installs — e.g. after a provider
-upgrade or reinstall.
+The only reset path is a provider reinstall (uninstall + reinstall), which
+recreates all MRDs as `Inactive` — but also destroys all existing managed
+resources of those types.
 
 ### What MRAP does not control
 
 `ProviderConfig` CRDs are installed directly by the provider and are
-**not** managed by MRAPs. They are always present:
-
-- `providerconfigs.aws.m.upbound.io`
-- `providerconfigusages.aws.m.upbound.io`
-- `clusterproviderconfigs.aws.m.upbound.io`
-
+**not** managed by MRAPs — they are always present regardless of MRAP state.
 Crossplane core CRDs (`*.crossplane.io`, `*.pkg.crossplane.io`) are also
 always installed.
 
@@ -134,15 +133,16 @@ installs CRDs for every resource type the provider supports (~120+ for
 
 ### Namespaced vs cluster-scoped
 
-Upbound providers ship two MRD variants per resource type:
+Providers ship two MRD variants per resource type:
 
-| Suffix               | Scope          | Notes                      |
-|----------------------|----------------|----------------------------|
-| `*.aws.m.upbound.io` | Namespaced     | Crossplane v2, recommended |
-| `*.aws.upbound.io`   | Cluster-scoped | Crossplane v1 (legacy)     |
+| Suffix                    | Scope          | Notes                                |
+|---------------------------|----------------|--------------------------------------|
+| `*.aws.m.upbound.io`      | Namespaced     | Upbound provider, v2 (recommended)   |
+| `*.aws.upbound.io`        | Cluster-scoped | Upbound provider, v1 (legacy)        |
+| `*.aws.m.crossplane.io`   | Namespaced     | crossplane-contrib, v2 (recommended) |
+| `*.aws.crossplane.io`     | Cluster-scoped | crossplane-contrib, v1 (legacy)      |
 
-Activate only the namespaced (`*.m.upbound.io`) variants unless you are
-mid-migration from v1.
+Activate only the namespaced variants unless you are mid-migration from v1.
 
 ## References
 
