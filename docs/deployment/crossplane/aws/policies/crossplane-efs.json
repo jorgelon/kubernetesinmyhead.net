@@ -19,7 +19,8 @@
                 "elasticfilesystem:DescribeAccessPoints",
                 "elasticfilesystem:DescribeMountTargets",
                 "elasticfilesystem:DescribeMountTargetSecurityGroups",
-                "elasticfilesystem:PutLifecycleConfiguration"
+                "elasticfilesystem:PutLifecycleConfiguration",
+				"elasticfilesystem:CreateFileSystem"
             ],
             "Resource": [
                 "*"
