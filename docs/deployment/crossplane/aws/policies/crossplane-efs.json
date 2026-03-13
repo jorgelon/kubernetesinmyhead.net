@@ -1,0 +1,30 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "elasticfilesystem:TagResource",
+            "Resource": [
+                "arn:aws:elasticfilesystem:*:ACCOUNT_ID:file-system/*",
+                "arn:aws:elasticfilesystem:*:ACCOUNT_ID:access-point/*"
+            ]
+        },
+        {
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Action": [
+                "elasticfilesystem:DescribeLifecycleConfiguration",
+                "elasticfilesystem:CreateMountTarget",
+                "elasticfilesystem:DeleteMountTarget",
+                "elasticfilesystem:DescribeFileSystems",
+                "elasticfilesystem:DescribeAccessPoints",
+                "elasticfilesystem:DescribeMountTargets",
+                "elasticfilesystem:DescribeMountTargetSecurityGroups"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
