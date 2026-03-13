@@ -1,0 +1,2753 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://kubernetesinmyhead.net/kubernetes/distributions/eks/update/">
+      
+      
+        <link rel="prev" href="../pod-authentication-methods/">
+      
+      
+        <link rel="next" href="../../kubeadm/98-tips/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+    
+    
+      
+        <title>Update - Kubernetes in my head</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#update" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="Kubernetes in my head" class="md-header__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Kubernetes in my head
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Update
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="Kubernetes in my head" class="md-nav__button md-logo" aria-label="Kubernetes in my head" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Kubernetes in my head
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    kubernetesinmyhead.net
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../CI-CD/argo-events/filtering/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI CD
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../database/cloudnative-pg/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../deployment/resource-templating/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deployment
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../gitops/get-raw-yaml/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gitops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../k8s-resource-handling/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    K8s resource handling
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Kubernetes
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../98-tips/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tips
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../99-links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../compat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes compatibilities and requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubernetes Dashboard Alternatives
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../hack-dns/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hack dns
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../api-access/api-request-pipeline/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Api access
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../autoescaling-finops/autoescaling-nodes/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Autoescaling finops
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_8" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_8" id="__nav_7_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Distributions
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Distributions
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_8_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_7_8_1" id="__nav_7_8_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_7_8_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_8_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Eks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../authentication-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EKS Authentication Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../auto-mode/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Auto Mode
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../eks-pod-identity-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eks Pod identity agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pod-authentication-methods/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pod Authentication Methods for AWS API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Update
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#step-0-read-changelogs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 0: Read Changelogs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-pre-upgrade-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Pre-upgrade checks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1: Pre-upgrade checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cluster-health" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cluster health
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-version-skew" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Node version skew
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eks-upgrade-insights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EKS upgrade insights
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetes-api-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kubernetes API compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#infrastructure-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-ons-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Add-ons compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#application-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-upgrade-the-control-plane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Upgrade the control plane
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-upgrade-the-worker-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Upgrade the worker nodes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-post-upgrade-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Post-upgrade tasks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eks-auto-mode-upgrades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EKS Auto Mode upgrades
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EKS Auto Mode upgrades">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#components-managed-automatically" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components managed automatically
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#your-responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Your responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#version-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../kubeadm/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubeadm
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../kubectl/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kubectl
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../storage/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../tuning/cpu-requests-limits/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tuning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../workloads/cronjob/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workloads
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../languages/comment-comment-out/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Languages
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../misc/android/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Misc
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../networking/filtering-with-nodeport/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Networking
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../observability/architecture/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Observability
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../operating-systems/too-many-open-files/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Operating systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../platforms/aws/cli/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platforms
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../queues/nats/99-links/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queues
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../security/cert-manager/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../services/external-dns/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Services
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../storage/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    
+  
+  
+  
+    <a href="../../../../tools/Buildkit/output/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tools
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../../../vibe-sreing/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vibe sreing
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#step-0-read-changelogs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 0: Read Changelogs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-pre-upgrade-checks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Pre-upgrade checks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 1: Pre-upgrade checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cluster-health" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cluster health
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#node-version-skew" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Node version skew
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#eks-upgrade-insights" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EKS upgrade insights
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kubernetes-api-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kubernetes API compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#infrastructure-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Infrastructure requirements
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-ons-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Add-ons compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#application-compatibility" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application compatibility
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-upgrade-the-control-plane" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Upgrade the control plane
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-upgrade-the-worker-nodes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Upgrade the worker nodes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-post-upgrade-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Post-upgrade tasks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#eks-auto-mode-upgrades" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EKS Auto Mode upgrades
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EKS Auto Mode upgrades">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#components-managed-automatically" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Components managed automatically
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#your-responsibilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Your responsibilities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#version-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Version lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../../../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    kubernetesinmyhead.net
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../../98-tips/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Kubernetes
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../authentication-mode/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Distributions
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../authentication-mode/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Eks
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="update">Update<a class="headerlink" href="#update" title="Anchor link to this section for reference">&para;</a></h1>
+<p>Steps to update an EKS cluster to a new Kubernetes version.</p>
+<blockquote>
+<p><strong>Important</strong>: You can only upgrade <strong>one minor version at a time</strong> (e.g., 1.29 → 1.30).
+Downgrades are not supported. Once the upgrade starts, it cannot be paused or stopped.</p>
+</blockquote>
+<h2 id="step-0-read-changelogs">Step 0: Read Changelogs<a class="headerlink" href="#step-0-read-changelogs" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li>Read the kubernetes changelog in <a href="https://kubernetes.io/releases/">https://kubernetes.io/releases/</a></li>
+<li>Read the eks changelog in <a href="https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions-standard.html">https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions-standard.html</a></li>
+<li>Read the official eks update document in <a href="https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html">https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html</a></li>
+</ul>
+<h2 id="step-1-pre-upgrade-checks">Step 1: Pre-upgrade checks<a class="headerlink" href="#step-1-pre-upgrade-checks" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="cluster-health">Cluster health<a class="headerlink" href="#cluster-health" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li>Verify there are no current problems in the cluster</li>
+<li>Enable control plane logging to capture issues during upgrade: <a href="https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html">https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html</a></li>
+<li>Optionally, back up the cluster before upgrading: <a href="https://docs.aws.amazon.com/eks/latest/userguide/integration-backup.html">https://docs.aws.amazon.com/eks/latest/userguide/integration-backup.html</a></li>
+</ul>
+<h3 id="node-version-skew">Node version skew<a class="headerlink" href="#node-version-skew" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Nodes must be on the same minor version as the control plane before upgrading the control plane.
+Starting from Kubernetes 1.28, kubelet may be up to <strong>3 minor versions</strong> older than the kube-apiserver (2 minor versions for ≤1.27).</p>
+<pre><code class="language-bash">kubectl version
+kubectl get nodes
+</code></pre>
+<h3 id="eks-upgrade-insights">EKS upgrade insights<a class="headerlink" href="#eks-upgrade-insights" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Check Amazon EKS upgrade insights in the console (Observability → Upgrade insights tab) or with the CLI:</p>
+<pre><code class="language-bash">aws eks list-insights --cluster-name &lt;cluster-name&gt; --region &lt;region&gt;
+</code></pre>
+<p>Insights are refreshed every 24 hours, or you can refresh them manually. Fix all findings before proceeding.
+Note: it can take up to 30 days for insights to clear after fixing deprecated API usage (rolling 30-day window).</p>
+<h3 id="kubernetes-api-compatibility">Kubernetes API compatibility<a class="headerlink" href="#kubernetes-api-compatibility" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Check for deprecated or removed APIs using tools like:</p>
+<ul>
+<li><a href="https://github.com/FairwindsOps/pluto">pluto</a></li>
+<li><a href="https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-convert-plugin">kubectl convert plugin</a></li>
+<li>Review: <a href="https://kubernetes.io/docs/reference/using-api/deprecation-guide/">https://kubernetes.io/docs/reference/using-api/deprecation-guide/</a></li>
+</ul>
+<h3 id="infrastructure-requirements">Infrastructure requirements<a class="headerlink" href="#infrastructure-requirements" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Amazon EKS requires up to <strong>5 available IP addresses</strong> from the subnets specified at cluster creation:</p>
+<pre><code class="language-bash">CLUSTER=&lt;cluster-name&gt;
+aws ec2 describe-subnets --subnet-ids \
+  $(aws eks describe-cluster --name ${CLUSTER} \
+  --query 'cluster.resourcesVpcConfig.subnetIds' \
+  --output text) \
+  --query 'Subnets[*].[SubnetId,AvailabilityZone,AvailableIpAddressCount]' \
+  --output table
+</code></pre>
+<p>Also verify the cluster IAM role is present and has the correct permissions (including KMS key access if secret encryption is enabled).</p>
+<h3 id="add-ons-compatibility">Add-ons compatibility<a class="headerlink" href="#add-ons-compatibility" title="Anchor link to this section for reference">&para;</a></h3>
+<p>The installed add-ons must be compatible with the next release. Check cluster insights for this.
+Update add-ons to a version compatible with <strong>both</strong> the current and target Kubernetes versions before upgrading.</p>
+<p>EKS add-ons are <strong>not</strong> automatically upgraded during a control plane upgrade. They can only be upgraded one minor version at a time.</p>
+<p>Relevant add-on docs:</p>
+<ul>
+<li>VPC-CNI: <a href="https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html">https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html</a></li>
+<li>CoreDNS: <a href="https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html">https://docs.aws.amazon.com/eks/latest/userguide/managing-coredns.html</a></li>
+<li>kube-proxy: <a href="https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html">https://docs.aws.amazon.com/eks/latest/userguide/managing-kube-proxy.html</a></li>
+<li>EBS CSI: <a href="https://docs.aws.amazon.com/eks/latest/userguide/managing-ebs-csi.html">https://docs.aws.amazon.com/eks/latest/userguide/managing-ebs-csi.html</a></li>
+<li>EFS CSI: <a href="https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html">https://docs.aws.amazon.com/eks/latest/userguide/efs-csi.html</a></li>
+<li>AWS Load Balancer Controller: <a href="https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html">https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html</a></li>
+</ul>
+<h3 id="application-compatibility">Application compatibility<a class="headerlink" href="#application-compatibility" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Check critical workloads (ingress controllers, monitoring agents, storage drivers, autoscalers) for compatibility with the target Kubernetes version. Components using the Kubernetes API directly (often in <code>*-system</code> namespaces) are the most likely to be affected.</p>
+<h2 id="step-2-upgrade-the-control-plane">Step 2: Upgrade the control plane<a class="headerlink" href="#step-2-upgrade-the-control-plane" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Trigger the control plane upgrade using one of:</p>
+<p><strong>eksctl:</strong></p>
+<pre><code class="language-bash">eksctl upgrade cluster --name &lt;cluster-name&gt; --version &lt;version-number&gt; --approve
+</code></pre>
+<p><strong>AWS CLI:</strong></p>
+<pre><code class="language-bash">aws eks update-cluster-version --name &lt;cluster-name&gt; \
+  --kubernetes-version &lt;version-number&gt; --region &lt;region-code&gt;
+
+# Monitor the update status
+aws eks describe-update --name &lt;cluster-name&gt; \
+  --region &lt;region-code&gt; --update-id &lt;update-id&gt;
+</code></pre>
+<p>The update takes several minutes. AWS manages the rolling replacement of API server nodes; running workloads are not affected. If checks fail, EKS rolls back automatically.</p>
+<h2 id="step-3-upgrade-the-worker-nodes">Step 3: Upgrade the worker nodes<a class="headerlink" href="#step-3-upgrade-the-worker-nodes" title="Anchor link to this section for reference">&para;</a></h2>
+<p>After the control plane is upgraded, update all nodes to the same minor version.</p>
+<p><strong>Managed node groups:</strong></p>
+<pre><code class="language-bash">aws eks update-nodegroup-version --cluster-name &lt;cluster-name&gt; \
+  --nodegroup-name &lt;nodegroup-name&gt; --region &lt;region-code&gt;
+</code></pre>
+<p><strong>Self-managed nodes:</strong> Replace nodes with new AMIs for the target version.
+See: <a href="https://docs.aws.amazon.com/eks/latest/userguide/update-workers.html">https://docs.aws.amazon.com/eks/latest/userguide/update-workers.html</a></p>
+<p><strong>EKS Auto Mode:</strong> No manual data plane upgrade needed — after the control plane upgrade, EKS Auto Mode incrementally updates managed nodes respecting PodDisruptionBudgets.</p>
+<p><strong>Fargate:</strong> New pods get the updated kubelet automatically. Redeploy existing Fargate pods to update them.</p>
+<h2 id="step-4-post-upgrade-tasks">Step 4: Post-upgrade tasks<a class="headerlink" href="#step-4-post-upgrade-tasks" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li>Update <strong>Cluster Autoscaler</strong> to match the new Kubernetes minor version:
+  <a href="https://github.com/kubernetes/autoscaler/releases">https://github.com/kubernetes/autoscaler/releases</a></li>
+<li>Update <strong>NVIDIA device plugin</strong> if the cluster has GPU nodes</li>
+<li>Update EKS add-ons (VPC CNI, CoreDNS, kube-proxy) to the recommended versions</li>
+<li>Update <code>kubectl</code> to within one minor version of the control plane</li>
+</ul>
+<h2 id="eks-auto-mode-upgrades">EKS Auto Mode upgrades<a class="headerlink" href="#eks-auto-mode-upgrades" title="Anchor link to this section for reference">&para;</a></h2>
+<p>With EKS Auto Mode the data plane upgrade is fully automated. After you initiate the control plane upgrade (same as any other cluster), Auto Mode handles the rest:</p>
+<ul>
+<li>As nodes expire, Auto Mode replaces them with new nodes running the target Kubernetes version.</li>
+<li>Pod disruption budgets are respected during node replacement.</li>
+<li>No manual node group update or rollout is needed.</li>
+</ul>
+<h3 id="components-managed-automatically">Components managed automatically<a class="headerlink" href="#components-managed-automatically" title="Anchor link to this section for reference">&para;</a></h3>
+<p>The following components are part of the Auto Mode service and <strong>do not need manual updates</strong>:</p>
+<ul>
+<li>Amazon VPC CNI</li>
+<li>CoreDNS</li>
+<li>kube-proxy</li>
+<li>AWS Load Balancer Controller</li>
+<li>Karpenter</li>
+<li>AWS EBS CSI driver</li>
+</ul>
+<h3 id="your-responsibilities">Your responsibilities<a class="headerlink" href="#your-responsibilities" title="Anchor link to this section for reference">&para;</a></h3>
+<p>You are still responsible for updating:</p>
+<ul>
+<li>Apps and workloads deployed to the cluster</li>
+<li>Self-managed add-ons and controllers</li>
+<li>Any Amazon EKS Add-ons installed manually</li>
+</ul>
+<h3 id="reference">Reference<a class="headerlink" href="#reference" title="Anchor link to this section for reference">&para;</a></h3>
+<ul>
+<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/auto-upgrade.html">https://docs.aws.amazon.com/eks/latest/userguide/auto-upgrade.html</a></li>
+</ul>
+<h2 id="version-lifecycle">Version lifecycle<a class="headerlink" href="#version-lifecycle" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li>Standard support: <strong>14 months</strong> after release</li>
+<li>Extended support: <strong>12 months</strong> after end of standard support (additional cost)</li>
+<li>Clusters running past the 26-month lifecycle (standard + extended) are <strong>auto-upgraded</strong> by AWS</li>
+</ul>
+<h2 id="links">Links<a class="headerlink" href="#links" title="Anchor link to this section for reference">&para;</a></h2>
+<ul>
+<li>Update existing cluster to new Kubernetes version: <a href="https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html">https://docs.aws.amazon.com/eks/latest/userguide/update-cluster.html</a></li>
+<li>Prepare for Kubernetes version upgrades with cluster insights: <a href="https://docs.aws.amazon.com/eks/latest/userguide/cluster-insights.html">https://docs.aws.amazon.com/eks/latest/userguide/cluster-insights.html</a></li>
+<li>Best Practices for Cluster Upgrades: <a href="https://docs.aws.amazon.com/eks/latest/best-practices/cluster-upgrades.html">https://docs.aws.amazon.com/eks/latest/best-practices/cluster-upgrades.html</a></li>
+<li>Review release notes for Kubernetes versions on standard support: <a href="https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions-standard.html">https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions-standard.html</a></li>
+<li>Review release notes for Kubernetes versions on extended support: <a href="https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions-extended.html">https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions-extended.html</a></li>
+<li>Kubernetes changelogs: <a href="https://github.com/kubernetes/kubernetes/tree/master/CHANGELOG">https://github.com/kubernetes/kubernetes/tree/master/CHANGELOG</a></li>
+<li>Kubernetes Deprecation Guide: <a href="https://kubernetes.io/docs/reference/using-api/deprecation-guide/">https://kubernetes.io/docs/reference/using-api/deprecation-guide/</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../pod-authentication-methods/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Pod Authentication Methods for AWS API">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Pod Authentication Methods for AWS API
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../kubeadm/98-tips/" class="md-footer__link md-footer__link--next" aria-label="Next: Kubeadm tips">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Kubeadm tips
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://linkedin.com/in/jorge-p-275960300" target="_blank" rel="noopener" title="LinkedIn" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
