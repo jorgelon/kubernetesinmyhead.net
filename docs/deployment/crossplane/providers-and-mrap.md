@@ -43,6 +43,7 @@ consumption benefits:
 Provider installs  →  MRDs created (no CRDs yet)
 MRAP activates MRD →  CRD installed + controller watches it
 ```
+
 ```yaml
 apiVersion: apiextensions.crossplane.io/v1alpha1
 kind: ManagedResourceActivationPolicy
@@ -109,6 +110,20 @@ all resources of that type.
 The only reset path is a provider reinstall (uninstall + reinstall), which
 recreates all MRDs as `Inactive` — but also destroys all existing managed
 resources of those types.
+
+### Deleting MRDs
+
+The effect of deleting an MRD depends on its state:
+
+| MRD state  | Delete effect                                                          |
+|------------|------------------------------------------------------------------------|
+| `Inactive` | Safe — no CRD was installed, no cascade. Provider recreates it as `Inactive`. |
+| `Active`   | Dangerous — CRD is deleted, all managed resources of that type are garbage-collected, external resources are deleted (unless `deletionPolicy: Orphan`). |
+
+Deleting inactive MRDs is a valid complement to MRAP: configure the MRAP with
+only the needed MRDs, then delete the unused inactive ones. The provider
+reconcile loop recreates them as `Inactive`, so the cluster stays clean without
+activating unwanted CRDs.
 
 ### What MRAP does not control
 
