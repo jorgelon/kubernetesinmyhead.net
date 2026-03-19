@@ -60,6 +60,44 @@ Both upjet-based lineages use the family provider model:
 - `provider-aws-eks`, `provider-aws-iam`, `provider-aws-s3`, etc. — one package per
   AWS service; install only what you need
 
+### Auto-installation behaviour
+
+Each sub-provider declares a dependency on the **latest available version** of
+`provider-family-aws`. The Crossplane package manager resolves and installs it
+automatically when the first sub-provider is installed.
+
+The family provider version will therefore be newer than the sub-provider version.
+This version mismatch is by design and safe to ignore.
+
+### Explicit installation with version pinning
+
+To control the exact version of `provider-family-aws` (e.g. in an air-gapped
+environment or for strict reproducibility), declare it explicitly **and** set
+`skipDependencyResolution: true` on every sub-provider. Without the flag, sub-providers
+still pull the latest family provider regardless of any explicit declaration.
+
+```yaml
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-family-aws
+spec:
+  package: xpkg.crossplane.io/crossplane-contrib/provider-family-aws:v2.5.0
+---
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws-s3
+spec:
+  package: xpkg.crossplane.io/crossplane-contrib/provider-aws-s3:v2.5.0
+  skipDependencyResolution: true  # must be set on every sub-provider
+```
+
+| Situation | Approach |
+|-----------|----------|
+| Internet-connected cluster | Let auto-dependency install the family provider |
+| Air-gapped / strict version pinning | Explicit family provider + `skipDependencyResolution: true` on every sub-provider |
+
 ## Choosing a provider
 
 | Situation                                        | Recommendation                                  |
@@ -71,35 +109,8 @@ Both upjet-based lineages use the family provider model:
 
 ## Version pinning
 
-| Strategy      | Example           | Reproducible     |
-|---------------|-------------------|------------------|
-| Major channel | `:v2`             | No — mutable tag |
-| Full semver   | `:v2.5.0`         | Yes              |
-| Image digest  | `@sha256:9dca...` | Yes — immutable  |
-
-**Recommended**: pin to full semver. Discover the version a running provider
-resolves to:
-
-```bash
-kubectl get pods -n crossplane-system -o jsonpath=\
-  '{range .items[*]}{.metadata.name}{"\t"}{range .status.containerStatuses[*]}{.imageID}{"\n"}{end}{end}'
-```
-
-## Package URL reference
-
-```yaml
-# Community (free) — family provider
-xpkg.crossplane.io/crossplane-contrib/provider-family-aws:v2.5.0
-xpkg.crossplane.io/crossplane-contrib/provider-aws-eks:v2.5.0
-xpkg.crossplane.io/crossplane-contrib/provider-aws-iam:v2.5.0
-xpkg.crossplane.io/crossplane-contrib/provider-aws-s3:v2.5.0
-
-# Official (Upbound subscription required)
-xpkg.upbound.io/upbound/provider-family-aws:v2.5.0
-xpkg.upbound.io/upbound/provider-aws-eks:v2.5.0
-xpkg.upbound.io/upbound/provider-aws-iam:v2.5.0
-xpkg.upbound.io/upbound/provider-aws-s3:v2.5.0
-```
+Pin sub-providers to full semver (e.g. `:v2.5.0`). Mutable tags like `:v2` are not reproducible.
+Package URLs follow the pattern shown in [Explicit installation with version pinning](#explicit-installation-with-version-pinning).
 
 ## Governance and release cadence
 
@@ -111,20 +122,6 @@ the primary maintainer. Releases roughly every 4-6 weeks.
 | v2.5.0  | 2026-03-16 | v6.34.0                     |
 | v2.4.0  | 2026-02-09 | v6.13.0                     |
 
-## Known concerns
-
-### Terraform AWS provider version lag
-
-The provider pins an Upbound fork of the Terraform AWS provider. As of v2.5.0 that
-fork is based on **v6.34.0**, closing the significant gap from v6.13.0 in v2.4.0.
-New AWS features may still land in upstream Terraform before they reach this provider.
-
-### crossplane-runtime dependency lag
-
-As of early 2026, the `crossplane-runtime` dependency had not been updated for ~7
-months, leaving known reconciliation bugs unfixed. See
-<https://github.com/crossplane-contrib/provider-upjet-aws/issues/1973>.
-
 ## AWS feature support (as of v2.5.0)
 
 | Feature              | Terraform AWS provider   | provider-upjet-aws        |
@@ -135,11 +132,5 @@ months, leaving known reconciliation bugs unfixed. See
 ## References
 
 - <https://github.com/crossplane-contrib/provider-upjet-aws>
-- <https://github.com/crossplane-contrib/provider-upjet-aws/releases>
-- <https://github.com/orgs/crossplane-contrib/packages?repo_name=provider-upjet-aws>
 - <https://github.com/upbound/provider-aws>
-- <https://blog.upbound.io/upbound-official-packages-changes>
-- <https://blog.upbound.io/an-update-on-upbounds-official-providers>
-- <https://blog.upbound.io/donate-upjet-provider-project-to-cncf>
-- <https://blog.crossplane.io/new-providers-for-crossplane-donated-by-upbound-bring-up-to-4x-cost-savings/>
-- <https://marketplace.upbound.io>
+- <https://docs.upbound.io/manuals/packages/providers/provider-families>
