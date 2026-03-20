@@ -1,6 +1,6 @@
-# Deployment tips
+# Deployment steps
 
-These tips are based on Crossplane 2.2 and cover deploying infrastructure resources.
+These steps are based on Crossplane 2.2 and cover deploying infrastructure resources.
 
 ## Deploy crossplane
 
@@ -9,7 +9,7 @@ Crossplane has an official helm chart.
 <https://docs.crossplane.io/latest/get-started/install/>
 
 > A personal recommendation is to deploy it using GitOps and the rendered
-> manifest pattern.
+> manifest pattern in the crossplane-system namespace
 
 ## Prepare providers
 
@@ -34,6 +34,8 @@ Depending on the provider, different authentication methods are available.
 This is configured via a `ProviderConfig` resource.
 
 See more about ProviderConfig [in this document](providerconfig.md)
+
+For AWS see **AWS providers authentication with pod identity agent** [in this document](aws/eks-pod-identity-auth.md)
 
 ## Deploy providers
 

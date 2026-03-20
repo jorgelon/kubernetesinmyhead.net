@@ -1,113 +1,82 @@
-# Upbound AWS Provider Authentication with EKS Pod Identity
+# AWS Provider Authentication with EKS Pod Identity
 
-Authenticate Crossplane's Upbound AWS provider pods against AWS using EKS Pod
-Identity Agent — no static credentials required.
+This document explains how to authenticate one or more AWS Crossplane providers deployed in an EKS cluster against the same account.
 
-## Prerequisites
-
-- EKS cluster with the Pod Identity Agent addon installed
-- Crossplane installed in the cluster
-- Upbound AWS provider family packages to install
+- We assume crossplane is installed in an EKS cluster with the **Pod Identity Agent addon** and in the crossplane-system namespace
+- The role will be **crossplane-provider-aws**
+- We will use the **provider-aws service account** to authenticate
+- We will use namespace managed resources
 
 ## IAM Role
 
-Create an IAM role (e.g. `crossplane-provider-aws`) with the following trust policy:
+Create a role for crossplane called **crossplane-provider-aws**, for example.
 
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "AllowEksAuthToAssumeRoleForPodIdentity",
-            "Effect": "Allow",
-            "Principal": {
-                "Service": "pods.eks.amazonaws.com"
-            },
-            "Action": [
-                "sts:AssumeRole",
-                "sts:TagSession"
-            ]
-        }
-    ]
-}
+- With the [following trust policy](policies/pia-trust-relationships.json)
+- With the desired policies depending of what permissions we want to give to crossplane
+
+Some examples you can adapt and review
+
+| Policy name                                            | What manages                           |
+|--------------------------------------------------------|----------------------------------------|
+| [crossplane-eks](policies/crossplane-eks.json)         | Pod Identity Associations              |
+| [crossplane-iam](policies/crossplane-iam.json)         | Iam policies, roles and attachments    |
+| [crossplane-ec2](policies/crossplane-ec2.json)         | Security Groups and rules              |
+| [crossplane-route53](policies/crossplane-route53.json) | Route53 Zones                          |
+| [crossplane-efs](policies/crossplane-efs.json)         | Filesystems, Targets and Access Points |
+| [crossplane-s3](policies/crossplane-s3.json)           | S3 Buckets                             |
+
+## Add the Pod identity agent
+
+Go to the eks cluster -  Access Tab - Pod Identity associations section and add a pod identity association
+
+```txt
+IAM role: crossplane-provider-aws
+Kubernetes namespace: crossplane-system
+Kubernetes service account: the service account specified in the DeploymentRuntimeConfig
 ```
-
-Attach a permission policy scoped to the AWS actions your provider family packages
-require. Example for S3 and EC2:
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:*",
-                "ec2:*"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-```
-
-> Scope permissions to only the actions and resources your providers actually manage.
-
-## EKS Pod Identity Association
-
-In the EKS cluster's **Access** tab, create a Pod Identity association:
-
-- **IAM role**: `crossplane-provider-aws`
-- **Namespace**: `crossplane-system`
-- **Service account**: `provider-aws` (must match `serviceAccountTemplate.metadata.name`
-  below)
 
 ## Crossplane Configuration
 
-Apply the following three resources:
+The following **ProviderConfig** in the crossplane-system declares pod identity authentication
 
 ```yaml
-apiVersion: pkg.crossplane.io/v1beta1
-kind: DeploymentRuntimeConfig
-metadata:
-  name: provider-aws-runtime-config
-spec:
-  serviceAccountTemplate:
-    metadata:
-      name: provider-aws
----
-apiVersion: pkg.crossplane.io/v1
-kind: Provider
-metadata:
-  name: provider-aws-s3
-spec:
-  package: xpkg.upbound.io/upbound/provider-aws-s3:v2.4.0
-  runtimeConfigRef:
-    name: provider-aws-runtime-config
----
-apiVersion: aws.upbound.io/v1beta1
+apiVersion: aws.m.upbound.io/v1beta1
 kind: ProviderConfig
 metadata:
-  name: default
+  name: podidentity
+  namespace: crossplane-system
 spec:
   credentials:
     source: PodIdentity
 ```
 
-> For multiple provider family packages (e.g. `provider-aws-ec2`, `provider-aws-rds`),
-> each `Provider` resource must reference the same `runtimeConfigRef`.
+Lets create a DeploymentRuntimeConfig that will use the provider-aws service account to authenticate. It must include
 
-## Verification
+```yaml
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+  name: provider-aws
+  namespace: crossplane-system
+spec:
+  serviceAccountTemplate:
+    metadata:
+      name: provider-aws
+```
 
-Check provider health with `kubectl get providers && kubectl get providerconfig`.
-Verify end-to-end by creating a managed resource and confirming it reconciles
-in AWS — no static credentials should be present in the cluster.
+Finally ensure your AWS crossplane providers include that DeploymentRuntimeConfig. For example:
 
-## Managed Resources in Other Namespaces
-
-In Crossplane v2, managed resources and `ProviderConfig` are **namespace-scoped**
-(they were cluster-scoped in v1.x). For the full v1-to-v2 migration context, see
-[Upgrading Crossplane from v1 to v2](../upgrading-to-v2.md).
+```yaml
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: upbound-provider-aws-ec2
+  namespace: crossplane-system
+spec:
+  package: xpkg.crossplane.io/crossplane-contrib/provider-aws-ec2:v2.5.0
+  runtimeConfigRef:
+    name: provider-aws
+```
 
 ### How Authentication Works
 
@@ -132,14 +101,15 @@ required — the actual credential exchange still happens entirely within the pr
 pod in `crossplane-system`:
 
 ```yaml
-apiVersion: aws.upbound.io/v1beta1
-kind: ProviderConfig
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
 metadata:
-  name: default
-  namespace: my-namespace
+  name: provider-aws
+  namespace: mynamespace
 spec:
-  credentials:
-    source: PodIdentity
+  serviceAccountTemplate:
+    metadata:
+      name: provider-aws
 ```
 
 ## References
