@@ -46,3 +46,31 @@ spec:
 - Apply the new cluster
 
 Finally apply the new cluster definition
+
+## Recover from backup using plugin
+
+To create a new cluster from a backup resource created via barman plugin:
+
+- define an external cluster as plugin
+- define a bootstrap for it
+- change the servername in the plugin section to a newone. The destination bucket needs to be empty
+
+```yaml
+...
+spec:
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: mystore
+        serverName: NEW-ONE
+  bootstrap:
+    recovery:
+      source: recovery
+    backup: NAME_OF_BACKUP
+  externalClusters:
+    - name: recovery
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        ...
+```
