@@ -4,16 +4,16 @@
         {
             "Effect": "Allow",
             "Action": [
-                "iam:GetRole",
-                "iam:ListInstanceProfilesForRole",
-                "iam:PassRole",
-                "iam:DetachRolePolicy",
-                "iam:ListAttachedRolePolicies",
-                "iam:TagRole",
+                "iam:AttachRolePolicy",
                 "iam:CreateRole",
                 "iam:DeleteRole",
-                "iam:AttachRolePolicy",
-                "iam:ListRolePolicies"
+                "iam:DetachRolePolicy",
+                "iam:GetRole",
+                "iam:ListAttachedRolePolicies",
+                "iam:ListInstanceProfilesForRole",
+                "iam:ListRolePolicies",
+                "iam:PassRole",
+                "iam:TagRole"
             ],
             "Resource": [
                 "arn:aws:iam::ACCOUNT_ID:role/cert-manager",
@@ -24,12 +24,13 @@
             "Effect": "Allow",
             "Action": [
                 "iam:CreatePolicy",
-                "iam:GetPolicyVersion",
-                "iam:GetPolicy",
-                "iam:ListPolicyVersions",
+                "iam:CreatePolicyVersion",
                 "iam:DeletePolicy",
-                "iam:TagPolicy",
-                "iam:CreatePolicyVersion"
+                "iam:DeletePolicyVersion",
+                "iam:GetPolicy",
+                "iam:GetPolicyVersion",
+                "iam:ListPolicyVersions",
+                "iam:TagPolicy"
             ],
             "Resource": "arn:aws:iam::ACCOUNT_ID:policy/*"
         }
