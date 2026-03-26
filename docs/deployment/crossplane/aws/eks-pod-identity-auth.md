@@ -16,14 +16,15 @@ Create a role for crossplane called **crossplane-provider-aws**, for example.
 
 Some examples you can adapt and review
 
-| Policy name                                            | What manages                           |
-|--------------------------------------------------------|----------------------------------------|
-| [crossplane-eks](policies/crossplane-eks.json)         | Pod Identity Associations              |
-| [crossplane-iam](policies/crossplane-iam.json)         | Iam policies, roles and attachments    |
-| [crossplane-ec2](policies/crossplane-ec2.json)         | Security Groups and rules              |
-| [crossplane-route53](policies/crossplane-route53.json) | Route53 Zones                          |
-| [crossplane-efs](policies/crossplane-efs.json)         | Filesystems, Targets and Access Points |
-| [crossplane-s3](policies/crossplane-s3.json)           | S3 Buckets                             |
+| Policy name                                                          | What manages                           |
+|----------------------------------------------------------------------|----------------------------------------|
+| [crossplane-eks](policies/crossplane-eks.json)                       | Pod Identity Associations              |
+| [crossplane-iam](policies/crossplane-iam.json)                       | Iam policies, roles and attachments    |
+| [crossplane-ec2](policies/crossplane-ec2.json)                       | Security Groups and rules              |
+| [crossplane-route53](policies/crossplane-route53.json)               | Route53 Zones                          |
+| [crossplane-efs](policies/crossplane-efs.json)                       | Filesystems, Targets and Access Points |
+| [crossplane-s3](policies/crossplane-s3.json)                         | S3 Buckets                             |
+| [crossplane-secretsmanager](policies/crossplane-secretsmanager.json) | Secrets Manager secrets                |
 
 ## Add the Pod identity agent
 
