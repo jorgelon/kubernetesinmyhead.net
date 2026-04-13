@@ -6,7 +6,12 @@ Each tool use returns information that feeds back into the agentic loop, informi
 
 ## The agentic loop
 
-When you give Claude a task, it works through three phases: **gather context**, **take action**, and **verify results**. Claude uses tools throughout all phases, chaining dozens of actions together and course-correcting along the way.
+When you give Claude a task, it works through three phases: **gather context**, **take action**, and **verify results**. Claude uses tools throughout all phases, chaining dozens of actions together and course-correcting along the way. For example, when asked to "fix the failing tests":
+
+1. **Bash** — Run the test suite to see failures
+2. **Read** — Read the error output and relevant source files
+3. **Edit** — Fix the code
+4. **Bash** — Run tests again to verify
 
 You can interrupt at any point to steer Claude in a different direction.
 
@@ -54,10 +59,10 @@ You can interrupt at any point to steer Claude in a different direction.
 
 The built-in tools are the foundation. Claude Code can be extended with additional tools through:
 
-- **MCP servers**: Connect external services (databases, APIs, custom tools) via the Model Context Protocol. See [MCP servers](08-mcp-servers.md)
-- **Skills**: Domain-specific workflows that orchestrate tool usage. See [Agent skills](05-agent-skills.md)
-- **Subagents**: Delegated workers with their own tool access and context. See [Subagents](04-subagents.md)
-- **Hooks**: Shell commands that run automatically on tool events. See [Hooks](06-hooks.md)
+- **MCP servers**: Connect external services (databases, APIs, custom tools) via the Model Context Protocol. See [MCP servers](03-mcp-servers.md)
+- **Skills**: Domain-specific workflows that orchestrate tool usage. See [Skills](../persistence/05-skills.md)
+- **Subagents**: Delegated workers with their own tool access and context. See [Agents](../persistence/04-agents.md)
+- **Hooks**: Shell commands that run automatically on tool events. See [Hooks](../persistence/02-hooks.md)
 
 ## Permissions
 
@@ -75,39 +80,28 @@ Cycle through modes with `Shift+Tab`:
 
 ```json
 {
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
-    "allow": [
-      "Bash(kubectl get:*)",
-      "Bash(npm run *)",
-      "Read"
-    ],
-    "deny": [
-      "Bash(kubectl delete:*)",
-      "Read(./.env)"
-    ]
-  }
+    "allow": ["Bash(npm run lint)", "Read(~/.zshrc)"],
+    "deny": ["Bash(curl *)", "Read(./.env)"],
+    "ask": ["Bash(git push *)"],
+    "additionalDirectories": ["../docs/"],
+    "defaultMode": "acceptEdits"
+  },
+  "env": { "MY_VAR": "value" },
+  "hooks": {},
+  "cleanupPeriodDays": 30,
+  "language": "english"
 }
 ```
 
-Rules support glob patterns for command arguments. Deny rules take precedence over allow rules.
+Evaluation order: `deny` → `ask` → `allow` (first match wins). Rules support glob patterns for command arguments.
 
-## How Claude chooses tools
-
-Claude selects tools based on the prompt and what it learns at each step. For example, when asked to "fix the failing tests", Claude might:
-
-1. **Bash** - Run the test suite to see failures
-2. **Read** - Read the error output and relevant source files
-3. **Edit** - Fix the code
-4. **Bash** - Run tests again to verify
-
-Each tool use returns information that informs the next step. This is the agentic loop in action.
+Claude Code automatically creates timestamped backups of config files, retaining the 5 most recent.
 
 ## Links
 
-- How Claude Code works
-
-<https://code.claude.com/docs/en/how-claude-code-works>
-
-- Settings and permissions
-
-<https://code.claude.com/docs/en/settings>
+- [Hooks](../persistence/02-hooks.md) — shell scripts that intercept tool lifecycle events
+- [Agents](../persistence/04-agents.md) — subagents get their own isolated tool access and context
+- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works)
+- [Settings and permissions](https://code.claude.com/docs/en/settings)

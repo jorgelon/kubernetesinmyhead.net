@@ -11,6 +11,7 @@ Claude Code supports model selection via aliases or full model names.
 | `opus`       | Latest Opus (currently 4.6) for complex reasoning    |
 | `haiku`      | Fast and efficient for simple tasks                  |
 | `sonnet[1m]` | Sonnet with 1M token context window                  |
+| `opus[1m]`   | Opus with 1M token context window                    |
 | `opusplan`   | Opus during plan mode, Sonnet for execution          |
 
 Aliases always point to the latest version. To pin to a specific version, use the full model name (e.g., `claude-opus-4-6`).
@@ -51,10 +52,11 @@ Use the `[1m]` suffix for long sessions:
 
 ```bash
 /model sonnet[1m]
+/model opus[1m]
 /model claude-sonnet-4-6[1m]
 ```
 
-> Opus 4.6 1M context is only for API and pay-as-you-go users. Not available for Pro/Max/Teams/Enterprise subscribers.
+> Opus 1M context is included automatically on Max, Team, and Enterprise plans. API/pay-as-you-go users can access it with extra usage billing.
 
 ## Environment Variables
 

@@ -1,66 +1,53 @@
-# Context and memory
+# Context Window
 
-Giving a good context to claude code is one of the most important things to accomplish
+The context window holds all active information for the current session:
 
-We can give context to claude using different ways.
+- Conversation history and tool outputs
+- File contents read during the session
+- CLAUDE.md and auto memory content
+- Loaded skills and system instructions
 
-## Context via CLAUDE.md
+As work progresses the context window fills up. When approaching the limit, Claude **automatically compacts**: it clears older tool outputs first, then summarizes the conversation. Key code snippets are preserved; detailed instructions from early in the conversation may be lost.
 
-When you run Claude in a directory Claude uses that directory as the current working context. It can access files within that directory (and subdirectories) and it looks for any CLAUDE.md files to gain additional context, but these are optional.
+To manage this:
 
-That files are pulled when starting a conversation and they can include any relevant information we can give to claude code:
+- Place persistent rules in CLAUDE.md — they survive compaction (re-read from disk)
+- Use `/context` to see what is consuming space
+- Run `/compact focus on the API changes` for targeted manual compaction
+- Add custom compaction instructions in CLAUDE.md:
 
-- What is our project about, including environments, releases
-- How we want organize the code, branches,...
-- What utilities and commands we use
-- What we want to test
-- Code style guidelines
-- Testing instructions
-- and so on
+```markdown
+# Compact instructions
 
-### Locations
+When you are using compact, please focus on test output and code changes
+```
 
-When we launch claude code in a directory, it search CLAUDE.md files in some locations:
+**MCP tools** are deferred by default — only tool names consume context until Claude uses a specific tool. Run `/mcp` to check per-server costs.
 
-- Project memory (./CLAUDE.md)
+**Skills** load on demand: Claude sees skill descriptions at session start, but full content only loads when a skill is invoked.
 
-In the directory where claude was launched
+**Subagents** get their own fresh context window, completely separate from your main session. Their work does not bloat your context — only a summary is returned.
 
-- User memory (~/.claude/CLAUDE.md)
+## Model and Context Window Size
 
-We can include here some personal preferences
+The model determines the maximum context window available:
 
-- Parent (git)
+- **Standard (~200K tokens)**: all models (Opus 4.6, Sonnet 4.6, Haiku)
+- **Extended (1M tokens)**: Opus 4.6 and Sonnet 4.6 only, via `[1m]` suffix:
 
-If the directory is part of a git repository, in parent directories up to the root of the repo
+```bash
+/model opus[1m]
+/model sonnet[1m]
+```
 
-- Subdirectories
+On Max, Team, and Enterprise plans, Opus is automatically upgraded to 1M with no extra configuration. On other plans, extra usage applies. `opusplan` uses Sonnet's window during execution — use `opus[1m]` explicitly for 1M throughout. Disable extended context with `CLAUDE_CODE_DISABLE_1M_CONTEXT=1`.
 
-If there are CLAUDE.md files in subdirectories, they are only included when Claude reads files in those subtrees, not at claude launch
+## Other Ways to Add Context Within a Session
 
-> Using CLAUDE.local.md files is deprecated. Use imports instead
-
-## Tips
-
-The /init command reads the current and create a CLAUDE.md file
-The /memory command permits to edit the user and current directory CLAUDE.md files
-
-## Other ways to add context
-
-- The # key adds context to memory and it will incorporated to the CLAUDE.md file
-
-- The current selection/tab in the IDE is automatically shared with Claude Code context
-
-- Diagnostic sharing
-
-Diagnostic errors (lint, syntax, etc.) from the IDE are automatically shared with Claude as you work
+- The current selection or open tab in the IDE is automatically shared with Claude Code
+- Diagnostic errors (lint, syntax, etc.) from the IDE are automatically shared as you work
 
 ## Links
 
-- Manage Claude's memory
-
-<https://docs.anthropic.com/en/docs/claude-code/memory>
-
-- Outdated (warning)
-
-<https://www.anthropic.com/engineering/claude-code-best-practices>
+- [Explore the context window](https://code.claude.com/docs/en/context-window)
+- [How Claude Code works](https://code.claude.com/docs/en/how-claude-code-works)

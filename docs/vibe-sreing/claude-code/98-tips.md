@@ -53,3 +53,7 @@ Choose a conversation to resume
 claude -r conversationid
 claude --resume  conversationid
 ```
+
+## Make a quick question
+
+While claude code is working, it is possible to add a quick question using /btw command

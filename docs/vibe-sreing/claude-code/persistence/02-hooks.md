@@ -22,3 +22,7 @@ Hooks are automated scripts that intercept and modify various stages of Claude's
 - Users are solely responsible for configured commands
 - Hooks run in parallel
 - Environment variables like `CLAUDE_PROJECT_DIR` are available
+
+## Links
+
+- [Tools](../concepts/04-tools.md) — hooks fire on tool lifecycle events (PreToolUse, PostToolUse)
