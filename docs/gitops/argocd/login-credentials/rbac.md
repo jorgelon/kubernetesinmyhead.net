@@ -6,6 +6,12 @@ RBAC controls what type of access a user has inside ArgoCD.
 - There is a default builtin local user: `admin`
 - RBAC configuration can be done globally via the `argocd-rbac-cm` ConfigMap or at AppProject level
 
+## Casbin Foundation
+
+ArgoCD RBAC is built on [Casbin](https://casbin.org/), a policy engine using a CSV-like syntax with two line types:
+- **`p`** (policy) — a **permission rule**: who (`role/user/group`) can perform which `action` on which `resource`/`object`, and whether `allow` or `deny`
+- **`g`** (group) — a **role assignment**: maps a user or group to a role, enabling role inheritance
+
 ## Default Builtin Roles
 
 There are 2 default builtin roles (see [builtin-policy.csv](https://github.com/argoproj/argo-cd/blob/master/assets/builtin-policy.csv)):
@@ -91,19 +97,8 @@ p, role:dev, exec, create, my-project/my-app, allow
 
 ### Other Resources
 
-```txt
-p, <role/user/group>, <resource>, <action>, <object>, <effect>
-```
-
-| Resource       | get | create | update | delete |
-|----------------|-----|--------|--------|--------|
-| `clusters`     | ✓   | ✓      | ✓      | ✓      |
-| `projects`     | ✓   | ✓      | ✓      | ✓      |
-| `repositories` | ✓   | ✓      | ✓      | ✓      |
-| `certificates` | ✓   | ✓      | ✓      | ✓      |
-| `accounts`     | ✓   | ✓      | ✓      | ✓      |
-| `gpgkeys`      | ✓   | ✓      | ✓      | ✓      |
-| `extensions`   | ✓   | ✓      | ✓      | ✓      |
+All support `get`, `create`, `update`, and `delete` actions:
+`clusters`, `projects`, `repositories`, `certificates`, `accounts`, `gpgkeys`, `extensions`
 
 ```txt
 p, role:dev, repositories, get, *, allow
