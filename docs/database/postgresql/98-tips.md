@@ -6,13 +6,6 @@
 SELECT datname FROM pg_database WHERE datistemplate = false;
 ```
 
-## List roles
-
-```postgresql
-SELECT rolname FROM pg_roles;
-SELECT * FROM pg_roles;
-```
-
 ## List roles and attributes
 
 ```postgresql
@@ -38,13 +31,6 @@ pg_catalog.pg_get_userbyid(d.datdba) as "Owner"
 FROM pg_catalog.pg_database d
 WHERE d.datname = 'tmb'
 ORDER BY 1;
-```
-
-## Create role with password and DDBB with owner
-
-```postgresql
-CREATE ROLE owner WITH LOGIN PASSWORD 'whatever';
-CREATE DATABASE database WITH OWNER = 'owner';
 ```
 
 ## Delete rol/user
