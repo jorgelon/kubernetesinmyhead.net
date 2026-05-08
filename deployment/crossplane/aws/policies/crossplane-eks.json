@@ -1,0 +1,18 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "eks:DescribePodIdentityAssociation",
+                "eks:CreatePodIdentityAssociation",
+                "eks:DeletePodIdentityAssociation",
+                "eks:TagResource"
+            ],
+            "Resource": [
+                "arn:aws:eks:*:ACCOUNT_ID:podidentityassociation/*/*",
+                "arn:aws:eks:*:ACCOUNT_ID:cluster/*"
+            ]
+        }
+    ]
+}
