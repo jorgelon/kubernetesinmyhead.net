@@ -23,16 +23,6 @@ WHERE r.rolname !~ '^pg_'
 ORDER BY 1;
 ```
 
-## Get the database owner
-
-```postgresql
-SELECT d.datname as "Name",
-pg_catalog.pg_get_userbyid(d.datdba) as "Owner"
-FROM pg_catalog.pg_database d
-WHERE d.datname = 'tmb'
-ORDER BY 1;
-```
-
 ## Delete rol/user
 
 ```postgresql
