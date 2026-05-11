@@ -17,6 +17,11 @@ extra:
     - icon: fontawesome/brands/linkedin
       link: https://linkedin.com/in/jorge-p-275960300
       name: LinkedIn
+plugins:
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: date
 markdown_extensions:
   - toc:
       permalink: true

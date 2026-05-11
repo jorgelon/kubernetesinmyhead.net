@@ -1,15 +1,17 @@
-name: ci 
+name: ci
 on:
   push:
     branches:
       - main
 permissions:
-  contents: write
+  contents: write # required to push the built site to the gh-pages branch
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history needed by mkdocs-git-revision-date-localized to read commit dates
       - name: Configure Git Credentials
         run: |
           git config user.name github-actions[bot]
@@ -17,12 +19,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
-      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV 
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV # use ISO week number as cache key so it refreshes weekly
       - uses: actions/cache@v4
         with:
           key: mkdocs-material-${{ env.cache_id }}
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - run: pip install mkdocs-material 
-      - run: mkdocs gh-deploy --force
+      - run: pip install mkdocs-material mkdocs-git-revision-date-localized # mkdocs-git-revision-date-localized adds page generation date
+      - run: mkdocs gh-deploy --force # build and push to gh-pages branch
