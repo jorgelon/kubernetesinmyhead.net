@@ -6,17 +6,17 @@ Solutions for securely sharing sensitive information via one-time or time-limite
 
 ## Comparison Table
 
-| Tool                              |  Stars | Contributors | Kubernetes Support        | CNCF |
-|-----------------------------------|-------:|-------------:|---------------------------|------|
-| [PrivateBin](#privatebin)         |  8,224 |          173 | Official Helm chart       | No   |
-| [PasswordPusher](#passwordpusher) |  2,980 |           62 | Official Helm + manifests | No   |
-| [OneTimeSecret](#onetimesecret)   |  2,767 |           19 | Official Helm chart (OCI) | No   |
-| [Yopass](#yopass)                 |  2,736 |           79 | Official K8s manifest     | No   |
-| [Snappass](#snappass)             |    896 |           43 | Community Helm only       | No   |
-| [OTS (Luzifer)](#ots-luzifer)     |    752 |           27 | Community Helm only       | No   |
-| [Vaultwarden](#vaultwarden)       | 58,772 |          183 | Community Helm only       | No   |
-| [Shhh](#shhh)                     |    414 |            6 | None                      | No   |
-| [Infisical](#infisical) ¹         | 26,200 |          228 | Official Helm chart       | No   |
+| Tool                              |  Stars | Contributors | Type                  | Kubernetes Support        |
+|-----------------------------------|-------:|-------------:|-----------------------|---------------------------|
+| [PrivateBin](#privatebin)         |  8,224 |          173 | Secret sharing        | Official Helm chart       |
+| [PasswordPusher](#passwordpusher) |  2,980 |           62 | Secret sharing        | Official Helm + manifests |
+| [OneTimeSecret](#onetimesecret)   |  2,767 |           19 | Secret sharing        | Official Helm chart (OCI) |
+| [Yopass](#yopass)                 |  2,736 |           79 | Secret sharing        | Official K8s manifest     |
+| [Snappass](#snappass)             |    896 |           43 | Secret sharing        | Community Helm only       |
+| [OTS (Luzifer)](#ots-luzifer)     |    752 |           27 | Secret sharing        | Community Helm only       |
+| [Vaultwarden](#vaultwarden)       | 58,772 |          183 | Password vault        | Community Helm only       |
+| [Shhh](#shhh)                     |    414 |            6 | Secret sharing        | None                      |
+| [Infisical](#infisical) ¹         | 26,200 |          228 | Secrets manager       | Official Helm chart       |
 
 > ¹ Infisical is a full secrets manager. Secret sharing is one of its features, not its primary purpose.
 
