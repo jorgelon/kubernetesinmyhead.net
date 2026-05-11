@@ -1,25 +1,9 @@
 repos:
-  - repo: local
+  - repo: https://github.com/betterleaks/betterleaks
+    rev: v1.1.2
+    hooks:
+      - id: betterleaks-docker
+  - repo: https://github.com/trufflesecurity/trufflehog
+    rev: v3.94.3
     hooks:
       - id: trufflehog
-        name: TruffleHog
-        description: Detect secrets in your data.
-        entry: bash -c 'git diff --staged | trufflehog stdin --results=verified,unknown --fail'
-        language: system
-        stages: ["pre-commit"]
-      # - id: talisman
-      #   name: Talisman
-      #   description: Detect secrets in your data.
-      #   entry: bash -c 'talisman --githook pre-commit'
-      #   language: system
-      #   stages: ["pre-commit"]
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.28.0
-    hooks:
-      - id: gitleaks-docker
-  # - repo: https://github.com/thoughtworks/talisman
-  #   rev: "v1.32.2" # Update me!
-  #   hooks:
-  #     # both pre-commit and pre-push supported
-  #     # -   id: talisman-push
-  #     - id: talisman-commit
