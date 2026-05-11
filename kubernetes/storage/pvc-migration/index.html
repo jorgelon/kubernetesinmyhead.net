@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://kubernetesinmyhead.net/kubernetes/autoescaling-finops/cloud-cost-solutions/">
+        <link rel="canonical" href="https://kubernetesinmyhead.net/kubernetes/storage/pvc-migration/">
       
       
-        <link rel="prev" href="../autoescaling-nodes/">
+        <link rel="prev" href="../node-disk-protection/">
       
       
-        <link rel="next" href="../horizontal-pod-autoescaler/">
+        <link rel="next" href="../../tuning/cpu-requests-limits/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Cloud Cost Solutions - Kubernetes in my head</title>
+        <title>PVC cross-cluster migration - Kubernetes in my head</title>
       
     
     
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cloud-cost-solutions" class="md-skip">
+        <a href="#pvc-cross-cluster-migration" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Cloud Cost Solutions
+              PVC cross-cluster migration
             
           </span>
         </div>
@@ -722,8 +722,6 @@
                 
   
   
-    
-  
   
   
     
@@ -732,16 +730,18 @@
     
     
       
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_7" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_7_7" id="__nav_7_7_label" tabindex="0">
-            
+  
+  
+  
+    <a href="../../autoescaling-finops/autoescaling-nodes/" class="md-nav__link">
+      
   
   
   <span class="md-ellipsis">
@@ -755,442 +755,12 @@
   
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_7_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Autoescaling finops
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../autoescaling-nodes/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Autoescaling nodes
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cloud Cost Solutions
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Cloud Cost Solutions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="Index">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Index
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#opencost" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OpenCost
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="OpenCost">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#opencost-references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OpenCost References
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#kubecost" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Kubecost
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Kubecost">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kubecost-references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Kubecost References
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#grafana-cloud-cost-exporter" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Grafana Cloud Cost Exporter
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Grafana Cloud Cost Exporter">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#grafana-cloud-cost-exporter-references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Grafana Cloud Cost Exporter References
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../horizontal-pod-autoescaler/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Horizontal pod autoescaler
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../scale-to-0/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Scale to 0
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../vertical-pod-autoescaling/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Vertical por autoescaling
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    <a href="../karpenter/10-disruption/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Karpenter
-  
-
-    
-  </span>
-  
-  
-
       
         <span class="md-nav__icon md-icon"></span>
       
     </a>
   
 
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    <a href="../keda/98-tips/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Keda
-  
-
-    
-  </span>
-  
-  
-
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
-  
-
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    <a href="../opencost/aws-billing/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Opencost
-  
-
-    
-  </span>
-  
-  
-
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
-  
-
-      
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
       
     </li>
   
@@ -1305,26 +875,26 @@
                 
   
   
+    
   
   
+  
     
     
     
     
     
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_10" checked>
         
-  
-  
-  
-    <a href="../../storage/99-links/" class="md-nav__link">
-      
+          
+          <label class="md-nav__link" for="__nav_7_10" id="__nav_7_10_label" tabindex="0">
+            
   
   
   <span class="md-ellipsis">
@@ -1338,12 +908,349 @@
   
   
 
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage
   
 
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../99-links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Errors
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../increate-size-in-pvc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Increase the pvc size in a statefulset
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../node-disk-protection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Node disk protection
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PVC cross-cluster migration
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PVC cross-cluster migration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tools">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pv-migrate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        pv-migrate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rclone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rclone
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#velero" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Velero
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kopia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kopia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kasten-k10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kasten K10
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#triliovault" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TrilioVault
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stash-by-appscode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stash by AppsCode
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparison-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison table
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -2090,22 +1997,110 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#opencost" class="md-nav__link">
+  <a href="#prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OpenCost
+        Prerequisites
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="OpenCost">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tools
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tools">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#opencost-references" class="md-nav__link">
+  <a href="#pv-migrate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OpenCost References
+        pv-migrate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rclone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rclone
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#velero" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Velero
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restic
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kopia" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kopia
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kasten-k10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kasten K10
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#triliovault" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TrilioVault
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stash-by-appscode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stash by AppsCode
       
     </span>
   </a>
@@ -2118,58 +2113,24 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#kubecost" class="md-nav__link">
+  <a href="#comparison-table" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Kubecost
+        Comparison table
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Kubecost">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#kubecost-references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Kubecost References
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#grafana-cloud-cost-exporter" class="md-nav__link">
+  <a href="#links" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Grafana Cloud Cost Exporter
+        Links
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Grafana Cloud Cost Exporter">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#grafana-cloud-cost-exporter-references" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Grafana Cloud Cost Exporter References
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -2234,10 +2195,10 @@
     
     
       <li class="md-path__item">
-        <a href="../autoescaling-nodes/" class="md-path__link">
+        <a href="../99-links/" class="md-path__link">
           
   <span class="md-ellipsis">
-    Autoescaling finops
+    Storage
   </span>
 
         </a>
@@ -2256,55 +2217,160 @@
 
 
 
-<h1 id="cloud-cost-solutions">Cloud Cost Solutions<a class="headerlink" href="#cloud-cost-solutions" title="Anchor link to this section for reference">&para;</a></h1>
-<p>Open-source solutions for monitoring and analyzing cloud costs in Kubernetes environments.</p>
-<h2 id="opencost">OpenCost<a class="headerlink" href="#opencost" title="Anchor link to this section for reference">&para;</a></h2>
-<p><a href="https://www.opencost.io/">OpenCost</a> is a vendor-neutral open-source project for measuring and allocating infrastructure and container costs in real-time. It's a CNCF Incubating project that provides cost visibility for Kubernetes workloads.</p>
+<h1 id="pvc-cross-cluster-migration">PVC cross-cluster migration<a class="headerlink" href="#pvc-cross-cluster-migration" title="Anchor link to this section for reference">&para;</a></h1>
+<p>When two Kubernetes clusters have no direct network connectivity between them,
+migrating PVC data requires an intermediate storage layer reachable from both
+sides. The typical approach is to use an S3-compatible object store as a relay:
+the source cluster writes data to the bucket, and the destination cluster reads
+from it independently.</p>
+<p>This page describes the available tools for this pattern. The choice of cloud
+provider does not matter — all tools listed here are cloud-agnostic as long as
+an S3-compatible endpoint is accessible from both clusters.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Anchor link to this section for reference">&para;</a></h2>
 <ul>
-<li><strong>GitHub Stars</strong>: 6.1k</li>
-<li><strong>Contributors</strong>: 140</li>
-<li><strong>Company Behind</strong>: Originally developed by Kubecost (Stackwatch Inc.), now owned by IBM (since September 2024)</li>
-<li><strong>CNCF Status</strong>: Incubating (accepted as Sandbox in June 2022, promoted to Incubating in October 2024)</li>
-<li><strong>CNCF Member</strong>: IBM is a founding member of CNCF (2015)</li>
-<li><strong>Contributing Organizations</strong>: Kubecost, RedHat, AWS, Adobe, SUSE, Armory, Google Cloud, Pixie, Mindcurv, D2IQ, New Relic</li>
+<li>Access to both clusters via <code>kubectl</code></li>
+<li>An S3-compatible bucket reachable from both clusters over the internet</li>
+<li>Credentials with read/write access to the bucket available in both clusters</li>
+<li>The destination cluster must have a compatible StorageClass</li>
+<li>The workload using the source PVC should be scaled down before migration to
+  ensure data consistency</li>
 </ul>
-<h3 id="opencost-references">OpenCost References<a class="headerlink" href="#opencost-references" title="Anchor link to this section for reference">&para;</a></h3>
+<h2 id="tools">Tools<a class="headerlink" href="#tools" title="Anchor link to this section for reference">&para;</a></h2>
+<h3 id="pv-migrate"><a href="https://github.com/utkuozdemir/pv-migrate">pv-migrate</a><a class="headerlink" href="#pv-migrate" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Open-source CLI tool purpose-built for PVC migration between Kubernetes clusters.
+It supports a dedicated backup/restore mode that uses rclone internally to push
+PVC data to an S3-compatible bucket, Azure Blob Storage, or GCS. The backup and
+restore operations are independent, making it well-suited for air-gapped or
+isolated cluster scenarios. It does not require any in-cluster components beyond
+the Jobs it spawns during the operation.</p>
+<h3 id="rclone"><a href="https://rclone.org/">rclone</a><a class="headerlink" href="#rclone" title="Anchor link to this section for reference">&para;</a></h3>
+<p>General-purpose cloud sync tool that supports over 70 storage providers
+including S3, GCS, Azure Blob, and many others. It can be run inside a
+Kubernetes Job by mounting the source or destination PVC and syncing its
+contents to or from the remote bucket. Since it is not Kubernetes-native, it
+requires manual Job authoring, but it gives full control over the transfer
+without additional platform dependencies.</p>
+<h3 id="velero"><a href="https://velero.io/docs/">Velero</a><a class="headerlink" href="#velero" title="Anchor link to this section for reference">&para;</a></h3>
+<p>The de-facto standard for Kubernetes backup and disaster recovery. Velero
+supports cross-cluster migration by using a shared S3 bucket as the source of
+truth: a backup is taken on the source cluster and a restore is triggered on the
+destination cluster. It handles both Kubernetes resource manifests and PVC data
+(via Restic or Kopia for file-level backups, or via CSI snapshots). It requires
+installation on both clusters and is better suited when full namespace or cluster
+migration is needed alongside the volume data.</p>
+<h3 id="restic"><a href="https://restic.net/">Restic</a><a class="headerlink" href="#restic" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Standalone backup tool that can be run inside a Kubernetes pod. It encrypts and
+deduplicates data before sending it to a remote backend including S3, GCS, Azure,
+and SFTP. It gives fine-grained control over backup scheduling via CronJobs and
+is lightweight compared to full platforms like Velero. Velero can optionally use
+Restic as its data movement layer, though it has been deprecated in favour of
+Kopia since Velero v1.15.</p>
+<h3 id="kopia"><a href="https://kopia.io/">Kopia</a><a class="headerlink" href="#kopia" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Modern alternative to Restic with significantly higher throughput due to parallel
+upload streams. It supports block-level deduplication and compression, and
+handles large volumes more efficiently. Velero adopted Kopia as its recommended
+data mover replacing Restic since v1.10. It can also be used standalone inside a
+pod in the same pattern as Restic.</p>
+<h3 id="kasten-k10"><a href="https://www.kasten.io/">Kasten K10</a><a class="headerlink" href="#kasten-k10" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Enterprise-grade Kubernetes data management platform by Veeam. It provides a web
+UI, policy-based backup scheduling, application-consistent snapshots, and
+cross-cluster restore workflows. It supports S3-compatible storage as a backup
+target and is capable of restoring into a different cluster regardless of cloud
+provider. A free community tier is available for clusters up to five nodes.</p>
+<h3 id="triliovault"><a href="https://trilio.io/">TrilioVault</a><a class="headerlink" href="#triliovault" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Enterprise backup and recovery solution for Kubernetes. It supports S3-compatible
+object storage and NFS as backup targets and is designed to work across
+heterogeneous infrastructure, making it suitable for cross-cloud restore scenarios.
+It focuses on application-level consistency and provides namespace-level granularity
+for backups and restores.</p>
+<h3 id="stash-by-appscode"><a href="https://stash.run/">Stash by AppsCode</a><a class="headerlink" href="#stash-by-appscode" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Declarative, GitOps-native backup tool built on top of Restic. Backup and restore
+policies are defined as Kubernetes custom resources, making it easy to manage
+through a GitOps workflow. It supports S3 and other remote backends and integrates
+with several database operators for application-consistent backups.</p>
+<h2 id="comparison-table">Comparison table<a class="headerlink" href="#comparison-table" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Stats collected in May 2026.</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>License</th>
+<th>GitHub stars</th>
+<th>Contributors</th>
+<th>CNCF</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/utkuozdemir/pv-migrate">pv-migrate</a></td>
+<td>Apache 2.0</td>
+<td>~2.3k</td>
+<td>18</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://github.com/rclone/rclone">rclone</a></td>
+<td>MIT</td>
+<td>~57k</td>
+<td>~410</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://github.com/vmware-tanzu/velero">Velero</a></td>
+<td>Apache 2.0</td>
+<td>~10k</td>
+<td>~302</td>
+<td>Sandbox (2026)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/restic/restic">Restic</a></td>
+<td>BSD 2-Clause</td>
+<td>~33.5k</td>
+<td>~473</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://github.com/kopia/kopia">Kopia</a></td>
+<td>Apache 2.0</td>
+<td>~13.2k</td>
+<td>~146</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://www.kasten.io/">Kasten K10</a></td>
+<td>Commercial</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>No (vendor: CNCF Platinum member)</td>
+</tr>
+<tr>
+<td><a href="https://trilio.io/">TrilioVault</a></td>
+<td>Commercial</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>No</td>
+</tr>
+<tr>
+<td><a href="https://github.com/stashed/stash">Stash by AppsCode</a></td>
+<td>PolyForm</td>
+<td>~1.4k</td>
+<td>26</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Velero was accepted into the CNCF Sandbox in February 2026 after being
+donated by Broadcom. Kasten's companion open-source framework
+<a href="https://github.com/kanisterio/kanister">Kanister</a> is a separate CNCF Sandbox
+project (accepted September 2023).</p>
+</blockquote>
+<h2 id="links">Links<a class="headerlink" href="#links" title="Anchor link to this section for reference">&para;</a></h2>
 <ul>
-<li><a href="https://www.opencost.io/docs/">Official Documentation</a></li>
-<li><a href="https://github.com/opencost/opencost">GitHub Repository</a></li>
-<li><a href="https://github.com/opencost/opencost-helm-chart">Helm Chart</a></li>
-</ul>
-<h2 id="kubecost">Kubecost<a class="headerlink" href="#kubecost" title="Anchor link to this section for reference">&para;</a></h2>
-<p><a href="https://www.kubecost.com/">Kubecost</a> provides real-time cost visibility and insights for Kubernetes clusters. While it offers commercial enterprise features, the core product (formerly known as Kubecost Free) is available as open-source and provides comprehensive cost monitoring capabilities.</p>
-<ul>
-<li><strong>GitHub Stars</strong>: 577</li>
-<li><strong>Contributors</strong>: 150+</li>
-<li><strong>Company Behind</strong>: Kubecost (Stackwatch Inc.), acquired by IBM in September 2024</li>
-<li><strong>CNCF Relation</strong>: Not a CNCF project (commercial product), but created and donated OpenCost to CNCF</li>
-<li><strong>CNCF Member</strong>: Kubecost was a CNCF member; now part of IBM (CNCF founding member)</li>
-</ul>
-<h3 id="kubecost-references">Kubecost References<a class="headerlink" href="#kubecost-references" title="Anchor link to this section for reference">&para;</a></h3>
-<ul>
-<li><a href="https://docs.kubecost.com/">Official Documentation</a></li>
-<li><a href="https://github.com/kubecost/cost-analyzer-helm-chart">GitHub Repository</a></li>
-<li><a href="https://blog.kubecost.com/">Kubecost Blog</a></li>
-</ul>
-<h2 id="grafana-cloud-cost-exporter">Grafana Cloud Cost Exporter<a class="headerlink" href="#grafana-cloud-cost-exporter" title="Anchor link to this section for reference">&para;</a></h2>
-<p><a href="https://github.com/grafana/cloudcost-exporter">Grafana Cloud Cost Exporter</a> is an open-source Prometheus exporter that collects cloud provider cost metrics and makes them available for visualization in Grafana dashboards. It focuses on exporting billing data as Prometheus metrics rather than providing a complete cost allocation platform.</p>
-<ul>
-<li><strong>GitHub Stars</strong>: 102</li>
-<li><strong>Contributors</strong>: 18+</li>
-<li><strong>Company Behind</strong>: Grafana Labs</li>
-<li><strong>CNCF Relation</strong>: Not a CNCF project, but Grafana Labs contributes to OpenCost and other CNCF projects</li>
-<li><strong>CNCF Member</strong>: Grafana Labs is a CNCF Platinum member (upgraded from Silver in July 2021)</li>
-</ul>
-<h3 id="grafana-cloud-cost-exporter-references">Grafana Cloud Cost Exporter References<a class="headerlink" href="#grafana-cloud-cost-exporter-references" title="Anchor link to this section for reference">&para;</a></h3>
-<ul>
-<li><a href="https://github.com/grafana/cloudcost-exporter">GitHub Repository</a></li>
-<li><a href="https://grafana.com/grafana/dashboards/">Grafana Cloud Cost Dashboards</a></li>
-<li><a href="https://docs.aws.amazon.com/cost-management/latest/userguide/ce-api.html">AWS Cost Explorer API</a></li>
-<li><a href="https://learn.microsoft.com/en-us/rest/api/cost-management/">Azure Cost Management API</a></li>
-<li><a href="https://cloud.google.com/billing/docs/how-to/export-data-bigquery">GCP Billing Export</a></li>
+<li><a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/">Kubernetes Persistent Volumes</a></li>
+<li><a href="https://landscape.cncf.io/">CNCF Landscape — backup category</a></li>
+<li><a href="https://www.techzine.eu/news/infrastructure/139783/broadcom-ships-vks-3-6-and-moves-velero-to-cncf-sandbox/">Velero CNCF Sandbox announcement</a></li>
+<li><a href="https://cloudcasa.io/blog/comparing-restic-vs-kopia-for-kubernetes-data-movement/">Restic vs Kopia performance comparison</a></li>
 </ul>
 
 
@@ -2328,7 +2394,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 30, 2025 10:55:52 UTC">September 30, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 11, 2026 16:19:20 UTC">May 11, 2026</span>
   </span>
 
     
@@ -2338,7 +2404,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 30, 2025 10:55:52 UTC">September 30, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="May 11, 2026 16:19:20 UTC">May 11, 2026</span>
   </span>
 
     
@@ -2373,7 +2439,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../autoescaling-nodes/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Autoescaling nodes">
+          <a href="../node-disk-protection/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Node disk protection">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2383,20 +2449,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Autoescaling nodes
+                Node disk protection
               </div>
             </div>
           </a>
         
         
           
-          <a href="../horizontal-pod-autoescaler/" class="md-footer__link md-footer__link--next" aria-label="Next: Horizontal pod autoescaler">
+          <a href="../../tuning/cpu-requests-limits/" class="md-footer__link md-footer__link--next" aria-label="Next: CPU requests and limits">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Horizontal pod autoescaler
+                CPU requests and limits
               </div>
             </div>
             <div class="md-footer__button md-icon">
