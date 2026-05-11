@@ -26,5 +26,5 @@ jobs:
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - run: pip install mkdocs-material mkdocs-git-revision-date-localized-plugin # mkdocs-git-revision-date-localized-plugin adds page generation date
+      - run: pip install "mkdocs-material<2.0" mkdocs-git-revision-date-localized-plugin # mkdocs-git-revision-date-localized-plugin adds page generation date
       - run: mkdocs gh-deploy --force # build and push to gh-pages branch
