@@ -4,18 +4,25 @@ Gateway API routes are fundamental resources that define how traffic flows from 
 
 ## Route Types Overview
 
-Gateway API defines several route types to handle different traffic patterns and protocols:
+Gateway API defines several route types to handle different traffic patterns and
+protocols. All of them are now GA and served under `apiVersion:
+gateway.networking.k8s.io/v1` (the older `v1alpha2` versions are deprecated).
 
-### Standard Routes (GA)
+| Route                         | Layer | Definition                                               | Status (v1.6.1)           |
+|-------------------------------|-------|----------------------------------------------------------|---------------------------|
+| **[HTTPRoute](httproute.md)** | L7    | HTTP/HTTPS routing with paths, headers, filters          | GA, Standard              |
+| **[GRPCRoute](grpcroute.md)** | L7    | gRPC-aware routing over HTTP/2                           | GA, Standard              |
+| **[TLSRoute](tlsroute.md)**   | L4    | SNI-based routing of TLS streams (Passthrough/Terminate) | GA, Standard since v1.5.0 |
+| **[TCPRoute](tcproute.md)**   | L4    | Raw TCP routing by port                                  | GA, Standard since v1.6.0 |
+| **[UDPRoute](udproute.md)**   | L4    | UDP routing for stateless protocols                      | GA, Standard since v1.6.0 |
 
-- **[HTTPRoute](httproute.md)** - HTTP/HTTPS traffic routing with advanced features
-- **[GRPCRoute](grpcroute.md)** - gRPC-specific routing with protocol awareness
+Notes:
 
-### Experimental Routes
-
-- **[TCPRoute](tcproute.md)** - Layer 4 TCP traffic routing
-- **[TLSRoute](tlsroute.md)** - TLS passthrough and SNI-based routing  
-- **[UDPRoute](udproute.md)** - UDP traffic routing for stateless protocols
+- `TLSRoute` supports two modes: `Passthrough` (Core) and `Terminate` (Extended,
+  gated behind the `TLSRouteModeTerminate` feature).
+- `TCPRoute` and `UDPRoute` graduated to GA in v1.6.0; `TLSRoute` in v1.5.0.
+- For choosing between `TCP` and `TLS` listeners when exposing an L4 service, see
+  [Expose a TCP service](expose-tcp-service.md).
 
 ## Core Concepts
 
