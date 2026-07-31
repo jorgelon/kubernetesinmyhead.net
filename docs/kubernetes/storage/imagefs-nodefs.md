@@ -87,6 +87,8 @@ Where **requests** is the amount reserved for scheduling (the scheduler only pla
 
 ## Links
 
+- [Node disk protection](node-disk-protection.md)
+
 - Node-pressure Eviction
 
 <https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/>
