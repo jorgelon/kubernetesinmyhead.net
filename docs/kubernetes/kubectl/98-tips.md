@@ -6,6 +6,12 @@
 kubectl get pods --all-namespaces | awk '/Evicted/ {print "kubectl delete po -n ",$1,$2}'|bash -x  
 ```
 
+## Delete all failed pods
+
+```shell
+kubectl delete pods -A --field-selector=status.phase=Failed
+```
+
 ## Get the current cluster
 
 ```shell

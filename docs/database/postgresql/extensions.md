@@ -1,4 +1,4 @@
-# Tips: extensions
+# Extensions
 
 To determine where a PostgreSQL extension is installed, you can query the pg_extension system catalog. This catalog contains information about all the extensions installed in the current database, including the schema in which each extension is installed.
 
@@ -24,3 +24,18 @@ Explanation
 - extname: The name of the extension.
 - extnamespace: The OID of the schema where the extension is installed.
 - nspname: The name of the schema.
+
+## List extensions
+
+Available
+
+```sql
+SELECT * FROM pg_available_extensions;
+SELECT * FROM pg_available_extension_versions;
+```
+
+Installed
+
+```sql
+SELECT extname, extversion FROM pg_extension;
+```
