@@ -14,14 +14,14 @@
         <link rel="prev" href="../../migration-from-nginx-controller/ssl-passthrough/">
       
       
-        <link rel="next" href="../grpcroute/">
+        <link rel="next" href="../expose-tcp-service/">
       
       
         
       
       
       <link rel="icon" href="../../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -356,7 +356,7 @@
   
   
   
-    <a href="../../../../deployment/resource-templating/" class="md-nav__link">
+    <a href="../../../../deployment/crossplane-vs-kro/" class="md-nav__link">
       
   
   
@@ -680,6 +680,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../../cni-mode-ipam-cilium/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS VPC CNI Driver ipam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../../filtering-with-nodeport/" class="md-nav__link">
         
   
@@ -979,10 +1007,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_9" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_10" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_9" id="__nav_10_9_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10_10" id="__nav_10_10_label" tabindex="0">
             
   
   
@@ -1000,8 +1028,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_9_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_9">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10_10">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1026,34 +1054,6 @@
     
   
     Tips
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../contour-to-envoy-gateway-migration/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Contour to Envoy Gateway Migration Path
   
 
     
@@ -1478,10 +1478,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_9_14" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_10_13" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_9_14" id="__nav_10_9_14_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_10_10_13" id="__nav_10_10_13_label" tabindex="0">
             
   
   
@@ -1499,8 +1499,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_10_9_14_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_9_14">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_10_10_13_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_10_10_13">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1586,34 +1586,6 @@
       
     </span>
   </a>
-  
-    <nav class="md-nav" aria-label="Route Types Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#standard-routes-ga" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Standard Routes (GA)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#experimental-routes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Experimental Routes
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1777,6 +1749,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../expose-tcp-service/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Expose a TCP service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../grpcroute/" class="md-nav__link">
         
   
@@ -1840,7 +1840,7 @@
   <span class="md-ellipsis">
     
   
-    TCPRoute (experimental)
+    TCPRoute
   
 
     
@@ -2530,34 +2530,6 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Route Types Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#standard-routes-ga" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Standard Routes (GA)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#experimental-routes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Experimental Routes
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
 </li>
       
         <li class="md-nav__item">
@@ -2747,7 +2719,7 @@
     
     
       <li class="md-path__item">
-        <a href="../../../filtering-with-nodeport/" class="md-path__link">
+        <a href="../../../cni-mode-ipam-cilium/" class="md-path__link">
           
   <span class="md-ellipsis">
     Networking
@@ -2808,17 +2780,58 @@
 <h1 id="gateway-api-routes">Gateway API Routes<a class="headerlink" href="#gateway-api-routes" title="Anchor link to this section for reference">&para;</a></h1>
 <p>Gateway API routes are fundamental resources that define how traffic flows from Gateways to backend services. They provide declarative configuration for traffic routing, load balancing, and request processing within Kubernetes clusters.</p>
 <h2 id="route-types-overview">Route Types Overview<a class="headerlink" href="#route-types-overview" title="Anchor link to this section for reference">&para;</a></h2>
-<p>Gateway API defines several route types to handle different traffic patterns and protocols:</p>
-<h3 id="standard-routes-ga">Standard Routes (GA)<a class="headerlink" href="#standard-routes-ga" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Gateway API defines several route types to handle different traffic patterns and
+protocols. All of them are now GA and served under <code>apiVersion:
+gateway.networking.k8s.io/v1</code> (the older <code>v1alpha2</code> versions are deprecated).</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Layer</th>
+<th>Definition</th>
+<th>Status (v1.6.1)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong><a href="../httproute/">HTTPRoute</a></strong></td>
+<td>L7</td>
+<td>HTTP/HTTPS routing with paths, headers, filters</td>
+<td>GA, Standard</td>
+</tr>
+<tr>
+<td><strong><a href="../grpcroute/">GRPCRoute</a></strong></td>
+<td>L7</td>
+<td>gRPC-aware routing over HTTP/2</td>
+<td>GA, Standard</td>
+</tr>
+<tr>
+<td><strong><a href="../tlsroute/">TLSRoute</a></strong></td>
+<td>L4</td>
+<td>SNI-based routing of TLS streams (Passthrough/Terminate)</td>
+<td>GA, Standard since v1.5.0</td>
+</tr>
+<tr>
+<td><strong><a href="../tcproute/">TCPRoute</a></strong></td>
+<td>L4</td>
+<td>Raw TCP routing by port</td>
+<td>GA, Standard since v1.6.0</td>
+</tr>
+<tr>
+<td><strong><a href="../udproute/">UDPRoute</a></strong></td>
+<td>L4</td>
+<td>UDP routing for stateless protocols</td>
+<td>GA, Standard since v1.6.0</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
 <ul>
-<li><strong><a href="../httproute/">HTTPRoute</a></strong> - HTTP/HTTPS traffic routing with advanced features</li>
-<li><strong><a href="../grpcroute/">GRPCRoute</a></strong> - gRPC-specific routing with protocol awareness</li>
-</ul>
-<h3 id="experimental-routes">Experimental Routes<a class="headerlink" href="#experimental-routes" title="Anchor link to this section for reference">&para;</a></h3>
-<ul>
-<li><strong><a href="../tcproute/">TCPRoute</a></strong> - Layer 4 TCP traffic routing</li>
-<li><strong><a href="../tlsroute/">TLSRoute</a></strong> - TLS passthrough and SNI-based routing  </li>
-<li><strong><a href="../udproute/">UDPRoute</a></strong> - UDP traffic routing for stateless protocols</li>
+<li><code>TLSRoute</code> supports two modes: <code>Passthrough</code> (Core) and <code>Terminate</code> (Extended,
+  gated behind the <code>TLSRouteModeTerminate</code> feature).</li>
+<li><code>TCPRoute</code> and <code>UDPRoute</code> graduated to GA in v1.6.0; <code>TLSRoute</code> in v1.5.0.</li>
+<li>For choosing between <code>TCP</code> and <code>TLS</code> listeners when exposing an L4 service, see
+  <a href="../expose-tcp-service/">Expose a TCP service</a>.</li>
 </ul>
 <h2 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Anchor link to this section for reference">&para;</a></h2>
 <h3 id="route-attachment">Route Attachment<a class="headerlink" href="#route-attachment" title="Anchor link to this section for reference">&para;</a></h3>
@@ -2944,7 +2957,7 @@ spec:
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 26, 2025 08:14:53 UTC">September 26, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 27, 2026 16:11:12 UTC">July 27, 2026</span>
   </span>
 
     
@@ -3006,13 +3019,13 @@ spec:
         
         
           
-          <a href="../grpcroute/" class="md-footer__link md-footer__link--next" aria-label="Next: GRPCRoute (standard)">
+          <a href="../expose-tcp-service/" class="md-footer__link md-footer__link--next" aria-label="Next: Expose a TCP service">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                GRPCRoute (standard)
+                Expose a TCP service
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -3065,7 +3078,7 @@ spec:
       <script id="__config" type="application/json">{"annotate": null, "base": "../../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

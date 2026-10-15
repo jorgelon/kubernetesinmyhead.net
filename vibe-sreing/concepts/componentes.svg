@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 580" width="760" height="580" role="img" aria-labelledby="titulo desc">
+  <title id="titulo">Componentes de la IA</title>
+  <desc id="desc">El agente es el bucle que orquesta el LLM, RAG y las tools. RAG consulta una base vectorial. Las tools se exponen de forma estandar mediante MCP, que puede envolver una API, un comando o un RAG.</desc>
+
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#546e7a"/>
+    </marker>
+    <style>
+      .caja { stroke-width: 2;}
+      .t { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; fill: #212121; }
+      .titulo { font-size: 17px; font-weight: 600; }
+      .sub { font-size: 13px; fill: #546e7a; }
+      .linea { stroke: #546e7a; stroke-width: 2; fill: none; marker-end: url(#flecha); }
+      .etiqueta { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 12px; fill: #546e7a; }
+    </style>
+  </defs>
+
+  <rect width="760" height="580" fill="#ffffff"/>
+
+  <!-- Usuario -->
+  <rect class="caja" rx="8" x="300" y="20" width="160" height="46" fill="#f5f5f5" stroke="#78909c"/>
+  <text class="t titulo" x="380" y="49" text-anchor="middle">Usuario</text>
+
+  <path class="linea" d="M 380 66 L 380 98"/>
+
+  <!-- Agente -->
+  <rect class="caja" rx="8" x="50" y="100" width="660" height="82" fill="#e8eaf6" stroke="#3f51b5"/>
+  <text class="t titulo" x="380" y="131" text-anchor="middle">Agente</text>
+  <text class="t sub" x="380" y="155" text-anchor="middle">el bucle: monta el contexto, aplica permisos, compacta</text>
+  <text class="t sub" x="380" y="173" text-anchor="middle">itera hasta cumplir el objetivo</text>
+
+  <!-- Ramas del agente -->
+  <path class="linea" d="M 160 182 L 160 226"/>
+  <path class="linea" d="M 380 182 L 380 226"/>
+  <path class="linea" d="M 600 182 L 600 226"/>
+
+  <text class="etiqueta" x="168" y="208">predice</text>
+  <text class="etiqueta" x="388" y="208">busca</text>
+  <text class="etiqueta" x="608" y="208">ejecuta</text>
+
+  <!-- LLM -->
+  <rect class="caja" rx="8" x="80" y="228" width="160" height="86" fill="#fff3e0" stroke="#ef6c00"/>
+  <text class="t titulo" x="160" y="258" text-anchor="middle">LLM</text>
+  <text class="t sub" x="160" y="280" text-anchor="middle">inmutable</text>
+  <text class="t sub" x="160" y="298" text-anchor="middle">sin estado</text>
+
+  <!-- RAG -->
+  <rect class="caja" rx="8" x="300" y="228" width="160" height="86" fill="#e8f5e9" stroke="#2e7d32"/>
+  <text class="t titulo" x="380" y="258" text-anchor="middle">RAG</text>
+  <text class="t sub" x="380" y="280" text-anchor="middle">informacion que</text>
+  <text class="t sub" x="380" y="298" text-anchor="middle">el modelo no tiene</text>
+
+  <!-- Tools -->
+  <rect class="caja" rx="8" x="520" y="228" width="160" height="86" fill="#e3f2fd" stroke="#1565c0"/>
+  <text class="t titulo" x="600" y="258" text-anchor="middle">Tools</text>
+  <text class="t sub" x="600" y="280" text-anchor="middle">el modelo pide,</text>
+  <text class="t sub" x="600" y="298" text-anchor="middle">el codigo ejecuta</text>
+
+  <!-- Segundo nivel -->
+  <path class="linea" d="M 380 314 L 380 358"/>
+  <path class="linea" d="M 600 314 L 600 358"/>
+
+  <rect class="caja" rx="8" x="300" y="360" width="160" height="70" fill="#f1f8e9" stroke="#7cb342"/>
+  <text class="t titulo" x="380" y="388" text-anchor="middle">Base vectorial</text>
+  <text class="t sub" x="380" y="410" text-anchor="middle">embeddings</text>
+
+  <rect class="caja" rx="8" x="520" y="360" width="160" height="70" fill="#e1f5fe" stroke="#0288d1"/>
+  <text class="t titulo" x="600" y="388" text-anchor="middle">MCP</text>
+  <text class="t sub" x="600" y="410" text-anchor="middle">protocolo estandar</text>
+
+  <path class="linea" d="M 600 430 L 600 474"/>
+
+  <rect class="caja" rx="8" x="500" y="476" width="200" height="70" fill="#fafafa" stroke="#b0bec5"/>
+  <text class="t titulo" x="600" y="504" text-anchor="middle">Servidores MCP</text>
+  <text class="t sub" x="600" y="526" text-anchor="middle">API, comando, RAG</text>
+
+  <!-- Nota -->
+  <rect class="caja" rx="8" x="60" y="360" width="200" height="110" fill="#ffffff" stroke="#cfd8dc"/>
+  <text class="t sub" x="160" y="386" text-anchor="middle" font-weight="600" fill="#37474f">Todo acaba igual</text>
+  <text class="t sub" x="160" y="410" text-anchor="middle">Lo que RAG y las tools</text>
+  <text class="t sub" x="160" y="428" text-anchor="middle">devuelven se añade al</text>
+  <text class="t sub" x="160" y="446" text-anchor="middle">contexto del LLM</text>
+</svg>

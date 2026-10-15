@@ -8,28 +8,28 @@
       
       
       
-        <link rel="canonical" href="https://kubernetesinmyhead.net/kubernetes/tuning/prioridades/">
+        <link rel="canonical" href="https://kubernetesinmyhead.net/CI-CD/container-images/platforms/">
       
       
-        <link rel="prev" href="../pod-disruption-budget/">
+        <link rel="prev" href="../image-build/">
       
       
-        <link rel="next" href="../probes/">
+        <link rel="next" href="../../gitlab-ci-cd/98-tips/">
       
       
         
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
-        <title>Prioridades entre pods - Kubernetes in my head</title>
+        <title>Platform differences - Kubernetes in my head</title>
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -74,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#prioridades-entre-pods" class="md-skip">
+        <a href="#platform-differences" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Prioridades entre pods
+              Platform differences
             
           </span>
         </div>
@@ -230,6 +230,57 @@
       
   
   
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI CD
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CI CD
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
   
   
     
@@ -248,18 +299,14 @@
   
   
   
-    
-  
-  
-  
-    <a href="../../../CI-CD/argo-events/filtering/" class="md-nav__link">
+    <a href="../../argo-events/filtering/" class="md-nav__link">
       
   
   
   <span class="md-ellipsis">
     
   
-    CI CD
+    Argo events
   
 
     
@@ -273,8 +320,540 @@
     </a>
   
 
+      
+    </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../argo-workflows/labels-annotations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Argo workflows
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Container images
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Container images
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../98-tips/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Best practices
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../99-links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Links
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../image-build/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Image build
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform differences
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Platform differences
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="Index">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Index
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tools
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#input-variables-for-the-tag-script" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input variables for the tag script
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#short-sha" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Short SHA
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#merge-request-commit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Merge request commit
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#triggers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Triggers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-clone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full clone
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registry-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registry credentials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#merge-requests-from-forks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Merge requests from forks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ephemeral-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ephemeral environments
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#links" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Links
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../gitlab-ci-cd/98-tips/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gitlab ci cd
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../reloader/00-intro/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reloader
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../renovate/1-phases/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Renovate
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
       
     </li>
   
@@ -356,7 +935,7 @@
   
   
   
-    <a href="../../../deployment/resource-templating/" class="md-nav__link">
+    <a href="../../../deployment/crossplane-vs-kro/" class="md-nav__link">
       
   
   
@@ -482,8 +1061,6 @@
       
   
   
-    
-  
   
   
     
@@ -492,16 +1069,18 @@
     
     
       
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
       
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
-            
+  
+  
+  
+    <a href="../../../kubernetes/98-tips/" class="md-nav__link">
+      
   
   
   <span class="md-ellipsis">
@@ -515,804 +1094,12 @@
   
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_7">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Kubernetes
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../98-tips/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tips
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../99-links/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Links
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../compat/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kubernetes compatibilities and requirements
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kubernetes Dashboard Alternatives
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../hack-dns/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Hack dns
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    <a href="../../api-access/api-request-pipeline/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Api access
-  
-
-    
-  </span>
-  
-  
-
       
         <span class="md-nav__icon md-icon"></span>
       
     </a>
   
 
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    <a href="../../autoescaling-finops/autoescaling-nodes/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Autoescaling finops
-  
-
-    
-  </span>
-  
-  
-
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
-  
-
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    
-  
-  
-  
-    <a href="../../distributions/eks/authentication-mode/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Distributions
-  
-
-    
-  </span>
-  
-  
-
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
-  
-
-  
-
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    <a href="../../kubectl/98-tips/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kubectl
-  
-
-    
-  </span>
-  
-  
-
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
-  
-
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    <a href="../../storage/99-links/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Storage
-  
-
-    
-  </span>
-  
-  
-
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
-  
-
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-    
-      
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7_11" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_7_11" id="__nav_7_11_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Tuning
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_7_11_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_7_11">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Tuning
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cpu-requests-limits/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    CPU requests and limits
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../graceful-termination-pods/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Graceful terminations in pods
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../memory-requests-limits/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Memory requests and limits
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../pod-disruption-budget/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Pod disruption budget
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Prioridades entre pods
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Prioridades entre pods
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary" aria-label="Index">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Index
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#priority-classes-scheduling" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Priority classes (scheduling)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#lista-de-algunas-priority-classes-y-como-se-crean" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Lista de algunas priority classes y como se crean
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#lista-de-algunos-workloads-y-sus-default-priority-classes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Lista de algunos workloads y sus default priority classes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#listar-pods-de-una-priorityclass" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Listar pods de una priorityclass
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#quality-of-service-classes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Quality of Service Classes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#links" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Links
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../probes/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kubernetes probes and self healing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
-      
-        
-  
-  
-  
-    <a href="../../workloads/cronjob/" class="md-nav__link">
-      
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Workloads
-  
-
-    
-  </span>
-  
-  
-
-      
-        <span class="md-nav__icon md-icon"></span>
-      
-    </a>
-  
-
-      
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
       
     </li>
   
@@ -1436,7 +1223,7 @@
   
   
   
-    <a href="../../../networking/filtering-with-nodeport/" class="md-nav__link">
+    <a href="../../../networking/cni-mode-ipam-cilium/" class="md-nav__link">
       
   
   
@@ -1953,10 +1740,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#priority-classes-scheduling" class="md-nav__link">
+  <a href="#tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Priority classes (scheduling)
+        Tools
       
     </span>
   </a>
@@ -1964,10 +1751,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#lista-de-algunas-priority-classes-y-como-se-crean" class="md-nav__link">
+  <a href="#input-variables-for-the-tag-script" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lista de algunas priority classes y como se crean
+        Input variables for the tag script
       
     </span>
   </a>
@@ -1975,10 +1762,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#lista-de-algunos-workloads-y-sus-default-priority-classes" class="md-nav__link">
+  <a href="#short-sha" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lista de algunos workloads y sus default priority classes
+        Short SHA
       
     </span>
   </a>
@@ -1986,10 +1773,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#listar-pods-de-una-priorityclass" class="md-nav__link">
+  <a href="#merge-request-commit" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Listar pods de una priorityclass
+        Merge request commit
       
     </span>
   </a>
@@ -1997,10 +1784,54 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quality-of-service-classes" class="md-nav__link">
+  <a href="#triggers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quality of Service Classes
+        Triggers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-clone" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full clone
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registry-credentials" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registry credentials
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#merge-requests-from-forks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Merge requests from forks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ephemeral-environments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ephemeral environments
       
     </span>
   </a>
@@ -2060,15 +1891,23 @@
   
     
     
+      
+  
+  
+    
+    
       <li class="md-path__item">
-        <a href="../../98-tips/" class="md-path__link">
+        <a href="../../argo-events/filtering/" class="md-path__link">
           
   <span class="md-ellipsis">
-    Kubernetes
+    CI CD
   </span>
 
         </a>
       </li>
+    
+  
+
     
   
 
@@ -2079,10 +1918,10 @@
     
     
       <li class="md-path__item">
-        <a href="../cpu-requests-limits/" class="md-path__link">
+        <a href="../98-tips/" class="md-path__link">
           
   <span class="md-ellipsis">
-    Tuning
+    Container images
   </span>
 
         </a>
@@ -2101,157 +1940,141 @@
 
 
 
-<h1 id="prioridades-entre-pods">Prioridades entre pods<a class="headerlink" href="#prioridades-entre-pods" title="Anchor link to this section for reference">&para;</a></h1>
-<h2 id="priority-classes-scheduling">Priority classes (scheduling)<a class="headerlink" href="#priority-classes-scheduling" title="Anchor link to this section for reference">&para;</a></h2>
-<p>El uso de priority classes es una herramienta para dar prioridades a pods a la hora de ser desplegados en un cluster de kubernetes. Mediante ellas, si un pod con una prioridad mas alta no puede ser desplegado, el scheduler intentara por defecto desalojar pods con prioridades mas bajas para hacerle hueco.</p>
-<p>Por defecto, Kubernetes viene con 2 PriorityClass listas para ser asignadas a pods</p>
-<ul>
-<li>system-node-critical, con prioridad mayor, 2000001000</li>
-<li>system-cluster-critical, con prioridad 2000000000</li>
-</ul>
-<p>Asi, en una priorityclass se  puede definir</p>
-<ul>
-<li>Una descripcion</li>
-<li>El numero que especifica la prioridad</li>
-<li>globalDefault:<br />
-Para espeficar si es la priority class por defecto</li>
-<li>preemptionPolicy:<br />
-Admite 2 valores: Con <strong>Never</strong> los pods con mas prioridad estaran en la cola antes que los de menos prioridad, pero no se liberaran recursos. Es decir, si no hay recursos para ellos seguiran en la cola sin ser desplegados hasta que se hayan liberado por otros metodos.
-Con <strong>PreemptLowerPriority</strong>, que es el valor por defecto, se liberan recursos</li>
-</ul>
-<blockquote>
-<p>To preempt significa adelantarse</p>
-</blockquote>
-<h2 id="lista-de-algunas-priority-classes-y-como-se-crean">Lista de algunas priority classes y como se crean<a class="headerlink" href="#lista-de-algunas-priority-classes-y-como-se-crean" title="Anchor link to this section for reference">&para;</a></h2>
+<h1 id="platform-differences">Platform differences<a class="headerlink" href="#platform-differences" title="Anchor link to this section for reference">&para;</a></h1>
+<p>This document describes how to apply the <a href="../image-build/">image build</a> patterns on each CI platform.
+The patterns are the same on all platforms. Only the variable names, the triggers and the tools change.</p>
+<h2 id="tools">Tools<a class="headerlink" href="#tools" title="Anchor link to this section for reference">&para;</a></h2>
+<p>On GitHub, <code>docker/metadata-action</code> computes the tags from the git event, and <code>docker/build-push-action</code> builds and pushes the image.
+With <code>docker/metadata-action</code>, <code>tags: type=sha</code> creates <code>sha-&lt;7 characters&gt;</code>. The <code>prefix</code> and <code>format=long</code> options change it.</p>
+<p>On GitLab, the <code>Docker.gitlab-ci.yml</code> template tags only with the branch slug (<code>$CI_COMMIT_REF_SLUG</code>) and adds <code>latest</code> on the default branch.
+The template does not run on tag pipelines. Auto DevOps tags with the full commit SHA.
+The open source <a href="https://to-be-continuous.gitlab.io/doc/ref/docker/">to-be-continuous Docker template for GitLab</a> adds snapshot images, semver tags and a promotion with <code>skopeo</code>.</p>
+<p>None of these tools makes sure that a release is the highest version before it moves <code>latest</code>, <code>1</code> or <code>1.4</code>.
+Use the <a href="../tags.sh">tags calculation script</a> for that.</p>
+<h2 id="input-variables-for-the-tag-script">Input variables for the tag script<a class="headerlink" href="#input-variables-for-the-tag-script" title="Anchor link to this section for reference">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Priority Class</th>
-<th>Value</th>
-<th>Deployer</th>
+<th>Script input</th>
+<th>GitHub Actions</th>
+<th>GitLab CI/CD</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>system-node-critical</td>
-<td>2000001000</td>
-<td>kubeadm</td>
+<td><code>REF_TYPE</code></td>
+<td><code>GITHUB_REF_TYPE</code> (<code>branch</code> or <code>tag</code>)</td>
+<td><code>tag</code> when <code>CI_COMMIT_TAG</code> exists, or <code>branch</code></td>
 </tr>
 <tr>
-<td>system-cluster-critical</td>
-<td>2000000000</td>
-<td>kubeadm</td>
+<td><code>REF_NAME</code></td>
+<td><code>GITHUB_REF_NAME</code></td>
+<td><code>CI_COMMIT_REF_NAME</code></td>
 </tr>
 <tr>
-<td>high-priority</td>
-<td>100000000</td>
-<td>custom</td>
+<td><code>COMMIT_SHA</code></td>
+<td><code>GITHUB_SHA</code></td>
+<td><code>CI_COMMIT_SHA</code></td>
 </tr>
 <tr>
-<td>workflow-controller</td>
-<td>1000000</td>
-<td>argo workflows</td>
+<td><code>DEFAULT_BRANCH</code></td>
+<td><code>${{ github.event.repository.default_branch }}</code></td>
+<td><code>CI_DEFAULT_BRANCH</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="lista-de-algunos-workloads-y-sus-default-priority-classes">Lista de algunos workloads y sus default priority classes<a class="headerlink" href="#lista-de-algunos-workloads-y-sus-default-priority-classes" title="Anchor link to this section for reference">&para;</a></h2>
+<h2 id="short-sha">Short SHA<a class="headerlink" href="#short-sha" title="Anchor link to this section for reference">&para;</a></h2>
+<p>GitHub Actions gives only the full <code>GITHUB_SHA</code>. You can cut it with <code>echo "SHORT_SHA=${GITHUB_SHA::7}" &gt;&gt; "$GITHUB_ENV"</code> or use <code>git rev-parse --short HEAD</code>.
+GitLab gives <code>CI_COMMIT_SHORT_SHA</code> with the first 8 characters of the commit SHA.</p>
+<h2 id="merge-request-commit">Merge request commit<a class="headerlink" href="#merge-request-commit" title="Anchor link to this section for reference">&para;</a></h2>
+<p>On a GitHub <code>pull_request</code> event, <code>GITHUB_SHA</code> is the temporary merge commit and not the head of the branch.
+If you want the branch commit, use <code>github.event.pull_request.head.sha</code>.
+With <code>docker/metadata-action</code>, set the environment variable <code>DOCKER_METADATA_PR_HEAD_SHA: true</code>.</p>
+<p>On GitLab, a merge request pipeline uses the branch head in <code>CI_COMMIT_SHA</code>.
+A merged results pipeline uses the temporary merge commit. The branch head is in <code>CI_MERGE_REQUEST_SOURCE_BRANCH_SHA</code>.</p>
+<h2 id="triggers">Triggers<a class="headerlink" href="#triggers" title="Anchor link to this section for reference">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Workload</th>
-<th>Default</th>
+<th>Event</th>
+<th>GitHub Actions</th>
+<th>GitLab CI/CD</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>cilium Daemonset</td>
-<td>system-node-critical</td>
+<td>Push to a branch</td>
+<td><code>on: push: branches</code></td>
+<td><code>if: $CI_COMMIT_BRANCH</code></td>
 </tr>
 <tr>
-<td>ebs-csi-node Daemonset</td>
-<td>system-node-critical</td>
+<td>Push to main</td>
+<td><code>on: push: branches: [main]</code></td>
+<td><code>if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH</code></td>
 </tr>
 <tr>
-<td>eks-pod-identity-agent Daemonset</td>
-<td>system-node-critical</td>
+<td>Merge request</td>
+<td><code>on: pull_request</code></td>
+<td><code>if: $CI_PIPELINE_SOURCE == "merge_request_event"</code></td>
 </tr>
 <tr>
-<td>argo workflow controller</td>
-<td>workflow-controller</td>
+<td>Tag push</td>
+<td><code>on: push: tags: ['v*.*.*']</code></td>
+<td><code>if: $CI_COMMIT_TAG =~ /^v?\d+\.\d+\.\d+/</code></td>
 </tr>
 <tr>
-<td>karpenter</td>
-<td>system-cluster-critical</td>
-</tr>
-<tr>
-<td>aws-load-balancer-controller</td>
-<td>system-cluster-critical</td>
-</tr>
-<tr>
-<td>cilium-operator</td>
-<td>system-cluster-critical</td>
-</tr>
-<tr>
-<td>coredns</td>
-<td>system-cluster-critical</td>
-</tr>
-<tr>
-<td>karpenter</td>
-<td>system-cluster-critical</td>
-</tr>
-<tr>
-<td>ebs-csi-controller</td>
-<td>system-cluster-critical</td>
-</tr>
-<tr>
-<td>node-exporter</td>
-<td>system-cluster-critical</td>
-</tr>
-<tr>
-<td>karpenter</td>
-<td>system-cluster-critical</td>
-</tr>
-<tr>
-<td>metrics server</td>
-<td>system-cluster-critical</td>
-</tr>
-<tr>
-<td>vsphere-csi-controller</td>
-<td>system-cluster-critical</td>
+<td>Files that start a build</td>
+<td><code>paths</code> filter</td>
+<td><code>rules: changes</code></td>
 </tr>
 </tbody>
 </table>
-<h2 id="listar-pods-de-una-priorityclass">Listar pods de una priorityclass<a class="headerlink" href="#listar-pods-de-una-priorityclass" title="Anchor link to this section for reference">&para;</a></h2>
-<pre><code class="language-shell">kubectl get pods -A -o json | jq -r '.items[] | select(.spec.priorityClassName==&quot;system-cluster-critical&quot;) | .metadata.name + &quot; in &quot; + .metadata.namespace'
-</code></pre>
-<pre><code class="language-shell">kubectl get pods -A -o json | jq -r '.items[] | select(.spec.priorityClassName==&quot;system-node-critical&quot;) | .metadata.name + &quot; in &quot; + .metadata.namespace'
-</code></pre>
-<pre><code class="language-shell">kubectl get pods -A -o json | jq -r '.items[] | select(.spec.priorityClassName==&quot;high-priority&quot;) | .metadata.name + &quot; in &quot; + .metadata.namespace'
-</code></pre>
-<h2 id="quality-of-service-classes">Quality of Service Classes<a class="headerlink" href="#quality-of-service-classes" title="Anchor link to this section for reference">&para;</a></h2>
+<p>The file filters do not work on tag pushes. GitHub ignores <code>paths</code> for tags, and GitLab <code>rules: changes</code> is always true for tags.
+If the branch also has an open merge request, GitLab can start a branch pipeline and a merge request pipeline for the same commit.
+Use <code>workflow: rules</code> to keep only one of them.</p>
+<h2 id="full-clone">Full clone<a class="headerlink" href="#full-clone" title="Anchor link to this section for reference">&para;</a></h2>
+<p>The tag script needs all git tags.</p>
+<ul>
+<li>GitHub: <code>actions/checkout</code> fetches one commit by default. Set <code>fetch-depth: 0</code>.</li>
+<li>GitLab: the default clone depth is 20 for new projects. Set the variable <code>GIT_DEPTH: 0</code>.</li>
+</ul>
+<h2 id="registry-credentials">Registry credentials<a class="headerlink" href="#registry-credentials" title="Anchor link to this section for reference">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Registry</th>
+<th>GitHub Actions</th>
+<th>GitLab CI/CD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Built-in registry</td>
+<td><code>ghcr.io</code> with <code>GITHUB_TOKEN</code> and <code>permissions: packages: write</code></td>
+<td><code>$CI_REGISTRY</code> with <code>$CI_REGISTRY_USER</code> and <code>$CI_REGISTRY_PASSWORD</code></td>
+</tr>
+<tr>
+<td>Other registries</td>
+<td><code>docker/login-action</code> with secrets or OIDC</td>
+<td>CI/CD variables or ID tokens (OIDC)</td>
+</tr>
+</tbody>
+</table>
+<p>For crane on GitLab, log in with <code>crane auth login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"</code>.</p>
+<h2 id="merge-requests-from-forks">Merge requests from forks<a class="headerlink" href="#merge-requests-from-forks" title="Anchor link to this section for reference">&para;</a></h2>
+<p>On GitHub, a <code>pull_request</code> from a fork gets no secrets, and <code>GITHUB_TOKEN</code> is read-only. The pipeline can only build.
+On GitLab, a merge request from a fork runs the pipeline in the fork project, with the CI/CD variables of the fork.
+A maintainer of the parent project can run the pipeline in the parent project.</p>
+<h2 id="ephemeral-environments">Ephemeral environments<a class="headerlink" href="#ephemeral-environments" title="Anchor link to this section for reference">&para;</a></h2>
+<p>The Argo CD <a href="https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-SCM-Provider/">SCM Provider Generator</a> and <a href="https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Pull-Request/">Pull Request Generator</a> support GitHub and GitLab.
+Each generator has a <code>github</code> and a <code>gitlab</code> block with its own token configuration.</p>
 <h2 id="links">Links<a class="headerlink" href="#links" title="Anchor link to this section for reference">&para;</a></h2>
 <ul>
-<li>
-<p>Pod Priority and Preemption<br />
-<a href="https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/">https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/</a></p>
-</li>
-<li>
-<p>Guaranteed Scheduling For Critical Add-On Pods<br />
-<a href="https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/">https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/</a></p>
-</li>
-<li>
-<p>PriorityClass spec<br />
-<a href="https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/priority-class-v1/">https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/priority-class-v1/</a></p>
-</li>
-<li>
-<p>Pod Quality of Service Classes<br />
-<a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/">https://kubernetes.io/docs/concepts/workloads/pods/pod-qos/</a>
-<a href="https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/">https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/</a></p>
-</li>
-<li>
-<p>Node Pressure Eviction<br />
-<a href="https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/">https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/</a></p>
-</li>
+<li><a href="https://docs.github.com/en/actions/reference/workflows-and-actions/variables">GitHub Actions variables</a></li>
+<li><a href="https://docs.gitlab.com/ci/variables/predefined_variables/">GitLab predefined CI/CD variables</a></li>
+<li><a href="https://github.com/docker/metadata-action">Docker metadata action</a></li>
+<li><a href="https://github.com/docker/build-push-action">Docker build push action</a></li>
+<li><a href="https://to-be-continuous.gitlab.io/doc/ref/docker/">To be continuous for GitLab</a></li>
 </ul>
 
 
@@ -2275,7 +2098,7 @@ Con <strong>PreemptLowerPriority</strong>, que es el valor por defecto, se liber
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 6, 2024 11:53:24 UTC">November 6, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 13, 2026 13:50:23 UTC">October 13, 2026</span>
   </span>
 
     
@@ -2285,7 +2108,7 @@ Con <strong>PreemptLowerPriority</strong>, que es el valor por defecto, se liber
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 24, 2024 18:47:20 UTC">June 24, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 13, 2026 13:50:23 UTC">October 13, 2026</span>
   </span>
 
     
@@ -2320,7 +2143,7 @@ Con <strong>PreemptLowerPriority</strong>, que es el valor por defecto, se liber
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../pod-disruption-budget/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Pod disruption budget">
+          <a href="../image-build/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Image build">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2330,20 +2153,20 @@ Con <strong>PreemptLowerPriority</strong>, que es el valor por defecto, se liber
                 Previous
               </span>
               <div class="md-ellipsis">
-                Pod disruption budget
+                Image build
               </div>
             </div>
           </a>
         
         
           
-          <a href="../probes/" class="md-footer__link md-footer__link--next" aria-label="Next: Kubernetes probes and self healing">
+          <a href="../../gitlab-ci-cd/98-tips/" class="md-footer__link md-footer__link--next" aria-label="Next: Tips">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Kubernetes probes and self healing
+                Tips
               </div>
             </div>
             <div class="md-footer__button md-icon">
@@ -2396,7 +2219,7 @@ Con <strong>PreemptLowerPriority</strong>, que es el valor por defecto, se liber
       <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

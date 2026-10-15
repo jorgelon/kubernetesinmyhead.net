@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -356,7 +356,7 @@
   
   
   
-    <a href="../deployment/resource-templating/" class="md-nav__link">
+    <a href="../deployment/crossplane-vs-kro/" class="md-nav__link">
       
   
   
@@ -644,7 +644,7 @@
   
   
   
-    <a href="../networking/filtering-with-nodeport/" class="md-nav__link">
+    <a href="../networking/cni-mode-ipam-cilium/" class="md-nav__link">
       
   
   
@@ -1344,7 +1344,105 @@
   
   
   
-    <a href="mcp/99-links/" class="md-nav__link">
+    <a href="claude-enterprise/libraries/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Claude enterprise
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="concepts/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="mcp/aws/" class="md-nav__link">
       
   
   
@@ -1505,209 +1603,313 @@
 
 
 <h1 id="intro-to-vibe-sreing">Intro to vibe sreing<a class="headerlink" href="#intro-to-vibe-sreing" title="Anchor link to this section for reference">&para;</a></h1>
+<p>Los conceptos basicos (LLM, inferencia, RAG, tools, MCP, agente) estan en
+<a href="concepts/">concepts</a>.</p>
 <h2 id="ai-agents-assistants">Ai Agents / Assistants<a class="headerlink" href="#ai-agents-assistants" title="Anchor link to this section for reference">&para;</a></h2>
-<p>List of AI agents</p>
+<p>Agentes de terminal:</p>
 <table>
 <thead>
 <tr>
-<th></th>
 <th>Agent</th>
 <th>Company</th>
+<th>Licencia</th>
 <th>URL</th>
-<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Claude Code</td>
-<td>Terminal based</td>
 <td>Anthropic</td>
+<td>Propietaria</td>
 <td><a href="https://www.anthropic.com/claude-code">https://www.anthropic.com/claude-code</a></td>
-<td></td>
+</tr>
+<tr>
+<td>Codex CLI</td>
+<td>OpenAI</td>
+<td>Open source</td>
+<td><a href="https://openai.com/codex/">https://openai.com/codex/</a></td>
 </tr>
 <tr>
 <td>Gemini CLI</td>
-<td>Terminal based</td>
 <td>Google</td>
-<td></td>
-<td></td>
+<td>Apache 2.0</td>
+<td><a href="https://github.com/google-gemini/gemini-cli">https://github.com/google-gemini/gemini-cli</a></td>
 </tr>
 <tr>
-<td>Codex</td>
-<td>Terminal based</td>
-<td>OpenAi</td>
-<td><a href="https://openai.com/codex/">https://openai.com/codex/</a></td>
-<td></td>
-</tr>
-<tr>
-<td>Github copilot cli</td>
-<td>Terminal based</td>
+<td>Github Copilot CLI</td>
 <td>Microsoft</td>
+<td>Propietaria</td>
 <td><a href="https://github.com/features/copilot/cli">https://github.com/features/copilot/cli</a></td>
-<td></td>
+</tr>
+<tr>
+<td>OpenCode</td>
+<td>Comunidad</td>
+<td>MIT</td>
+<td><a href="https://github.com/sst/opencode">https://github.com/sst/opencode</a></td>
+</tr>
+<tr>
+<td>Aider</td>
+<td>Comunidad</td>
+<td>Apache 2.0</td>
+<td><a href="https://aider.chat/">https://aider.chat/</a></td>
+</tr>
+<tr>
+<td>Goose</td>
+<td>Block</td>
+<td>Apache 2.0</td>
+<td><a href="https://block.github.io/goose/">https://block.github.io/goose/</a></td>
+</tr>
+<tr>
+<td>Amazon Q Developer</td>
+<td>AWS</td>
+<td>Propietaria</td>
+<td><a href="https://aws.amazon.com/q/developer/">https://aws.amazon.com/q/developer/</a></td>
+</tr>
+<tr>
+<td>Warp</td>
+<td>Warp</td>
+<td>Propietaria</td>
+<td><a href="https://www.warp.dev/">https://www.warp.dev/</a></td>
+</tr>
+<tr>
+<td>MiniMax Code</td>
+<td>MiniMax</td>
+<td>Propietaria</td>
+<td><a href="https://www.minimax.io/">https://www.minimax.io/</a></td>
+</tr>
+</tbody>
+</table>
+<p>Basados en IDE:</p>
+<table>
+<thead>
+<tr>
+<th>Agent</th>
+<th>Company</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cursor</td>
+<td>Anysphere</td>
+<td><a href="https://cursor.com/">https://cursor.com/</a></td>
 </tr>
 <tr>
 <td>Windsurf (formerly codeium)</td>
-<td>IDE</td>
-<td></td>
+<td>Cognition</td>
 <td><a href="https://windsurf.com/">https://windsurf.com/</a></td>
-<td></td>
 </tr>
 <tr>
 <td>Vscode + Github copilot agent mode</td>
-<td>IDE</td>
 <td>Microsoft</td>
 <td><a href="https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode">https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode</a></td>
-<td></td>
 </tr>
 <tr>
-<td>Cursor</td>
-<td>IDE</td>
-<td></td>
-<td><a href="https://cursor.com/">https://cursor.com/</a></td>
-<td></td>
+<td>Antigravity</td>
+<td>Google</td>
+<td><a href="https://antigravity.google/">https://antigravity.google/</a></td>
 </tr>
 <tr>
 <td>Vscodium</td>
 <td>N/A</td>
-<td></td>
 <td><a href="https://vscodium.com/">https://vscodium.com/</a></td>
-<td></td>
 </tr>
 </tbody>
 </table>
+<p>Notas:</p>
+<ul>
+<li>Casi todos soportan <a href="concepts/05-mcp/">MCP</a>, asi que un servidor MCP funciona
+  en cualquiera de ellos con la misma configuracion</li>
+<li>El acceso gratuito de Gemini CLI para particulares acabo el 18 de junio de 2026,
+  con la transicion hacia Antigravity CLI</li>
+<li>OpenCode es el de mas adopcion en Github y soporta multiples proveedores de
+  modelo</li>
+</ul>
 <h2 id="web-interfaces">Web interfaces<a class="headerlink" href="#web-interfaces" title="Anchor link to this section for reference">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th></th>
+<th>Interface</th>
 <th>Company</th>
 <th>URL</th>
-<th></th>
-<th></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Claude</td>
 <td>Anthropic</td>
-<td></td>
-<td></td>
-<td></td>
+<td><a href="https://claude.ai">https://claude.ai</a></td>
 </tr>
 <tr>
 <td>ChatGPT</td>
-<td>OpenAi</td>
+<td>OpenAI</td>
 <td><a href="https://chatgpt.com/">https://chatgpt.com/</a></td>
-<td></td>
-<td></td>
 </tr>
 <tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
+<td>Gemini</td>
+<td>Google</td>
+<td><a href="https://gemini.google.com">https://gemini.google.com</a></td>
+</tr>
+<tr>
+<td>Grok</td>
+<td>xAI</td>
+<td><a href="https://grok.com">https://grok.com</a></td>
+</tr>
+<tr>
+<td>DeepSeek</td>
+<td>DeepSeek</td>
+<td><a href="https://chat.deepseek.com">https://chat.deepseek.com</a></td>
+</tr>
+<tr>
+<td>Qwen</td>
+<td>Alibaba</td>
+<td><a href="https://chat.qwen.ai">https://chat.qwen.ai</a></td>
+</tr>
+<tr>
+<td>MiniMax</td>
+<td>MiniMax</td>
+<td><a href="https://www.minimax.io/">https://www.minimax.io/</a></td>
 </tr>
 </tbody>
 </table>
 <h2 id="large-language-models">Large language models<a class="headerlink" href="#large-language-models" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Estado a agosto de 2026. La columna open weights indica si se pueden descargar los
+pesos y servir el modelo uno mismo.</p>
 <table>
 <thead>
 <tr>
 <th>Family Name</th>
 <th>Latest Release</th>
 <th>Company</th>
+<th>Open weights</th>
 <th>Website</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Sonnet</td>
-<td>4.5</td>
+<td>Opus</td>
+<td>5</td>
 <td>Anthropic</td>
+<td>No</td>
 <td><a href="https://www.anthropic.com">https://www.anthropic.com</a></td>
 </tr>
 <tr>
-<td>Opus</td>
-<td>4.1</td>
+<td>Sonnet</td>
+<td>5</td>
 <td>Anthropic</td>
+<td>No</td>
 <td><a href="https://www.anthropic.com">https://www.anthropic.com</a></td>
 </tr>
 <tr>
 <td>Haiku</td>
-<td>3.5</td>
+<td>4.5</td>
 <td>Anthropic</td>
+<td>No</td>
+<td><a href="https://www.anthropic.com">https://www.anthropic.com</a></td>
+</tr>
+<tr>
+<td>Fable</td>
+<td>5</td>
+<td>Anthropic</td>
+<td>No</td>
 <td><a href="https://www.anthropic.com">https://www.anthropic.com</a></td>
 </tr>
 <tr>
 <td>GPT</td>
-<td>GPT-5</td>
+<td>5.6</td>
 <td>OpenAI</td>
-<td><a href="https://openai.com">https://openai.com</a></td>
-</tr>
-<tr>
-<td>o-series</td>
-<td>o4-mini</td>
-<td>OpenAI</td>
+<td>No</td>
 <td><a href="https://openai.com">https://openai.com</a></td>
 </tr>
 <tr>
 <td>Gemini</td>
-<td>2.5</td>
+<td>3.6</td>
 <td>Google</td>
+<td>No</td>
 <td><a href="https://ai.google.dev">https://ai.google.dev</a></td>
+</tr>
+<tr>
+<td>Grok</td>
+<td>4.5</td>
+<td>xAI</td>
+<td>No</td>
+<td><a href="https://x.ai">https://x.ai</a></td>
 </tr>
 <tr>
 <td>Llama</td>
 <td>4</td>
 <td>Meta</td>
+<td>Si</td>
 <td><a href="https://ai.meta.com">https://ai.meta.com</a></td>
 </tr>
 <tr>
 <td>Magistral</td>
 <td>Medium</td>
 <td>Mistral AI</td>
+<td>Si</td>
 <td><a href="https://mistral.ai">https://mistral.ai</a></td>
 </tr>
 <tr>
 <td>Medium</td>
 <td>3</td>
 <td>Mistral AI</td>
+<td>Si</td>
 <td><a href="https://mistral.ai">https://mistral.ai</a></td>
 </tr>
 <tr>
 <td>Small</td>
 <td>3.1</td>
 <td>Mistral AI</td>
+<td>Si</td>
 <td><a href="https://mistral.ai">https://mistral.ai</a></td>
 </tr>
 <tr>
 <td>Qwen</td>
-<td>3</td>
+<td>3.8 Max</td>
 <td>Alibaba Cloud</td>
+<td>Parcial</td>
 <td><a href="https://qwenlm.github.io">https://qwenlm.github.io</a></td>
 </tr>
 <tr>
 <td>V-series</td>
-<td>V3.2</td>
+<td>V4</td>
 <td>DeepSeek</td>
+<td>Si</td>
 <td><a href="https://www.deepseek.com">https://www.deepseek.com</a></td>
 </tr>
 <tr>
-<td>R-series</td>
-<td>R1-0528</td>
-<td>DeepSeek</td>
-<td><a href="https://www.deepseek.com">https://www.deepseek.com</a></td>
+<td>Kimi</td>
+<td>K3</td>
+<td>Moonshot AI</td>
+<td>Si</td>
+<td><a href="https://www.moonshot.ai">https://www.moonshot.ai</a></td>
 </tr>
 <tr>
-<td>Grok</td>
-<td>4 Fast</td>
-<td>xAI</td>
-<td><a href="https://x.ai">https://x.ai</a></td>
+<td>GLM</td>
+<td>5.2</td>
+<td>Zhipu AI</td>
+<td>Si</td>
+<td><a href="https://z.ai">https://z.ai</a></td>
+</tr>
+<tr>
+<td>M-series</td>
+<td>M3</td>
+<td>MiniMax</td>
+<td>Si</td>
+<td><a href="https://www.minimax.io/">https://www.minimax.io/</a></td>
 </tr>
 </tbody>
 </table>
+<p>Notas:</p>
+<ul>
+<li>Los modelos open weight chinos (DeepSeek V4, GLM 5.2, Kimi K3, MiniMax M3)
+  compiten en precio y apertura contra los cerrados</li>
+<li>Kimi K3 es el modelo open weight mas grande publicado hasta la fecha</li>
+<li>Qwen aparece como parcial porque la gama Max es solo via API, mientras otras
+  variantes si publican pesos</li>
+<li>Los nombres de version varian entre fuentes. Conviene confirmar el ID exacto
+  del modelo en la documentacion del proveedor antes de usarlo</li>
+</ul>
 
 
 
@@ -1730,7 +1932,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 17, 2025 16:48:10 UTC">October 17, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="August 10, 2026 11:14:13 UTC">August 10, 2026</span>
   </span>
 
     
@@ -1851,7 +2053,7 @@
       <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

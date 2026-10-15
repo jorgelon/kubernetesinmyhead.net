@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
       
@@ -29,7 +29,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -356,7 +356,7 @@
   
   
   
-    <a href="../../../deployment/resource-templating/" class="md-nav__link">
+    <a href="../../../deployment/crossplane-vs-kro/" class="md-nav__link">
       
   
   
@@ -985,6 +985,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../imagefs-nodefs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Imagefs and nodefs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../increate-size-in-pvc/" class="md-nav__link">
         
   
@@ -1075,27 +1103,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#image-garbage-collector" class="md-nav__link">
+  <a href="#imagefs-image-garbage-collection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Image Garbage Collector
+        Imagefs (image garbage collection)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Imagefs (image garbage collection)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#autoclean-via-image-garbage-collector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autoclean via Image Garbage Collector
       
     </span>
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#pod-eviction" class="md-nav__link">
+  <a href="#nodefs-eviction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pod eviction
+        nodefs (Eviction)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Pod eviction">
+    <nav class="md-nav" aria-label="nodefs (Eviction)">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#autoclean-via-eviction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autoclean via Eviction
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#soft-and-hard-eviction" class="md-nav__link">
@@ -1110,6 +1166,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#with-or-without-ephemeral-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With or without ephemeral storage
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1392,7 +1459,7 @@
   
   
   
-    <a href="../../../networking/filtering-with-nodeport/" class="md-nav__link">
+    <a href="../../../networking/cni-mode-ipam-cilium/" class="md-nav__link">
       
   
   
@@ -1909,27 +1976,55 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#image-garbage-collector" class="md-nav__link">
+  <a href="#imagefs-image-garbage-collection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Image Garbage Collector
+        Imagefs (image garbage collection)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Imagefs (image garbage collection)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#autoclean-via-image-garbage-collector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autoclean via Image Garbage Collector
       
     </span>
   </a>
   
 </li>
+        
+      </ul>
+    </nav>
+  
+</li>
       
         <li class="md-nav__item">
-  <a href="#pod-eviction" class="md-nav__link">
+  <a href="#nodefs-eviction" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pod eviction
+        nodefs (Eviction)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Pod eviction">
+    <nav class="md-nav" aria-label="nodefs (Eviction)">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#autoclean-via-eviction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Autoclean via Eviction
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#soft-and-hard-eviction" class="md-nav__link">
@@ -1944,6 +2039,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#with-or-without-ephemeral-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        With or without ephemeral storage
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2042,39 +2148,84 @@
 
 
 <h1 id="node-disk-protection">Node disk protection<a class="headerlink" href="#node-disk-protection" title="Anchor link to this section for reference">&para;</a></h1>
-<p>Kubernetes has 2 mechanisms to protect a node because of disk usage problems</p>
-<h2 id="image-garbage-collector">Image Garbage Collector<a class="headerlink" href="#image-garbage-collector" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Kubernetes has 2 mechanisms to protect a node because of disk usage problems, using imagefs an using nodefs</p>
+<h2 id="imagefs-image-garbage-collection">Imagefs (image garbage collection)<a class="headerlink" href="#imagefs-image-garbage-collection" title="Anchor link to this section for reference">&para;</a></h2>
+<p><strong>Imagefs</strong> is the storage space used by the container runtime for its operations. For example containerd uses <strong>/var/lib/containerd/</strong> by default. It includes:</p>
 <ul>
-<li>Container runtime</li>
+<li>Image layers/blobs pulled from registries (the content store)</li>
+<li>The unpacked, read-only image filesystem layers (snapshots) shared by containers</li>
+<li>Image metadata and index information</li>
 </ul>
-<p><strong>Imagefs</strong> is the storage space used by the container runtime (containerd/cri-o,docker) for its operations.
-Containerd tracks and reports usage of its own storage directories, this is /var/lib/containerd/</p>
-<pre><code class="language-txt">/var/lib/containerd/
-├── io.containerd.content.v1.content/     # Image blobs. This is what Image GC primarily targets for removal
-├── io.containerd.snapshotter.v1.overlayfs/ # Layer snapshots. NOT cleaned by Image GC - requires container restart/cleanup
-├── io.containerd.metadata.v1.bolt/       # Metadata database
-└── other containerd directories...
-</code></pre>
-<ul>
-<li>Kubelet</li>
-</ul>
-<p>Then kubelet queries containerd for storage stats via CRI and receives imageFs data</p>
-<ul>
-<li>Image Garbage Collector</li>
-</ul>
-<p>Then kubelet removes unused images when some thresholds are reaches.</p>
-<p>When the imageFS usage reaches the <strong>HighThresholdPercent</strong> setting, kubelet starts to delete container images ordered by last time they were used until the <strong>LowThresholdPercent</strong> is reached</p>
 <blockquote>
-<p>Since kubernetes 1.30 (beta) we can configure a <strong>imageMaximumGCAge</strong> as the maximum time a local image can be unused for</p>
+<p>When imagefs and containerfs are not split into separate disks, the container writable layers and logs also count against imagefs (see containerfs below).</p>
 </blockquote>
-<ul>
-<li>Metrics</li>
-</ul>
-<p>This metrics are exposed under /proxy/stats/summary API</p>
-<p>You can see this in the kubelet metrics:</p>
-<pre><code class="language-shell">kubectl get --raw /api/v1/nodes/&lt;node&gt;/proxy/stats/summary | jq '.node.runtime.imageFs'
+<p>Kubelet talks with the container runtime to determine imagefs and publish the results in the Summary API at /stats/summary under .node.runtime.imageFs
+This command reports information about space and inodes (total, used and available)</p>
+<pre><code class="language-shell">kubectl get --raw &quot;/api/v1/nodes/NODE/proxy/stats/summary&quot; | jq '.node.runtime.imageFs'
 </code></pre>
-<h2 id="pod-eviction">Pod eviction<a class="headerlink" href="#pod-eviction" title="Anchor link to this section for reference">&para;</a></h2>
+<p>With crictl in the node</p>
+<pre><code class="language-shell">crictl imagefsinfo -o table
+crictl images
+</code></pre>
+<h3 id="autoclean-via-image-garbage-collector">Autoclean via Image Garbage Collector<a class="headerlink" href="#autoclean-via-image-garbage-collector" title="Anchor link to this section for reference">&para;</a></h3>
+<p>We can configure at kubelet level an auto clean of imagefs. The following settings are available:</p>
+<table>
+<thead>
+<tr>
+<th>Settings</th>
+<th>Default</th>
+<th>Explanation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>imageGCHighThresholdPercent</td>
+<td>85</td>
+<td>When imagefs usage reaches this %, GC starts deleting unused images. 100 disables it.</td>
+</tr>
+<tr>
+<td>imageGCLowThresholdPercent</td>
+<td>80</td>
+<td>GC keeps deleting until usage falls to this %. GC never runs if usage is below this. Must be &lt; high</td>
+</tr>
+<tr>
+<td>imageMinimumGCAge</td>
+<td>2m0s</td>
+<td>An unused image must be at least this old before it's eligible. It protects freshly pulled images</td>
+</tr>
+<tr>
+<td>imageMaximumGCAge</td>
+<td>0s (disabled)</td>
+<td>Time-based autoclean: any unused image older than this is deleted regardless of disk usage</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Some operating systems like Bottlerocket put imagefs and nodefs in the same disk</li>
+<li>Karpenter permits to configure spec.kubelet.imageGCHighThresholdPercent and spec.kubelet.imageGCLowThresholdPercent in a nodeclass. Age based settings must be configured under userdata</li>
+</ul>
+<h2 id="nodefs-eviction">nodefs (Eviction)<a class="headerlink" href="#nodefs-eviction" title="Anchor link to this section for reference">&para;</a></h2>
+<p>Nodefs is the filesystem kubelet uses for local ephemeral storage (the kubelet root dir /var/lib/kubelet) and the node/pod logs. It includes:</p>
+<ul>
+<li>emptyDir volumes (unless medium: Memory, which is tmpfs/RAM)</li>
+<li>Pod and container logs (/var/log/pods, /var/log/containers)</li>
+<li>Pod ephemeral scratch and the ephemeral-storage request/limit accounting</li>
+<li>kubelet bookkeeping, projected-volume working dirs, plugin data</li>
+</ul>
+<blockquote>
+<p>nodefs is reported as whole-filesystem usage, so when it shares a disk with imagefs/containerfs (e.g. Bottlerocket) its used value also includes those.</p>
+</blockquote>
+<p>The status can be obtained this way.</p>
+<pre><code class="language-shell">kubectl get --raw &quot;/api/v1/nodes/NODEproxy/stats/summary&quot; | jq '.node.fs'
+</code></pre>
+<blockquote>
+<p>We can also get information about ephemeral-storage usage via kubectl describe node NODE</p>
+</blockquote>
+<h3 id="autoclean-via-eviction">Autoclean via Eviction<a class="headerlink" href="#autoclean-via-eviction" title="Anchor link to this section for reference">&para;</a></h3>
+<p>Kubernetes has a process to terminate pods when some conditions are met in order to reclaim resources in the node. We have 2 methods here</p>
+<ul>
+<li>Soft eviction</li>
+</ul>
 <p>Node-pressure eviction can remove pods because a threshold has been reached, and there are 3 filesystem identifiers that can be used with eviction signals:</p>
 <ul>
 <li><strong>nodefs</strong></li>
@@ -2123,9 +2274,62 @@ evictionSoftGracePeriod:
     nodefs.available: &quot;2m&quot;     # Allow 2 minutes for cleanup/migration
     imagefs.available: &quot;2m&quot;
 </code></pre>
+<h2 id="with-or-without-ephemeral-storage">With or without ephemeral storage<a class="headerlink" href="#with-or-without-ephemeral-storage" title="Anchor link to this section for reference">&para;</a></h2>
+<p>When a container writes data, the bytes land in a different filesystem depending on whether an emptyDir volume is mounted at the write path. Declaring emptyDir does not reduce total usage, it relocates it and changes the lifecycle and the controls available.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>No emptyDir (writes to container FS)</th>
+<th>emptyDir mounted at the write path</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Physical location</td>
+<td>Container writable layer (containerfs) in /var/lib/containerd</td>
+<td>/var/lib/kubelet/pods/UID/volumes/kubernetes.io~empty-dir/</td>
+</tr>
+<tr>
+<td>Kubelet accounting</td>
+<td>imagefs / containerfs</td>
+<td>nodefs</td>
+</tr>
+<tr>
+<td>Counts against pod ephemeral-storage</td>
+<td>Yes</td>
+<td>Yes (default medium)</td>
+</tr>
+<tr>
+<td>Survives container restart</td>
+<td>No, restart creates a fresh writable layer and the data is lost</td>
+<td>Yes, persists across container restarts within the pod</td>
+</tr>
+<tr>
+<td>Survives pod deletion/eviction</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Size guardrail</td>
+<td>resources.limits.ephemeral-storage only</td>
+<td>emptyDir.sizeLimit and/or ephemeral-storage limit</td>
+</tr>
+<tr>
+<td>Can move off disk to RAM</td>
+<td>No</td>
+<td>Yes, with medium: Memory</td>
+</tr>
+</tbody>
+</table>
 <h2 id="links">Links<a class="headerlink" href="#links" title="Anchor link to this section for reference">&para;</a></h2>
 <ul>
-<li>Node-pressure Eviction</li>
+<li>
+<p><a href="../imagefs-nodefs/">Imagefs and nodefs</a></p>
+</li>
+<li>
+<p>Node-pressure Eviction</p>
+</li>
 </ul>
 <p><a href="https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/">https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/</a></p>
 <ul>
@@ -2158,7 +2362,7 @@ evictionSoftGracePeriod:
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 11, 2025 13:49:32 UTC">September 11, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 31, 2026 11:01:24 UTC">July 31, 2026</span>
   </span>
 
     
@@ -2279,7 +2483,7 @@ evictionSoftGracePeriod:
       <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["content.code.copy", "navigation.footer", "navigation.path", "navigation.prune", "navigation.top", "toc.follow"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
